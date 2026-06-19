@@ -1,319 +1,181 @@
 "use client";
 import { useState, useEffect } from "react";
-import CustomCursor from "./components/CustomCursor";
-import { motion } from "framer-motion";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import ComingSoonModal from "./components/ComingSoonModal";
+import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 
-// Navbar
-const Navbar = ({
-  darkMode,
-  toggleDarkMode,
-}: {
-  darkMode: boolean;
-  toggleDarkMode: () => void;
-}) => {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-  const navbarHeight = 64;
-  const extraOffset = 20;
-
-  // Track scroll and screen size
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
-    
-    handleScroll();
-    handleResize();
-    
-    window.addEventListener("scroll", handleScroll);
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  // Lock background scroll when mobile menu is open
-  useEffect(() => {
-    if (menuOpen) {
-      document.body.style.overflow = "hidden";
-      document.body.style.touchAction = "none";
-    } else {
-      document.body.style.overflow = "";
-      document.body.style.touchAction = "";
-    }
-    return () => {
-      document.body.style.overflow = "";
-      document.body.style.touchAction = "";
-    };
-  }, [menuOpen]);
-
-  const scrollToSection = (id: string) => {
-    setMenuOpen(false);
-    const el = document.getElementById(id);
-    if (el) {
-      const elementPosition = el.offsetTop - navbarHeight - extraOffset;
-      window.scrollTo({ top: elementPosition, behavior: "smooth" });
-    }
-  };
-
-  const navLinks = [
-    { id: "hero", label: "Home" },
-    { id: "sections", label: "Explore" },
-    { id: "testimonials", label: "Testimonials" },
-    { id: "register", label: "Register" },
-    { id: "faq", label: "FAQ" },
-    { id: "contact", label: "Contact" },
-  ];
-
-  const isFloating = scrolled && isMobile;
-
-  return (
-    <>
-      <motion.div
-        initial={false}
-        animate={{
-          top: isFloating ? 16 : 0,
-          width: isFloating ? "92%" : "100%",
-          maxWidth: isFloating ? 1200 : "100%",
-          borderRadius: isFloating ? 100 : 0,
-          paddingLeft: isFloating ? 32 : 24,
-          paddingRight: isFloating ? 32 : 24,
-          paddingTop: isFloating ? 10 : 16,
-          paddingBottom: isFloating ? 10 : 16,
-          scale: isFloating ? 0.98 : 1,
-          x: isFloating ? "-50%" : "0%",
-          left: isFloating ? "50%" : "0%",
-          backgroundColor: darkMode 
-            ? (scrolled ? "rgba(0, 0, 0, 0.7)" : "rgba(0, 0, 0, 0.2)") 
-            : (scrolled ? "rgba(255, 255, 255, 0.9)" : "rgba(255, 255, 255, 0.8)"),
-          borderColor: darkMode 
-            ? (scrolled ? "rgba(255, 255, 255, 0.2)" : "rgba(255, 255, 255, 0.1)") 
-            : "rgba(0, 0, 0, 0.1)",
-          boxShadow: isFloating 
-            ? "0 30px 60px rgba(0,0,0,0.4)" 
-            : scrolled 
-              ? "0 4px 20px rgba(0,0,0,0.1)" 
-              : "0 1px 2px rgba(0,0,0,0.05)",
-        }}
-        transition={{
-          type: "spring",
-          stiffness: 120,
-          damping: 20,
-          mass: 0.6
-        }}
-        className={`fixed z-50 flex justify-between items-center backdrop-blur-xl border-b`}
-      >
-        <h1 className="text-xl font-bold bg-gradient-to-r from-purple-400 to-blue-500 bg-clip-text text-transparent">
-          WryClip
-        </h1>
-
-        <div className={`hidden md:flex gap-6 items-center ${darkMode ? "text-gray-300" : "text-gray-600"}`}>
-          {navLinks.map(({ id, label }, i) => (
-            <span
-              key={i}
-              onClick={() => scrollToSection(id)}
-              className={`cursor-pointer hover:underline transition ${darkMode ? "hover:text-white" : "hover:text-black"}`}
-            >
-              {label}
-            </span>
-          ))}
-
-          {/* Premium Theme Toggle - Desktop */}
-          <button
-            onClick={toggleDarkMode}
-            aria-label="Toggle theme"
-            className={`ml-4 relative w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 focus:outline-none group
-              ${darkMode
-                ? "bg-white/5 border border-purple-500/40 shadow-[0_0_14px_rgba(168,85,247,0.35)] hover:shadow-[0_0_22px_rgba(168,85,247,0.6)] hover:border-purple-400"
-                : "bg-amber-50 border border-amber-400/60 shadow-[0_0_14px_rgba(251,191,36,0.4)] hover:shadow-[0_0_22px_rgba(251,191,36,0.7)] hover:border-amber-300"
-              }`}
-          >
-            <motion.div
-              key={darkMode ? "moon" : "sun"}
-              initial={{ rotate: -90, scale: 0.5, opacity: 0 }}
-              animate={{ rotate: 0, scale: 1, opacity: 1 }}
-              exit={{ rotate: 90, scale: 0.5, opacity: 0 }}
-              transition={{ duration: 0.35, ease: "easeOut" }}
-            >
-              {!darkMode ? (
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-purple-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z" />
-                </svg>
-              ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                  <circle cx="12" cy="12" r="5" />
-                  <line x1="12" y1="1" x2="12" y2="3" /><line x1="12" y1="21" x2="12" y2="23" />
-                  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" /><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-                  <line x1="1" y1="12" x2="3" y2="12" /><line x1="21" y1="12" x2="23" y2="12" />
-                  <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" /><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-                </svg>
-              )}
-            </motion.div>
-          </button>
-        </div>
-
-        <div className="hidden md:block">
-          <button
-            onClick={() => scrollToSection("register")}
-            className="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-blue-500 hover:scale-105 transition"
-          >
-            Register
-          </button>
-        </div>
-
-        {/* Mobile Hamburger Icon */}
-        <div className="md:hidden flex items-center gap-4">
-          {/* Premium Theme Toggle - Mobile */}
-          <button
-            onClick={toggleDarkMode}
-            aria-label="Toggle theme"
-            className={`relative w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 focus:outline-none
-              ${darkMode
-                ? "bg-white/5 border border-purple-500/40 shadow-[0_0_12px_rgba(168,85,247,0.4)] hover:shadow-[0_0_20px_rgba(168,85,247,0.6)]"
-                : "bg-amber-50 border border-amber-400/60 shadow-[0_0_12px_rgba(251,191,36,0.4)] hover:shadow-[0_0_20px_rgba(251,191,36,0.7)]"
-              }`}
-          >
-            <motion.div
-              key={darkMode ? "moon-m" : "sun-m"}
-              initial={{ rotate: -90, scale: 0.5, opacity: 0 }}
-              animate={{ rotate: 0, scale: 1, opacity: 1 }}
-              transition={{ duration: 0.35, ease: "easeOut" }}
-            >
-              {!darkMode ? (
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-purple-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z" />
-                </svg>
-              ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                  <circle cx="12" cy="12" r="5" />
-                  <line x1="12" y1="1" x2="12" y2="3" /><line x1="12" y1="21" x2="12" y2="23" />
-                  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" /><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-                  <line x1="1" y1="12" x2="3" y2="12" /><line x1="21" y1="12" x2="23" y2="12" />
-                  <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" /><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-                </svg>
-              )}
-            </motion.div>
-          </button>
-          <button onClick={() => setMenuOpen(!menuOpen)} className={`focus:outline-none ${darkMode ? "text-white" : "text-black"}`}>
-            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              {menuOpen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-              )}
-            </svg>
-          </button>
-        </div>
-      </motion.div>
-
-      {/* Mobile Menu Dropdown */}
-      {menuOpen && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95, y: -20 }}
-          animate={{ 
-            opacity: 1, 
-            scale: 1, 
-            y: 0,
-            top: scrolled ? 80 : 70, // Adjust based on floating header height
-            width: scrolled ? "92%" : "100%",
-            left: scrolled ? "4%" : "0%",
-            borderRadius: scrolled ? 24 : "0 0 24px 24px",
-          }}
-          transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          className={`fixed backdrop-blur-2xl border z-40 flex flex-col items-center py-8 px-6 gap-4 md:hidden 
-            ${darkMode 
-              ? "bg-black/80 border-white/10 text-white shadow-[0_20px_50px_rgba(0,0,0,0.5)]" 
-              : "bg-white/90 border-black/10 text-black shadow-[0_20px_50px_rgba(0,0,0,0.1)]"
-            }`}
-        >
-          <div className="w-full flex flex-col gap-3">
-            {navLinks.map(({ id, label }, i) => (
-              <span
-                key={i}
-                onClick={() => scrollToSection(id)}
-                className={`cursor-pointer text-lg font-medium tracking-wide py-3 rounded-xl transition text-center w-full shadow-sm ${darkMode ? "bg-white/5 border border-white/10 hover:bg-white/10 hover:border-purple-500/50 hover:text-purple-300" : "bg-black/5 border border-black/10 hover:bg-black/10 hover:border-purple-500/50 hover:text-purple-600"}`}
-              >
-                {label}
-              </span>
-            ))}
-          </div>
-          <button
-            onClick={() => scrollToSection("register")}
-            className="w-full py-4 mt-2 rounded-xl bg-gradient-to-r from-purple-500 to-blue-500 hover:scale-[1.02] active:scale-95 transition-all font-bold shadow-[0_0_20px_rgba(168,85,247,0.4)] text-white"
-          >
-            Register Now
-          </button>
-        </motion.div>
-      )}
-    </>
-  );
-};
+import { usePersistedTheme } from "./components/usePersistedTheme";
 
 export default function Home() {
   const navbarHeight = 64;
   const extraOffset = 20;
-  const [darkMode, setDarkMode] = useState(true);
+  const [darkMode, toggleDarkMode] = usePersistedTheme();
+  const [isComingSoonOpen, setIsComingSoonOpen] = useState(false);
 
-  // Focus: Form states
-  const [formData, setFormData] = useState({ name: "", email: "", phone: "" });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [phoneError, setPhoneError] = useState("");
+  // Track active tab for CSS phone mockups
+  const [activeScreenTab, setActiveScreenTab] = useState(0);
 
-  const toggleDarkMode = () => setDarkMode(!darkMode);
+  const phoneScreens = [
+    {
+      title: "Reels & Series Feed",
+      badge: "Reels",
+      desc: "Watch unlimited vertical reels and short-form series completely free. An open cinematic stream for matching castings and user engagement profiles.",
+      image: "/reel-page.jpeg",
+      ui: (
+        <div className="w-full h-full bg-gradient-to-b from-purple-950/40 via-black to-black p-4 flex flex-col justify-between relative">
+          <div className="absolute right-4 bottom-20 flex flex-col gap-4 text-white text-xs items-center">
+            <div className="flex flex-col items-center">
+              <span className="text-xl">❤️</span>
+              <span className="text-[9px] text-gray-400">12.4K</span>
+            </div>
+            <div className="flex flex-col items-center">
+              <span className="text-xl">💬</span>
+              <span className="text-[9px] text-gray-400">840</span>
+            </div>
+            <div className="flex flex-col items-center">
+              <span className="text-xl">✈️</span>
+              <span className="text-[9px] text-gray-400">Share</span>
+            </div>
+          </div>
 
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formData.name && !formData.email && !formData.phone) return;
+          <div className="flex justify-between items-center text-[10px] font-bold text-gray-400">
+            <span>🔴 Live Stream</span>
+            <span>v1.2</span>
+          </div>
 
-    setPhoneError("");
-    const strippedPhone = formData.phone.replace(/\D/g, "");
-    if (strippedPhone.length !== 10) {
-      setPhoneError("Please enter a valid 10-digit mobile number! 📱");
-      return;
+          <div className="text-left text-white max-w-[80%] flex flex-col gap-1.5 mt-auto">
+            <span className="text-xs font-bold text-purple-400">@acting_talents</span>
+            <p className="text-[10px] text-gray-300 leading-tight">Audition snippet for casting calls. Click to view full series profile!</p>
+            <div className="flex items-center gap-1 bg-purple-500/10 border border-purple-500/20 p-1.5 rounded-lg w-fit">
+              <span className="text-[9px]">Viral Boost Applied 🚀</span>
+            </div>
+          </div>
+        </div>
+      )
+    },
+    {
+      title: "Writers & Poets Hub",
+      badge: "Writers",
+      desc: "Publish your scripts, poetry, stories, ghazals, screenplays, and thoughts. Protect high-value written content behind a custom Pay-To-Unlock fee to earn directly from readers.",
+      image: "/writer-page.jpeg",
+      ui: (
+        <div className="w-full h-full bg-[#0d071d] p-4 flex flex-col justify-between text-left text-white overflow-hidden relative">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-purple-500/10 rounded-full blur-2xl pointer-events-none animate-pulse"></div>
+
+          <div className="text-[10px] text-purple-400 uppercase tracking-widest font-bold border-b border-white/10 pb-2 flex justify-between items-center relative z-10">
+            <span>Poetry & Script Library</span>
+            <span className="text-[8px] bg-purple-500/20 text-purple-300 px-1.5 py-0.5 rounded border border-purple-500/10">Monetized</span>
+          </div>
+
+          <div className="flex flex-col gap-2.5 my-auto relative z-10">
+            <div className="bg-white/5 border border-white/10 p-3 rounded-xl flex flex-col gap-1 shadow-md">
+              <div className="flex justify-between items-center">
+                <span className="text-[10px] font-bold text-white">Khamosh Lab (Ghazal)</span>
+                <span className="text-[9px] text-purple-300 font-bold">🔒 Lock: ₹29</span>
+              </div>
+              <p className="text-[9px] text-gray-300 italic">"Khaamosh labon par silsile hain, yaadon ke purane meley hain..."</p>
+              <div className="w-full h-1 bg-white/10 rounded overflow-hidden mt-1">
+                <div className="w-[45%] h-full bg-purple-500"></div>
+              </div>
+            </div>
+
+            <div className="bg-white/5 border border-white/10 p-3 rounded-xl flex flex-col gap-1 opacity-70">
+              <div className="flex justify-between items-center">
+                <span className="text-[10px] font-bold text-white">The Last Audition (Screenplay)</span>
+                <span className="text-[9px] text-purple-300 font-bold">🔒 Lock: ₹99</span>
+              </div>
+              <p className="text-[9px] text-gray-400 leading-tight font-mono">SCENE 1 - INT. COFFEE SHOP - NIGHT</p>
+            </div>
+          </div>
+
+          <div className="text-[9px] text-gray-400 flex justify-between items-center pt-2 border-t border-white/10 relative z-10">
+            <span>124 reads today</span>
+            <span className="text-purple-300 font-semibold hover:underline">Unlock Reader</span>
+          </div>
+        </div>
+      )
+    },
+    {
+      title: "Studios Casting Hub",
+      badge: "Studios",
+      desc: "Browse live projects posted by producers, view gender/age limits, and apply with native recordings instantly.",
+      image: "/studio-page.jpeg",
+      ui: (
+        <div className="w-full h-full bg-[#0d111d] p-4 flex flex-col justify-between text-left text-white">
+          <div className="text-[10px] text-blue-400 uppercase tracking-widest font-bold border-b border-white/10 pb-2 flex justify-between items-center">
+            <span>Casting Dashboard</span>
+            <span className="text-xs text-gray-500">Active</span>
+          </div>
+
+          <div className="flex flex-col gap-3 my-auto">
+            <div className="bg-white/5 border border-white/10 p-3 rounded-xl flex flex-col gap-1.5">
+              <div className="flex justify-between items-center">
+                <span className="text-[10px] font-bold text-white">Feature Film Lead</span>
+                <span className="text-[9px] px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-500/20">Studio Pro</span>
+              </div>
+              <p className="text-[9px] text-gray-400">Gender: Female | Age: 18-25 | Tone: Dramatic</p>
+              <button className="py-1 px-2.5 rounded bg-blue-600 text-[10px] font-bold text-white w-fit">Apply Now</button>
+            </div>
+
+            <div className="bg-white/5 border border-white/10 p-3 rounded-xl flex flex-col gap-1.5 opacity-60">
+              <div className="flex justify-between items-center">
+                <span className="text-[10px] font-bold text-white">Ad Commercial Cast</span>
+                <span className="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/20">Writer Pro</span>
+              </div>
+              <p className="text-[9px] text-gray-400">Gender: Male | Age: 22-30 | Tone: Corporate</p>
+            </div>
+          </div>
+
+          <div className="text-[9px] text-gray-500 text-center">
+            Scroll to view 14 matching roles
+          </div>
+        </div>
+      )
+    },
+    {
+      title: "Creator Wallet & Payouts",
+      badge: "Wallet",
+      desc: "Earn 80% split on premium written unlocks (poetry, scripts, stories, ghazals). Track your reader payout records and request instant UPI withdrawals.",
+      image: "/wallet-page.jpeg",
+      ui: (
+        <div className="w-full h-full bg-[#05070c] p-4 flex flex-col justify-between text-left text-white">
+          <div className="text-[10px] text-purple-400 uppercase tracking-widest font-bold">Creator Wallet</div>
+
+          <div className="bg-gradient-to-br from-purple-950/30 to-indigo-950/20 border border-purple-500/20 p-4 rounded-2xl my-auto flex flex-col gap-3 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-16 h-16 bg-purple-500/10 rounded-full blur-xl"></div>
+            <div>
+              <p className="text-[9px] text-purple-300 uppercase tracking-wider font-semibold">Withdrawable Balance</p>
+              <h4 className="text-xl font-bold text-white mt-1">₹8,450.00</h4>
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <label className="text-[8px] text-gray-400 font-semibold">Linked UPI ID</label>
+              <input type="text" disabled value="mayank0522@okaxis" className="p-1.5 rounded bg-black/60 border border-white/10 text-[9px] text-white outline-none" />
+            </div>
+
+            <button className="py-2 rounded bg-gradient-to-r from-purple-600 to-indigo-600 text-[10px] font-bold text-center text-white">
+              Instant Payout Request
+            </button>
+          </div>
+
+          <div className="flex justify-between items-center text-[9px] text-gray-500">
+            <span>Payout split: 80% Creator</span>
+            <span className="text-green-400">● UPI Verified</span>
+          </div>
+        </div>
+      )
     }
-
-    setIsSubmitting(true);
-
-    const params = new URLSearchParams();
-    params.append('name', formData.name);
-    params.append('email', formData.email);
-    params.append('phone', formData.phone);
-
-    try {
-      await fetch("https://script.google.com/macros/s/AKfycby4M8nyS0fkpE9sNfkUWSJmtOkhyCm3fPDtiUSKk4-9ytuO-o4JFcyhQGkzjnsdM-EptQ/exec", {
-        method: "POST",
-        body: params,
-      });
-      setIsSuccess(true);
-      setFormData({ name: "", email: "", phone: "" });
-      setTimeout(() => setIsSuccess(false), 5000); // Reset animation state after 5 seconds
-    } catch (error) {
-      console.error("Error submitting form", error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const scrollToRegister = () => {
-    const el = document.getElementById("register");
-    if (el) {
-      const elementPosition = el.offsetTop - navbarHeight - extraOffset;
-      window.scrollTo({ top: elementPosition, behavior: "smooth" });
-    }
-  };
+  ];
 
   return (
     <div
       className={`${darkMode ? "bg-transparent text-white" : "bg-white text-black"
         } relative min-h-screen overflow-x-hidden overflow-y-auto transition-colors duration-500`}
     >
-      {/* Cursor */}
-      <CustomCursor />
 
-
-      {/* Navbar */}
+      {/* Shared Navbar */}
       <Navbar darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
 
       {/* HERO */}
@@ -321,6 +183,16 @@ export default function Home() {
         id="hero"
         className="relative z-10 flex flex-col items-center text-center px-4 pt-36 pb-10"
       >
+        {/* Brand Logo Above Headline */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1 }}
+          className="mb-4 relative w-20 h-20 md:w-24 md:h-24 mx-auto rounded-2xl overflow-hidden border border-purple-500/30 shadow-[0_0_25px_rgba(168,85,247,0.35)] bg-black"
+        >
+          <img src="/bg-logo.jpeg" alt="WryClip Logo" className="w-full h-full object-cover" loading="eager" fetchPriority="high" />
+        </motion.div>
+
         <motion.h1
           initial={{ opacity: 0, y: 30, scale: 0.9, filter: "blur(15px)" }}
           animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
@@ -329,31 +201,116 @@ export default function Home() {
         >
           WryClip
         </motion.h1>
-        <p className={`mt-4 text-lg max-w-xl ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
-          Shifting The World Of Content Creation
+
+        {/* App Tagline */}
+        <p className={`mt-4 text-lg max-w-xl font-medium tracking-wide ${darkMode ? "text-purple-300/80" : "text-purple-800"}`}>
+          From Story to Screen • Shifting The World Of Content Creation
         </p>
-        <button
-          onClick={scrollToRegister}
-          className="mt-6 px-8 py-3 rounded-2xl bg-gradient-to-r from-purple-500 to-blue-500 hover:scale-105 transition font-semibold"
-        >
-          Join WryClip
-        </button>
+
+        <p className={`mt-2 text-sm max-w-md ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
+          Connecting Creators, Writers, Poets, Casting Directors, and Talented Actors on one seamless mobile stage.
+        </p>
+
+        {/* Action Buttons */}
+        <div className="flex flex-col sm:flex-row gap-4 mt-8">
+          <button
+            onClick={() => setIsComingSoonOpen(true)}
+            className="px-8 py-3 rounded-2xl bg-gradient-to-r from-purple-500 to-blue-500 hover:scale-105 active:scale-95 transition font-semibold shadow-[0_0_20px_rgba(168,85,247,0.4)] text-white text-sm flex items-center justify-center gap-2 cursor-pointer"
+          >
+            📥 Download Official App
+          </button>
+
+          <Link
+            href="/about"
+            className="px-8 py-3 rounded-2xl border border-white/10 hover:border-purple-500/50 hover:bg-purple-500/5 transition font-semibold text-sm flex items-center justify-center"
+          >
+            Read Our Story →
+          </Link>
+        </div>
       </section>
 
-      {/* Sections */}
-      <section id="sections" className="mt-20 grid md:grid-cols-3 gap-8 max-w-5xl mx-auto px-4">
+      {/* App Screenshots Mockup Section */}
+      <section className="mt-28 max-w-5xl mx-auto px-4 text-center">
+        <span className="text-xs font-semibold uppercase tracking-widest text-blue-400 bg-blue-500/10 px-3.5 py-1.5 rounded-full border border-blue-500/20">
+          Mobile App Experience
+        </span>
+        <h2 className="text-3xl font-bold mt-4 mb-2">Interactive App Preview</h2>
+        <p className={`text-sm max-w-xl mx-auto mb-10 ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
+          WryClip matches native recording capabilities, casting marketplaces, and secure wallets. Select a screen below to preview:
+        </p>
+
+        {/* Tab Selection */}
+        <div className="flex justify-center gap-3 mb-8 flex-wrap">
+          {phoneScreens.map((screen, index) => (
+            <button
+              key={index}
+              onClick={() => setActiveScreenTab(index)}
+              className={`px-4 py-2 text-xs font-bold rounded-xl border transition ${activeScreenTab === index
+                  ? "bg-purple-500 border-purple-500 text-white shadow-[0_0_15px_rgba(168,85,247,0.4)]"
+                  : (darkMode ? "bg-white/5 border-white/10 text-gray-400 hover:text-white" : "bg-gray-100 border-gray-200 text-gray-600 hover:text-black")
+                }`}
+            >
+              {screen.badge}
+            </button>
+          ))}
+        </div>
+
+        {/* Display Active phone */}
+        <div className="flex flex-col md:flex-row items-center gap-12 max-w-3xl mx-auto border border-white/10 rounded-3xl p-8 backdrop-blur-md bg-black/30">
+
+          {/* Left: Phone frame */}
+          <div className="shrink-0 relative">
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-purple-500/15 rounded-full blur-2xl pointer-events-none"></div>
+
+            <div className="w-56 h-[445px] border-4 border-gray-800 rounded-[30px] bg-black shadow-2xl relative overflow-hidden flex flex-col justify-between p-2">
+              <div className="absolute top-2.5 left-1/2 -translate-x-1/2 w-20 h-3.5 bg-gray-800 rounded-full z-20"></div>
+              <div className="w-full h-full rounded-[24px] overflow-hidden bg-black relative pt-5">
+                {phoneScreens[activeScreenTab].image ? (
+                  <img
+                    src={phoneScreens[activeScreenTab].image}
+                    alt={phoneScreens[activeScreenTab].title}
+                    className="w-full h-[calc(100%-20px)] object-contain object-top"
+                  />
+                ) : (
+                  phoneScreens[activeScreenTab].ui
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Right: Info details */}
+          <div className="text-left flex flex-col gap-4">
+            <h3 className="text-xl font-bold text-purple-400">{phoneScreens[activeScreenTab].title}</h3>
+            <p className={`text-sm leading-relaxed ${darkMode ? "text-gray-300" : "text-gray-600"}`}>
+              {phoneScreens[activeScreenTab].desc}
+            </p>
+            <div className="flex gap-2.5 mt-2">
+              <button
+                onClick={() => setIsComingSoonOpen(true)}
+                className="px-4 py-2 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-lg text-xs font-semibold hover:scale-105 active:scale-95 transition cursor-pointer"
+              >
+                Get App Access
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* Explore Sections */}
+      <section id="sections" className="mt-32 grid md:grid-cols-3 gap-8 max-w-5xl mx-auto px-4">
         {[
           {
-            title: "For Writers",
-            desc: "Discover a powerful community of writers and unlock earning opportunities through your stories"
+            title: "For Writers & Poets",
+            desc: "Publish your scripts, poetry, stories, ghazals, and screenplays. Set custom Pay-To-Unlock fees to monetize your written content directly from readers."
           },
           {
-            title: "For Creators",
-            desc: "Bring your imagination to life and profit from your content."
+            title: "For Video Creators",
+            desc: "Stream your creative reels and vertical micro-series completely free, upload acting auditions, and grow your audience."
           },
           {
             title: "Talent Discovery",
-            desc: "Experience stories with a cinematic edge."
+            desc: "Browse live casting projects, rate applicants, and discover next-generation acting stars and original written scripts."
           }
         ].map((item, i) => (
           <motion.div
@@ -363,11 +320,32 @@ export default function Home() {
               }`}
           >
             <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
-            <p className={`${darkMode ? "text-gray-400" : "text-gray-600"}`}>
+            <p className={`${darkMode ? "text-gray-400" : "text-gray-600"} text-sm leading-relaxed`}>
               {item.desc}
             </p>
           </motion.div>
         ))}
+      </section>
+
+      {/* About Us Preview */}
+      <section className="mt-32 max-w-4xl mx-auto px-4 text-center">
+        <div className={`p-8 md:p-12 rounded-2xl border backdrop-blur-md relative overflow-hidden ${darkMode ? "bg-black/45 border-white/10 shadow-2xl" : "bg-gray-50/50 border-gray-200"
+          }`}>
+          <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 rounded-full blur-2xl pointer-events-none"></div>
+
+          <span className="text-[10px] font-bold uppercase tracking-wider text-purple-400">WryClip Story</span>
+          <h2 className="text-3xl font-bold mt-2 mb-4">Shifting The World Of Entertainment</h2>
+          <p className={`text-sm leading-relaxed max-w-2xl mx-auto mb-8 ${darkMode ? "text-gray-300" : "text-gray-600"}`}>
+            We are democratizing the entertainment industry by connecting aspiring actors directly with casting directors, while empowering writers and poets to monetize premium scripts, poetry, and screenplays directly.
+          </p>
+
+          <Link
+            href="/about"
+            className="px-6 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-indigo-500 hover:scale-105 transition font-semibold text-sm text-white inline-block shadow-md"
+          >
+            Read Our Full Story & Vision
+          </Link>
+        </div>
       </section>
 
       {/* Testimonials */}
@@ -435,163 +413,57 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Registration */}
-      <section
-        id="register"
-        className="mt-32 max-w-2xl mx-auto px-4 text-center"
-      >
-        <h2 className={`text-3xl font-bold mb-6 ${darkMode ? "text-white" : "text-black"}`}>
-          Register Now
-        </h2>
-
-        {/* Boxed Form */}
-        <div className="bg-black/70 dark:bg-white/10 p-8 rounded-2xl border border-white/20 backdrop-blur-3xl shadow-2xl relative overflow-hidden min-h-[300px] flex flex-col justify-center">
-          {isSuccess ? (
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              className="flex flex-col items-center justify-center py-6"
-            >
-              <div className="w-20 h-20 bg-green-500/20 text-green-400 rounded-full flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(34,197,94,0.4)] relative">
-                <motion.svg initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.5 }} className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path>
-                </motion.svg>
-              </div>
-              <h3 className={`text-3xl font-bold mb-2 ${darkMode ? "text-white" : "text-green-500"}`}>Successfully Submitted!</h3>
-              <p className={darkMode ? "text-gray-300" : "text-gray-600"}>Thank you. We have saved your details securely.</p>
-            </motion.div>
-          ) : (
-            <form onSubmit={handleRegister} className="flex flex-col gap-4 w-full">
-              <input
-                type="text"
-                required
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                placeholder="Full Name"
-                className={`p-3 rounded-lg border outline-none focus:border-purple-500 transition-all duration-300 [&:not(:placeholder-shown)]:border-purple-500 ${darkMode ? "bg-black/90 border-gray-600 text-white [&:not(:placeholder-shown)]:bg-purple-900/40" : "bg-white border-gray-300 text-black [&:not(:placeholder-shown)]:bg-purple-50"}`}
-              />
-              <input
-                type="email"
-                required
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                placeholder="Email"
-                className={`p-3 rounded-lg border outline-none focus:border-purple-500 transition-all duration-300 [&:not(:placeholder-shown)]:border-purple-500 ${darkMode ? "bg-black/90 border-gray-600 text-white [&:not(:placeholder-shown)]:bg-purple-900/40" : "bg-white border-gray-300 text-black [&:not(:placeholder-shown)]:bg-purple-50"}`}
-              />
-              <input
-                type="tel"
-                required
-                value={formData.phone}
-                onChange={(e) => {
-                  setFormData({ ...formData, phone: e.target.value });
-                  if (phoneError) setPhoneError("");
-                }}
-                placeholder="Phone Number"
-                className={`p-3 rounded-lg border outline-none focus:border-purple-500 transition-all duration-300 [&:not(:placeholder-shown)]:border-purple-500 ${darkMode ? "bg-black/90 border-gray-600 text-white [&:not(:placeholder-shown)]:bg-purple-900/40" : "bg-white border-gray-300 text-black [&:not(:placeholder-shown)]:bg-purple-50"}`}
-              />
-              {phoneError && (
-                <motion.div initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} className="text-red-400 text-sm font-medium px-1">
-                  {phoneError}
-                </motion.div>
-              )}
-              <button disabled={isSubmitting} type="submit" className="py-3 mt-2 rounded-lg bg-gradient-to-r from-purple-500 to-blue-500 hover:scale-[1.02] active:scale-95 transition-all font-semibold shadow-[0_0_15px_rgba(168,85,247,0.4)] disabled:opacity-70 disabled:hover:scale-100 flex items-center justify-center min-h-[50px] text-white">
-                {isSubmitting ? (
-                  <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                ) : "Submit Details"}
-              </button>
-            </form>
-          )}
-        </div>
-      </section>
-
-      {/* FAQ */}
+      {/* FAQ Accordion Section */}
       <section id="faq" className="mt-32 max-w-4xl mx-auto px-4">
         <h2 className={`text-3xl font-bold mb-6 text-center ${darkMode ? "text-white" : "text-black"}`}>
           Frequently Asked Questions
         </h2>
         <div className="space-y-4">
           {[
-            { q: "Is WryClip free to use?", a: "Yes, WryClip offers a free plan for creators to get started with basic tools." },
-            { q: "Can I publish my videos directly?", a: "Absolutely! You can publish videos directly from our platform to multiple social media channels." },
-            { q: "Who is the target audience of WryClip ?", a: "WryClip targets wide range of audience including writers , content creators and curious viewers." },
-            { q: "Is there customer support available?", a: "Yes, our support team is available 24/7 to help you with any issues." },
-            { q: "Can I integrate with other platforms?", a: "Yes, WryClip supports integration with major platforms like YouTube, Instagram, and TikTok." },
+            { q: "What is WryClip?", a: "WryClip is a premium vertical video, casting, and creative writing platform. It links actors with casting studios, while providing poets, storytellers, and scriptwriters a hub to publish, share, and monetize original written content." },
+            { q: "Can I monetize my reels or series episodes?", a: "No. On WryClip, video reels, audition clips, and vertical series episodes are completely free to view for all users. Direct Pay-To-Unlock monetization applies exclusively to written materials like poetry, ghazals, scripts, screenplays, and stories." },
+            { q: "How does the Pay-To-Unlock written monetization work?", a: "Poets and writers can set a custom INR unlock fee when uploading their written works (poetry, screenplays, scripts, stories, or thoughts). Readers pay this fee to instantly unlock the text, and earnings credit to the writer's wallet." },
+            { q: "What is the wallet commission split?", a: "We credit 80% of all written content unlocking fees directly to the creator's wallet, retaining only a 20% platform commission split." },
+            { q: "How do I withdraw my earnings?", a: "You can withdraw your earnings directly to your bank account by linking and verifying a valid UPI ID inside your creator wallet dashboard." }
           ].map((item, i) => (
-            <details key={i} className={`p-4 rounded-lg cursor-pointer ${darkMode ? "bg-white/5" : "bg-black/5"}`}>
-              <summary className="font-medium">{item.q}</summary>
-              <p className={`${darkMode ? "text-gray-400" : "text-gray-700"} mt-2`}>{item.a}</p>
+            <details key={i} className={`p-4 rounded-lg cursor-pointer transition ${darkMode ? "bg-white/5 border border-white/10" : "bg-black/5 border border-black/10"}`}>
+              <summary className="font-semibold select-none">{item.q}</summary>
+              <p className={`${darkMode ? "text-gray-400" : "text-gray-700"} mt-2 text-sm leading-relaxed`}>{item.a}</p>
             </details>
           ))}
         </div>
       </section>
 
-      {/* Contact */}
-      <section id="contact" className="relative mt-32 max-w-5xl mx-auto px-4 py-10">
-        <h2 className={`text-3xl font-bold mb-10 text-center ${darkMode ? "text-white" : "text-black"}`}>
-          Reach Out to Us
-        </h2>
-
-        <div className="grid md:grid-cols-3 gap-6 relative z-10">
-
-          {/* Phone Box */}
-          <motion.div whileHover={{ scale: 1.05 }} className={`p-6 rounded-2xl border border-white/10 backdrop-blur-lg flex flex-col items-center text-center gap-2 shadow-xl ${darkMode ? "bg-white/5 text-white" : "bg-black/5 text-black"}`}>
-            <div className="w-14 h-14 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400 mb-2">
-              <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
-            </div>
-            <h3 className="text-xl font-semibold">Call Us</h3>
-            <p className={`mt-2 ${darkMode ? "text-gray-400" : "text-gray-700"}`}>
-              Kunj Shukla: <br />
-              <a href="tel:+918076840003" className={`font-medium ${darkMode ? "text-purple-400 hover:text-purple-300" : "text-purple-600 hover:text-purple-500"} transition mt-1 inline-block`}>+91 8076840003</a>
-            </p>
-            <p className={darkMode ? "text-gray-400" : "text-gray-700"}>
-              Mayank: <br />
-              <a href="tel:+918766231150" className={`font-medium ${darkMode ? "text-purple-400 hover:text-purple-300" : "text-purple-600 hover:text-purple-500"} transition mt-1 inline-block`}>+91 8766231150</a>
-            </p>
-          </motion.div>
-
-          {/* Email Box */}
-          <motion.div whileHover={{ scale: 1.05 }} className={`p-6 rounded-2xl border border-white/10 backdrop-blur-lg flex flex-col items-center text-center gap-2 shadow-xl ${darkMode ? "bg-white/5 text-white" : "bg-black/5 text-black"}`}>
-            <div className="w-14 h-14 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 mb-2">
-              <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-            </div>
-            <h3 className="text-xl font-semibold">Email Us</h3>
-            <p className={`mt-2 ${darkMode ? "text-gray-400" : "text-gray-700"}`}>Drop us a line anytime.</p>
-            <a href="mailto:wryclip@gmail.com" className="text-blue-400 hover:text-blue-300 font-medium transition mt-1">wryclip@gmail.com</a>
-          </motion.div>
-
-          {/* Social Box */}
-          <motion.div whileHover={{ scale: 1.05 }} className={`p-6 rounded-2xl border border-white/10 backdrop-blur-lg flex flex-col items-center text-center gap-2 shadow-xl ${darkMode ? "bg-white/5 text-white" : "bg-black/5 text-black"}`}>
-            <div className="w-14 h-14 rounded-full bg-pink-500/20 flex items-center justify-center text-pink-400 mb-2">
-              <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
-            </div>
-            <h3 className="text-xl font-semibold">Connect & Follow</h3>
-            <p className={`mt-2 mb-2 ${darkMode ? "text-gray-400" : "text-gray-700"}`}>Stay updated on our socials.</p>
-            <div className="flex gap-4">
-              <a
-                href="https://www.instagram.com/wryclip?igsh=MWo2b2Y5emo5aWNsdA=="
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-lg ${darkMode ? "bg-white/5 hover:bg-pink-500/20 text-white hover:text-pink-400" : "bg-black/5 hover:bg-pink-500/10 text-black hover:text-pink-500 border border-black/10"}`}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7"><rect width="20" height="20" x="2" y="2" rx="5" ry="5" /><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" /><line x1="17.5" x2="17.51" y1="6.5" y2="6.5" /></svg>
-              </a>
-              <a
-                href="https://www.linkedin.com/in/wryclip-504b03400?utm_source=share_via&utm_content=profile&utm_medium=member_android"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-lg ${darkMode ? "bg-white/5 hover:bg-blue-500/20 text-white hover:text-blue-400" : "bg-black/5 hover:bg-blue-500/10 text-black hover:text-blue-500 border border-black/10"}`}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" /><rect width="4" height="12" x="2" y="9" /><circle cx="4" cy="4" r="2" /></svg>
-              </a>
-            </div>
-          </motion.div>
+      {/* Contact Preview Section */}
+      <section className="mt-32 max-w-4xl mx-auto px-4 text-center pb-12">
+        <div className={`p-8 rounded-2xl border backdrop-blur-md ${darkMode ? "bg-black/45 border-white/10 shadow-lg" : "bg-gray-50 border-gray-200"
+          }`}>
+          <h3 className="text-2xl font-bold mb-2">Need direct assistance?</h3>
+          <p className={`text-sm mb-6 ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
+            Our support desk is ready to answer questions about Creator Wallet balances, Pro Subscriptions, or casting calls.
+          </p>
+          <div className="flex justify-center gap-4 flex-wrap">
+            <Link
+              href="/contact"
+              className="px-6 py-2.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 font-semibold text-sm hover:bg-purple-500/20 transition"
+            >
+              📧 Open Support Ticket
+            </Link>
+            <a
+              href="mailto:support.wryclip@gmail.com"
+              className="px-6 py-2.5 rounded-xl border border-white/10 hover:border-purple-500/30 text-sm font-semibold transition"
+            >
+              Contact support.wryclip@gmail.com
+            </a>
+          </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className={`mt-16 py-6 px-4 ${darkMode ? " text-gray-400" : "bg-white text-gray-700"}`}>
-        <p className="text-center text-sm">© 2026 WryClip. All rights reserved.</p>
-      </footer>
+      {/* Shared Footer */}
+      <Footer darkMode={darkMode} />
+
+      {/* Coming Soon Modal */}
+      <ComingSoonModal isOpen={isComingSoonOpen} onClose={() => setIsComingSoonOpen(false)} />
     </div>
   );
 }

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 
 export default function CustomCursor() {
+  const [mounted, setMounted] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [hovered, setHovered] = useState(false);
   const [clicked, setClicked] = useState(false);
@@ -18,6 +19,7 @@ export default function CustomCursor() {
   const smoothY = useSpring(mouseY, springConfig);
 
   useEffect(() => {
+    setMounted(true);
     if (window.innerWidth < 768 || window.matchMedia("(hover: none) and (pointer: coarse)").matches) {
       setIsMobile(true);
       return;
@@ -56,7 +58,7 @@ export default function CustomCursor() {
     };
   }, [mouseX, mouseY]);
 
-  if (isMobile) return null;
+  if (!mounted || isMobile) return null;
 
   return (
     <>

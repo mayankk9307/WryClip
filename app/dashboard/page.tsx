@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-import CustomCursor from "../components/CustomCursor";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { motion } from "framer-motion";
@@ -47,8 +46,6 @@ export default function Home() {
   return (
     <div className="relative min-h-screen bg-transparent text-white overflow-x-hidden">
 
-      {/* Custom Cursor */}
-      <CustomCursor />
 
       {/* Navbar */}
       <Navbar />
