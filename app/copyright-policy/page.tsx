@@ -26,20 +26,14 @@ export default function CopyrightPolicyPage() {
 
     setIsSubmitting(true);
 
-    // Use legal specific key or fall back to general key
-    const accessKey = process.env.NEXT_PUBLIC_WEB3FORMS_LEGAL_KEY || 
-                      process.env.NEXT_PUBLIC_WEB3FORMS_KEY || 
-                      "YOUR_WEB3FORMS_ACCESS_KEY";
-
     try {
-      const response = await fetch("https://api.web3forms.com/submit", {
+      const response = await fetch("/api/contact", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json"
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          access_key: accessKey,
+          isLegal: true,
           name: "WryClip Copyright Report Hub",
           email: formData.email,
           subject: `[WryClip DMCA/Copyright] ${formData.reason} from ${formData.name}`,
@@ -62,8 +56,8 @@ export default function CopyrightPolicyPage() {
         declaration: false
       });
 
-      if (!result.success) {
-        console.warn("Form submission API error: Web3Forms access key not configured or invalid. Redirecting to mailto fallback.");
+      if (!response.ok || !result.success) {
+        console.warn("Form submission API error: Web3Forms DMCA submission failed. Redirecting to mailto fallback.");
         window.location.href = `mailto:legal.wryclip@gmail.com?subject=${encodeURIComponent(`[WryClip DMCA/Copyright] ${formData.reason}`)}&body=${encodeURIComponent(`Hi WryClip Legal,\n\nI want to report copyright infringement/violation on WryClip.\n\nReporter Name: ${formData.name}\nReporter Email: ${formData.email}\nReporter Phone: ${formData.phone || "Not provided"}\n\nReported Username: ${formData.targetUsername}\nReason: ${formData.reason}\n\nDetails & Proof:\n${formData.details}`)}`;
       }
 

@@ -18,17 +18,14 @@ export default function ContactPage() {
 
     setIsSubmitting(true);
 
-    const accessKey = process.env.NEXT_PUBLIC_WEB3FORMS_KEY || "YOUR_WEB3FORMS_ACCESS_KEY";
-
     try {
-      const response = await fetch("https://api.web3forms.com/submit", {
+      const response = await fetch("/api/contact", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json"
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          access_key: accessKey,
+          isLegal: false,
           name: formData.name,
           email: formData.email,
           subject: `[WryClip Support] ${formData.topic}`,
@@ -44,8 +41,8 @@ export default function ContactPage() {
       setIsSuccess(true);
       setFormData({ name: "", email: "", topic: "Casting & Auditions Support", message: "" });
 
-      if (!result.success) {
-        console.warn("Form submission API error: Web3Forms access key not configured or invalid. Redirecting to mailto fallback.");
+      if (!response.ok || !result.success) {
+        console.warn("Form submission API error: Web3Forms contact request failed. Redirecting to mailto fallback.");
         window.location.href = `mailto:support.wryclip@gmail.com?subject=${encodeURIComponent(`[WryClip Support] ${formData.topic}`)}&body=${encodeURIComponent(`Hi WryClip Support,\n\nName: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`)}`;
       }
 

@@ -14,40 +14,29 @@ export default function Footer({ darkMode = true }: { darkMode?: boolean }) {
 
     setLoading(true);
 
-    const sheetUrl = process.env.NEXT_PUBLIC_SUBSCRIBERS_SHEET_URL;
-
-    if (!sheetUrl || sheetUrl === "YOUR_GOOGLE_SHEET_SCRIPT_URL") {
-      console.warn("Google Sheet URL is not configured in env variables (NEXT_PUBLIC_SUBSCRIBERS_SHEET_URL). Falling back to simulation mode.");
-      setTimeout(() => {
-        setLoading(false);
-        setSubscribed(true);
-        setEmail("");
-        setTimeout(() => setSubscribed(false), 5000);
-      }, 1000);
-      return;
-    }
-
     try {
-      await fetch(sheetUrl, {
+      const response = await fetch("/api/subscribe", {
         method: "POST",
-        mode: "no-cors", // Crucial for bypass of CORS redirect block of Google Apps Script
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          email: email,
-          timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
-          source: "WryClip Footer Alerts"
+          email: email
         })
       });
+
+      const result = await response.json();
 
       setLoading(false);
       setSubscribed(true);
       setEmail("");
       setTimeout(() => setSubscribed(false), 5000);
+
+      if (!response.ok || !result.success) {
+        console.warn("Subscription submission API error:", result.error || "Unknown error");
+      }
     } catch (err) {
-      console.error("Google Sheets submit error:", err);
-      // Fallback
+      console.error("Subscription submit error:", err);
       setLoading(false);
       setSubscribed(true);
       setEmail("");
