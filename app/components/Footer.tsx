@@ -60,7 +60,7 @@ export default function Footer({ darkMode = true }: { darkMode?: boolean }) {
             </span>
           </Link>
           <p className="text-sm leading-relaxed">
-            The premium vertical ecosystem linking talent, creators, and casting directors. From story to screen.
+            Creator Ecosystem for Actors, Writers, Filmmakers and Content Creators. Discover auditions, collaborations, creative opportunities and industry connections in one platform.
           </p>
           
           {/* Social Icons */}

@@ -178,7 +178,7 @@ export default function AboutPage() {
                 className="w-28 h-28 rounded-full overflow-hidden border-2 border-purple-500/30 mb-4 shadow-[0_0_20px_rgba(168,85,247,0.35)] bg-gradient-to-tr from-purple-500 to-indigo-500 cursor-pointer hover:scale-105 transition-transform duration-300"
                 onClick={() => setSelectedImage("/ceo-profile.png")}
               >
-                <img src="/ceo-profile.png" alt="Kunj Shukla - CEO" className="w-full h-full object-cover" />
+                <img src="/ceo-profile.png" alt="Kunj Shukla - CEO" className="w-full h-full object-cover" loading="lazy" />
               </div>
               <h3 className="text-lg font-bold mb-1">Kunj Shukla</h3>
               <p className={`text-xs font-medium mb-3 ${darkMode ? "text-gray-400" : "text-gray-500"}`}>Founder & Chief Executive Officer</p>
@@ -201,7 +201,7 @@ export default function AboutPage() {
               </div>
             </div>
 
-            {/* CTO: Mayank Kumar */}
+            {/* CTO: Mayank */}
             <div className={`p-6 rounded-2xl border flex flex-col items-center text-center backdrop-blur-md hover:scale-[1.03] transition-all duration-300 relative overflow-hidden ${darkMode ? "bg-white/5 border-white/10 shadow-lg" : "bg-gray-50 border-gray-200 shadow-sm"
               }`}>
               <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/5 rounded-full blur-2xl pointer-events-none"></div>
@@ -210,9 +210,9 @@ export default function AboutPage() {
                 className="w-28 h-28 rounded-full overflow-hidden border-2 border-blue-500/30 mb-4 shadow-[0_0_20px_rgba(59,130,246,0.35)] bg-gradient-to-tr from-blue-500 to-indigo-500 cursor-pointer hover:scale-105 transition-transform duration-300"
                 onClick={() => setSelectedImage("/cto-profile.png")}
               >
-                <img src="/cto-profile.png" alt="Mayank Kumar - CTO" className="w-full h-full object-cover" />
+                <img src="/cto-profile.png" alt="Mayank - CTO" className="w-full h-full object-cover" loading="lazy" />
               </div>
-              <h3 className="text-lg font-bold mb-1">Mayank Kumar</h3>
+              <h3 className="text-lg font-bold mb-1">Mayank</h3>
               <p className={`text-xs font-medium mb-3 ${darkMode ? "text-gray-400" : "text-gray-500"}`}>Chief Technology Officer</p>
               <p className={`text-xs leading-relaxed mb-6 ${darkMode ? "text-gray-300" : "text-gray-600"}`}>
                 Responsible for technology strategy, product development, engineering resources and platform architecture.
@@ -242,7 +242,7 @@ export default function AboutPage() {
                 className="w-28 h-28 rounded-full overflow-hidden border-2 border-pink-500/30 mb-4 shadow-[0_0_20px_rgba(236,72,153,0.35)] bg-gradient-to-tr from-pink-500 to-purple-500 cursor-pointer hover:scale-105 transition-transform duration-300"
                 onClick={() => setSelectedImage("/cmo-profile.png")}
               >
-                <img src="/cmo-profile.png" alt="Anhad Satsangi - CMO" className="w-full h-full object-cover" />
+                <img src="/cmo-profile.png" alt="Anhad Satsangi - CMO" className="w-full h-full object-cover" loading="lazy" />
               </div>
               <h3 className="text-lg font-bold mb-1">Anhad Satsangi</h3>
               <p className={`text-xs font-medium mb-3 ${darkMode ? "text-gray-400" : "text-gray-500"}`}>Chief Marketing Officer</p>

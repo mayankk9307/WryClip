@@ -197,18 +197,14 @@ export default function Home() {
           initial={{ opacity: 0, y: 30, scale: 0.9, filter: "blur(15px)" }}
           animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
           transition={{ duration: 1.2, ease: [0.25, 0.4, 0.25, 1] }}
-          className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-purple-400 via-indigo-500 to-blue-500 bg-clip-text text-transparent tracking-tight"
+          className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-purple-400 via-indigo-500 to-blue-500 bg-clip-text text-transparent tracking-tight py-2"
         >
-          WryClip
+          WryClip Creator Ecosystem
         </motion.h1>
 
-        {/* App Tagline */}
-        <p className={`mt-4 text-lg max-w-xl font-medium tracking-wide ${darkMode ? "text-purple-300/80" : "text-purple-800"}`}>
-          From Story to Screen • Shifting The World Of Content Creation
-        </p>
-
-        <p className={`mt-2 text-sm max-w-md ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
-          Connecting Creators, Writers, Poets, Casting Directors, and Talented Actors on one seamless mobile stage.
+        {/* Subheading */}
+        <p className={`mt-6 text-base md:text-lg max-w-2xl mx-auto leading-relaxed ${darkMode ? "text-gray-300" : "text-gray-600"}`}>
+          Connect with actors, writers, filmmakers, casting directors and content creators. Discover auditions, collaborations and creative opportunities.
         </p>
 
         {/* Action Buttons */}
@@ -217,15 +213,73 @@ export default function Home() {
             onClick={() => setIsComingSoonOpen(true)}
             className="px-8 py-3 rounded-2xl bg-gradient-to-r from-purple-500 to-blue-500 hover:scale-105 active:scale-95 transition font-semibold shadow-[0_0_20px_rgba(168,85,247,0.4)] text-white text-sm flex items-center justify-center gap-2 cursor-pointer"
           >
-            📥 Download Official App
+            Join WryClip
           </button>
 
-          <Link
-            href="/about"
-            className="px-8 py-3 rounded-2xl border border-white/10 hover:border-purple-500/50 hover:bg-purple-500/5 transition font-semibold text-sm flex items-center justify-center"
+          <a
+            href="#why-wryclip"
+            className="px-8 py-3 rounded-2xl border border-white/10 hover:border-purple-500/50 hover:bg-purple-500/5 transition font-semibold text-sm flex items-center justify-center text-white cursor-pointer"
           >
-            Read Our Story →
-          </Link>
+            Explore Opportunities →
+          </a>
+        </div>
+      </section>
+
+      {/* Why WryClip? Section */}
+      <section id="why-wryclip" className="mt-24 max-w-5xl mx-auto px-4 text-center scroll-mt-28">
+        <span className="text-xs font-semibold uppercase tracking-widest text-purple-400 bg-purple-500/10 px-3.5 py-1.5 rounded-full border border-purple-500/20">
+          Key Benefits
+        </span>
+        <h2 className="text-3xl md:text-4xl font-bold mt-4 mb-2">Why WryClip?</h2>
+        <p className={`text-sm max-w-xl mx-auto mb-12 ${darkMode ? "text-gray-300" : "text-gray-600"}`}>
+          WryClip bridges the gap between story and screen, bringing actors, writers, filmmakers, and casting directors together into a unified entertainment network.
+        </p>
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-6">
+          {[
+            {
+              icon: "🤝",
+              title: "Find Collaborators",
+              desc: "Assemble your dream creative team of filmmakers, casting directors, and actors."
+            },
+            {
+              icon: "🎬",
+              title: "Discover Auditions",
+              desc: "Apply directly to live casting calls and entertainment opportunities."
+            },
+            {
+              icon: "📱",
+              title: "Connect with Creators",
+              desc: "Build connections with content creators, writers, and filmmakers in India's ecosystem."
+            },
+            {
+              icon: "🌐",
+              title: "Build Your Network",
+              desc: "Establish your profile and presence within the entertainment industry network."
+            },
+            {
+              icon: "✨",
+              title: "Showcase Your Talent",
+              desc: "Upload acting reels, poetry, ghazals, screenplays, and complete stories."
+            }
+          ].map((item, index) => (
+            <motion.div
+              key={index}
+              whileHover={{ scale: 1.05, y: -5 }}
+              transition={{ type: "spring", stiffness: 300, damping: 15 }}
+              className={`p-6 rounded-2xl border flex flex-col items-center text-center justify-between transition-all duration-300 ${
+                darkMode
+                  ? "bg-gradient-to-b from-white/5 to-transparent border-white/10 hover:border-purple-500/40 hover:shadow-[0_0_20px_rgba(168,85,247,0.15)]"
+                  : "bg-gradient-to-b from-black/5 to-transparent border-black/10 hover:border-purple-500/30 hover:shadow-[0_0_20px_rgba(168,85,247,0.05)]"
+              }`}
+            >
+              <div className="text-3xl mb-4">{item.icon}</div>
+              <h3 className="text-base font-bold mb-2 tracking-tight">{item.title}</h3>
+              <p className={`text-xs leading-relaxed ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
+                {item.desc}
+              </p>
+            </motion.div>
+          ))}
         </div>
       </section>
 
@@ -270,6 +324,7 @@ export default function Home() {
                     src={phoneScreens[activeScreenTab].image}
                     alt={phoneScreens[activeScreenTab].title}
                     className="w-full h-[calc(100%-20px)] object-contain object-top"
+                    loading="lazy"
                   />
                 ) : (
                   phoneScreens[activeScreenTab].ui
@@ -414,13 +469,13 @@ export default function Home() {
       </section>
 
       {/* FAQ Accordion Section */}
-      <section id="faq" className="mt-32 max-w-4xl mx-auto px-4">
+      <section id="faq" className="mt-32 max-w-4xl mx-auto px-4 scroll-mt-28">
         <h2 className={`text-3xl font-bold mb-6 text-center ${darkMode ? "text-white" : "text-black"}`}>
           Frequently Asked Questions
         </h2>
         <div className="space-y-4">
           {[
-            { q: "What is WryClip?", a: "WryClip is a premium vertical video, casting, and creative writing platform. It links actors with casting studios, while providing poets, storytellers, and scriptwriters a hub to publish, share, and monetize original written content." },
+            { q: "What is WryClip?", a: "WryClip connects actors, writers, creators, filmmakers and casting professionals. Discover auditions, collaborations and creative opportunities in one ecosystem." },
             { q: "Can I monetize my reels or series episodes?", a: "No. On WryClip, video reels, audition clips, and vertical series episodes are completely free to view for all users. Direct Pay-To-Unlock monetization applies exclusively to written materials like poetry, ghazals, scripts, screenplays, and stories." },
             { q: "How does the Pay-To-Unlock written monetization work?", a: "Poets and writers can set a custom INR unlock fee when uploading their written works (poetry, screenplays, scripts, stories, or thoughts). Readers pay this fee to instantly unlock the text, and earnings credit to the writer's wallet." },
             { q: "What is the wallet commission split?", a: "We credit 80% of all written content unlocking fees directly to the creator's wallet, retaining only a 20% platform commission split." },
@@ -458,6 +513,59 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* FAQ Schema Markup */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "What is WryClip?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "WryClip connects actors, writers, creators, filmmakers and casting professionals. Discover auditions, collaborations and creative opportunities in one ecosystem."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Can I monetize my reels or series episodes?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "No. On WryClip, video reels, audition clips, and vertical series episodes are completely free to view for all users. Direct Pay-To-Unlock monetization applies exclusively to written materials like poetry, ghazals, scripts, screenplays, and stories."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How does the Pay-To-Unlock written monetization work?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Poets and writers can set a custom INR unlock fee when uploading their written works (poetry, screenplays, scripts, stories, or thoughts). Readers pay this fee to instantly unlock the text, and earnings credit to the writer's wallet."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "What is the wallet commission split?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "We credit 80% of all written content unlocking fees directly to the creator's wallet, retaining only a 20% platform commission split."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How do I withdraw my earnings?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "You can withdraw your earnings directly to your bank account by linking and verifying a valid UPI ID inside your creator wallet dashboard."
+                }
+              }
+            ]
+          })
+        }}
+      />
 
       {/* Shared Footer */}
       <Footer darkMode={darkMode} />
