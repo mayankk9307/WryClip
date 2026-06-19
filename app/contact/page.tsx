@@ -18,19 +18,26 @@ export default function ContactPage() {
 
     setIsSubmitting(true);
 
+    const currentName = formData.name;
+    const currentEmail = formData.email;
+    const currentTopic = formData.topic;
+    const currentMessage = formData.message;
+
     try {
-      const response = await fetch("/api/contact", {
+      const accessKey = process.env.NEXT_PUBLIC_WEB3FORMS_KEY || "038a7e54-cb6f-4108-a01b-b1b233e47f1b";
+      const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          Accept: "application/json"
         },
         body: JSON.stringify({
-          isLegal: false,
-          name: formData.name,
-          email: formData.email,
-          subject: `[WryClip Support] ${formData.topic}`,
-          message: formData.message,
-          replyto: formData.email,
+          access_key: accessKey,
+          name: currentName,
+          email: currentEmail,
+          subject: `[WryClip Support] ${currentTopic}`,
+          message: currentMessage,
+          reply_to: currentEmail,
           from_name: "WryClip Website Support Hub"
         })
       });
@@ -38,21 +45,19 @@ export default function ContactPage() {
       const result = await response.json();
 
       setIsSubmitting(false);
-      setIsSuccess(true);
-      setFormData({ name: "", email: "", topic: "Casting & Auditions Support", message: "" });
 
-      if (!response.ok || !result.success) {
-        console.warn("Form submission API error: Web3Forms contact request failed. Redirecting to mailto fallback.");
-        window.location.href = `mailto:support.wryclip@gmail.com?subject=${encodeURIComponent(`[WryClip Support] ${formData.topic}`)}&body=${encodeURIComponent(`Hi WryClip Support,\n\nName: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`)}`;
+      if (response.ok && result.success) {
+        setIsSuccess(true);
+        setFormData({ name: "", email: "", topic: "Casting & Auditions Support", message: "" });
+        setTimeout(() => setIsSuccess(false), 5000);
+      } else {
+        console.warn("Form submission API error: Web3Forms contact request failed. Redirecting to mailto fallback.", result);
+        window.location.href = `mailto:support.wryclip@gmail.com?subject=${encodeURIComponent(`[WryClip Support] ${currentTopic}`)}&body=${encodeURIComponent(`Hi WryClip Support,\n\nName: ${currentName}\nEmail: ${currentEmail}\n\nMessage:\n${currentMessage}`)}`;
       }
-
-      setTimeout(() => setIsSuccess(false), 5000);
     } catch (error) {
       console.error("Submission error:", error);
       setIsSubmitting(false);
-      setIsSuccess(true);
-      window.location.href = `mailto:support.wryclip@gmail.com?subject=${encodeURIComponent(`[WryClip Support] ${formData.topic}`)}&body=${encodeURIComponent(`Hi WryClip Support,\n\nName: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`)}`;
-      setTimeout(() => setIsSuccess(false), 5000);
+      window.location.href = `mailto:support.wryclip@gmail.com?subject=${encodeURIComponent(`[WryClip Support] ${currentTopic}`)}&body=${encodeURIComponent(`Hi WryClip Support,\n\nName: ${currentName}\nEmail: ${currentEmail}\n\nMessage:\n${currentMessage}`)}`;
     }
   };
 

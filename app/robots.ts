@@ -7,6 +7,7 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: ["/dashboard/private/", "/api/"],
     },
-    sitemap: "https://wryclip.com/sitemap.xml",
+    sitemap: "https://wryclip.in/sitemap.xml",
   };
 }
+

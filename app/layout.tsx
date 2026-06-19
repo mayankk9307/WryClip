@@ -13,12 +13,12 @@ export const metadata: Metadata = {
     template: "%s | WryClip"
   },
   description: "The premium ecosystem linking creators, actors, poets, writers, and casting directors. Stream vertical reels for free, apply to auditions, and monetize written content (scripts, poetry, stories, ghazals) via Pay-To-Unlock.",
-  metadataBase: new URL("https://wryclip.com"),
+  metadataBase: new URL("https://wryclip.in"),
   keywords: ["WryClip", "Short Video", "Casting Call", "Acting Jobs", "Film Auditions", "Creator Economy", "Pay-To-Unlock", "UPI Payouts", "Poetry Platform", "Monetize Poetry", "Scriptwriting", "Ghazals", "Screenplays", "Story Writing", "Writers Hub", "Free Reels"],
   openGraph: {
     title: "WryClip - From Story to Screen",
     description: "The premium ecosystem linking creators, actors, poets, writers, and casting directors.",
-    url: "https://wryclip.com",
+    url: "https://wryclip.in",
     siteName: "WryClip",
     images: [
       {
@@ -58,8 +58,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               "@context": "https://schema.org",
               "@type": "Organization",
               "name": "WryClip",
-              "url": "https://wryclip.com",
-              "logo": "https://wryclip.com/bg-logo.jpeg",
+              "url": "https://wryclip.in",
+              "logo": "https://wryclip.in/bg-logo.jpeg",
               "sameAs": [
                 "https://www.instagram.com/wryclip?igsh=MWo2b2Y5emo5aWNsdA==",
                 "https://www.linkedin.com/in/wryclip-504b03400?utm_source=share_via&utm_content=profile&utm_medium=member_android"

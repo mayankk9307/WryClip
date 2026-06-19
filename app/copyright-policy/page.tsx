@@ -26,57 +26,56 @@ export default function CopyrightPolicyPage() {
 
     setIsSubmitting(true);
 
+    const currentName = formData.name;
+    const currentEmail = formData.email;
+    const currentPhone = formData.phone;
+    const currentTargetUsername = formData.targetUsername;
+    const currentReason = formData.reason;
+    const currentDetails = formData.details;
+    const currentDeclaration = formData.declaration;
+
     try {
-      const response = await fetch("/api/contact", {
+      const accessKey = process.env.NEXT_PUBLIC_WEB3FORMS_LEGAL_KEY || "4a7e4853-f95f-4c55-94fd-0a633e4ce544";
+      const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          Accept: "application/json"
         },
         body: JSON.stringify({
-          isLegal: true,
+          access_key: accessKey,
           name: "WryClip Copyright Report Hub",
-          email: formData.email,
-          subject: `[WryClip DMCA/Copyright] ${formData.reason} from ${formData.name}`,
-          message: `Reporter Details:\nName: ${formData.name}\nEmail: ${formData.email}\nPhone: ${formData.phone || "Not provided"}\n\nReported Profile Username: ${formData.targetUsername}\nReason: ${formData.reason}\n\nProof & Details:\n${formData.details}\n\nAuthorized Declaration Checked: ${formData.declaration ? "YES" : "NO"}`,
-          replyto: formData.email,
+          email: currentEmail,
+          subject: `[WryClip DMCA/Copyright] ${currentReason} from ${currentName}`,
+          message: `Reporter Details:\nName: ${currentName}\nEmail: ${currentEmail}\nPhone: ${currentPhone || "Not provided"}\n\nReported Profile Username: ${currentTargetUsername}\nReason: ${currentReason}\n\nProof & Details:\n${currentDetails}\n\nAuthorized Declaration Checked: ${currentDeclaration ? "YES" : "NO"}`,
+          reply_to: currentEmail,
           from_name: "WryClip Copyright Shield"
         })
       });
 
       const result = await response.json();
       setIsSubmitting(false);
-      setIsSuccess(true);
-      setFormData({
-        name: "",
-        email: "",
-        phone: "",
-        targetUsername: "",
-        reason: "Copyright Issue (DMCA Request)",
-        details: "",
-        declaration: false
-      });
 
-      if (!response.ok || !result.success) {
-        console.warn("Form submission API error: Web3Forms DMCA submission failed. Redirecting to mailto fallback.");
-        window.location.href = `mailto:legal.wryclip@gmail.com?subject=${encodeURIComponent(`[WryClip DMCA/Copyright] ${formData.reason}`)}&body=${encodeURIComponent(`Hi WryClip Legal,\n\nI want to report copyright infringement/violation on WryClip.\n\nReporter Name: ${formData.name}\nReporter Email: ${formData.email}\nReporter Phone: ${formData.phone || "Not provided"}\n\nReported Username: ${formData.targetUsername}\nReason: ${formData.reason}\n\nDetails & Proof:\n${formData.details}`)}`;
+      if (response.ok && result.success) {
+        setIsSuccess(true);
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          targetUsername: "",
+          reason: "Copyright Issue (DMCA Request)",
+          details: "",
+          declaration: false
+        });
+        setTimeout(() => setIsSuccess(false), 5000);
+      } else {
+        console.warn("Form submission API error: Web3Forms DMCA submission failed. Redirecting to mailto fallback.", result);
+        window.location.href = `mailto:legal.wryclip@gmail.com?subject=${encodeURIComponent(`[WryClip DMCA/Copyright] ${currentReason}`)}&body=${encodeURIComponent(`Hi WryClip Legal,\n\nI want to report copyright infringement/violation on WryClip.\n\nReporter Name: ${currentName}\nReporter Email: ${currentEmail}\nReporter Phone: ${currentPhone || "Not provided"}\n\nReported Username: ${currentTargetUsername}\nReason: ${currentReason}\n\nDetails & Proof:\n${currentDetails}`)}`;
       }
-
-      setTimeout(() => setIsSuccess(false), 5000);
     } catch (error) {
       console.error("Submission error:", error);
       setIsSubmitting(false);
-      setIsSuccess(true);
-      setFormData({
-        name: "",
-        email: "",
-        phone: "",
-        targetUsername: "",
-        reason: "Copyright Issue (DMCA Request)",
-        details: "",
-        declaration: false
-      });
-      window.location.href = `mailto:legal.wryclip@gmail.com?subject=${encodeURIComponent(`[WryClip DMCA/Copyright] ${formData.reason}`)}&body=${encodeURIComponent(`Hi WryClip Legal,\n\nI want to report copyright infringement/violation on WryClip.\n\nReporter Name: ${formData.name}\nReporter Email: ${formData.email}\nReporter Phone: ${formData.phone || "Not provided"}\n\nReported Username: ${formData.targetUsername}\nReason: ${formData.reason}\n\nDetails & Proof:\n${formData.details}`)}`;
-      setTimeout(() => setIsSuccess(false), 5000);
+      window.location.href = `mailto:legal.wryclip@gmail.com?subject=${encodeURIComponent(`[WryClip DMCA/Copyright] ${currentReason}`)}&body=${encodeURIComponent(`Hi WryClip Legal,\n\nI want to report copyright infringement/violation on WryClip.\n\nReporter Name: ${currentName}\nReporter Email: ${currentEmail}\nReporter Phone: ${currentPhone || "Not provided"}\n\nReported Username: ${currentTargetUsername}\nReason: ${currentReason}\n\nDetails & Proof:\n${currentDetails}`)}`;
     }
   };
 

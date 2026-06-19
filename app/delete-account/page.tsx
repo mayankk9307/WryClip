@@ -19,19 +19,24 @@ export default function DeleteAccountPage() {
 
     setLoading(true);
 
+    const currentEmail = emailInput;
+    const currentReason = reasonInput;
+
     try {
-      const response = await fetch("/api/contact", {
+      const accessKey = process.env.NEXT_PUBLIC_WEB3FORMS_KEY || "038a7e54-cb6f-4108-a01b-b1b233e47f1b";
+      const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          Accept: "application/json"
         },
         body: JSON.stringify({
-          isLegal: false,
+          access_key: accessKey,
           name: "WryClip User Deletion Request",
-          email: emailInput,
-          subject: `[WryClip Deletion Request] Account Deletion for ${emailInput}`,
-          message: `User with email ${emailInput} has requested account deletion.\n\nReason:\n${reasonInput || "No reason specified."}`,
-          replyto: emailInput,
+          email: currentEmail,
+          subject: `[WryClip Deletion Request] Account Deletion for ${currentEmail}`,
+          message: `User with email ${currentEmail} has requested account deletion.\n\nReason:\n${currentReason || "No reason specified."}`,
+          reply_to: currentEmail,
           from_name: "WryClip Deletion Hub"
         })
       });
@@ -44,19 +49,13 @@ export default function DeleteAccountPage() {
         setEmailInput("");
         setReasonInput("");
       } else {
-        console.warn("Form submission API error: Web3Forms contact request failed. Redirecting to mailto fallback.");
-        setSubmitted(true);
-        setEmailInput("");
-        setReasonInput("");
-        window.location.href = `mailto:support.wryclip@gmail.com?subject=WryClip Account Deletion Request&body=${encodeURIComponent(`Hi WryClip Support,\n\nPlease delete my WryClip account associated with this email.\n\nRegistered Email: ${emailInput}\nReason: ${reasonInput || "No reason specified."}`)}`;
+        console.warn("Form submission API error: Web3Forms contact request failed. Redirecting to mailto fallback.", result);
+        window.location.href = `mailto:support.wryclip@gmail.com?subject=WryClip Account Deletion Request&body=${encodeURIComponent(`Hi WryClip Support,\n\nPlease delete my WryClip account associated with this email.\n\nRegistered Email: ${currentEmail}\nReason: ${currentReason || "No reason specified."}`)}`;
       }
     } catch (err) {
       console.error("Submission error:", err);
       setLoading(false);
-      setSubmitted(true);
-      setEmailInput("");
-      setReasonInput("");
-      window.location.href = `mailto:support.wryclip@gmail.com?subject=WryClip Account Deletion Request&body=${encodeURIComponent(`Hi WryClip Support,\n\nPlease delete my WryClip account associated with this email.\n\nRegistered Email: ${emailInput}\nReason: ${reasonInput || "No reason specified."}`)}`;
+      window.location.href = `mailto:support.wryclip@gmail.com?subject=WryClip Account Deletion Request&body=${encodeURIComponent(`Hi WryClip Support,\n\nPlease delete my WryClip account associated with this email.\n\nRegistered Email: ${currentEmail}\nReason: ${currentReason || "No reason specified."}`)}`;
     }
   };
 
