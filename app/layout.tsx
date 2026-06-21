@@ -61,6 +61,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               {
                 "@context": "https://schema.org",
                 "@type": "Organization",
+                "@id": "https://wryclip.in/#organization",
                 "name": "WryClip",
                 "url": "https://wryclip.in",
                 "logo": "https://wryclip.in/bg-logo.jpeg",
@@ -77,22 +78,66 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   "availableLanguage": ["en", "hi"]
                 },
                 "founder": [
-                  {
-                    "@type": "Person",
-                    "name": "Kunj Shukla",
-                    "jobTitle": "Chief Executive Officer"
-                  },
-                  {
-                    "@type": "Person",
-                    "name": "Mayank",
-                    "jobTitle": "Chief Technology Officer"
-                  },
-                  {
-                    "@type": "Person",
-                    "name": "Anhad Satsangi",
-                    "jobTitle": "Chief Marketing Officer"
-                  }
+                  { "@type": "Person", "@id": "https://wryclip.in/#kunj-shukla" },
+                  { "@type": "Person", "@id": "https://wryclip.in/#mayank-kumar" },
+                  { "@type": "Person", "@id": "https://wryclip.in/#anhad-satsangi" }
+                ],
+                "employee": [
+                  { "@type": "Person", "@id": "https://wryclip.in/#kunj-shukla" },
+                  { "@type": "Person", "@id": "https://wryclip.in/#mayank-kumar" },
+                  { "@type": "Person", "@id": "https://wryclip.in/#anhad-satsangi" }
                 ]
+              },
+              {
+                "@context": "https://schema.org",
+                "@type": "Person",
+                "@id": "https://wryclip.in/#kunj-shukla",
+                "name": "Kunj Shukla",
+                "jobTitle": "Chief Executive Officer",
+                "email": "shriikunj@gmail.com",
+                "image": "https://wryclip.in/ceo-profile.png",
+                "url": "https://wryclip.in/about",
+                "sameAs": [
+                  "https://www.linkedin.com/in/kunj-shukla-742493342?utm_source=share_via&utm_content=profile&utm_medium=member_android"
+                ],
+                "worksFor": {
+                  "@type": "Organization",
+                  "@id": "https://wryclip.in/#organization"
+                }
+              },
+              {
+                "@context": "https://schema.org",
+                "@type": "Person",
+                "@id": "https://wryclip.in/#mayank-kumar",
+                "name": "Mayank Kumar",
+                "jobTitle": "Chief Technology Officer",
+                "email": "mayank0522.s@gmail.com",
+                "image": "https://wryclip.in/cto-profile.png",
+                "url": "https://wryclip.in/about",
+                "sameAs": [
+                  "https://www.linkedin.com/in/mayank-kumar-850255381?utm_source=share_via&utm_content=profile&utm_medium=member_android"
+                ],
+                "worksFor": {
+                  "@type": "Organization",
+                  "@id": "https://wryclip.in/#organization"
+                }
+              },
+              {
+                "@context": "https://schema.org",
+                "@type": "Person",
+                "@id": "https://wryclip.in/#anhad-satsangi",
+                "name": "Anhad Satsangi",
+                "jobTitle": "Chief Marketing Officer",
+                "email": "anhadsatsangi05@gmail.com",
+                "image": "https://wryclip.in/cmo-profile.png",
+                "url": "https://wryclip.in/about",
+                "sameAs": [
+                  "https://www.linkedin.com/in/anhadsatsangi?utm_source=share_via&utm_content=profile&utm_medium=member_android"
+                ],
+                "worksFor": {
+                  "@type": "Organization",
+                  "@id": "https://wryclip.in/#organization"
+                }
               },
               {
                 "@context": "https://schema.org",
