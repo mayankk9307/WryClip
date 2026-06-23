@@ -181,7 +181,7 @@ function HomeContent() {
           } relative min-h-screen overflow-x-hidden overflow-y-auto transition-colors duration-500`}
       >
         <Navbar darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
-        <PortfolioView username={writer} />
+        <PortfolioView username={writer} darkMode={darkMode} />
         <Footer darkMode={darkMode} />
       </div>
     );

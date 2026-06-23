@@ -174,7 +174,7 @@ export default function AboutPage() {
               }`}>
               <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/5 rounded-full blur-2xl pointer-events-none"></div>
               <span className="text-purple-400 font-semibold tracking-wider uppercase text-[10px] mb-4 bg-purple-500/10 px-2.5 py-1 rounded-full border border-purple-500/15">Founder & CEO</span>
-              <div 
+              <div
                 className="w-28 h-28 rounded-full overflow-hidden border-2 border-purple-500/30 mb-4 shadow-[0_0_20px_rgba(168,85,247,0.35)] bg-gradient-to-tr from-purple-500 to-indigo-500 cursor-pointer hover:scale-105 transition-transform duration-300"
                 onClick={() => setSelectedImage("/ceo-profile.png")}
               >
@@ -189,13 +189,13 @@ export default function AboutPage() {
                 <a href="mailto:shriikunj@gmail.com" className="text-xs text-purple-400 font-semibold hover:underline flex items-center gap-1.5">
                   <span>📧</span> shriikunj@gmail.com
                 </a>
-                <a 
-                  href="https://www.linkedin.com/in/kunj-shukla-742493342?utm_source=share_via&utm_content=profile&utm_medium=member_android" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
+                <a
+                  href="https://www.linkedin.com/in/kunj-shukla-742493342?utm_source=share_via&utm_content=profile&utm_medium=member_android"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-xs text-purple-400 font-semibold hover:underline flex items-center gap-1.5"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="inline-block"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="inline-block"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" /></svg>
                   LinkedIn Profile
                 </a>
               </div>
@@ -205,8 +205,8 @@ export default function AboutPage() {
             <div className={`p-6 rounded-2xl border flex flex-col items-center text-center backdrop-blur-md hover:scale-[1.03] transition-all duration-300 relative overflow-hidden ${darkMode ? "bg-white/5 border-white/10 shadow-lg" : "bg-gray-50 border-gray-200 shadow-sm"
               }`}>
               <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/5 rounded-full blur-2xl pointer-events-none"></div>
-              <span className="text-blue-400 font-semibold tracking-wider uppercase text-[10px] mb-4 bg-blue-500/10 px-2.5 py-1 rounded-full border border-blue-500/15">CTO</span>
-              <div 
+              <span className="text-blue-400 font-semibold tracking-wider uppercase text-[10px] mb-4 bg-blue-500/10 px-2.5 py-1 rounded-full border border-blue-500/15">Co-Founder & CTO</span>
+              <div
                 className="w-28 h-28 rounded-full overflow-hidden border-2 border-blue-500/30 mb-4 shadow-[0_0_20px_rgba(59,130,246,0.35)] bg-gradient-to-tr from-blue-500 to-indigo-500 cursor-pointer hover:scale-105 transition-transform duration-300"
                 onClick={() => setSelectedImage("/cto-profile.png")}
               >
@@ -221,13 +221,13 @@ export default function AboutPage() {
                 <a href="mailto:mayank0522.s@gmail.com" className="text-xs text-blue-400 font-semibold hover:underline flex items-center gap-1.5">
                   <span>📧</span> mayank0522.s@gmail.com
                 </a>
-                <a 
-                  href="https://www.linkedin.com/in/mayank-kumar-850255381?utm_source=share_via&utm_content=profile&utm_medium=member_android" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
+                <a
+                  href="https://www.linkedin.com/in/mayank-kumar-850255381?utm_source=share_via&utm_content=profile&utm_medium=member_android"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-xs text-blue-400 font-semibold hover:underline flex items-center gap-1.5"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="inline-block"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="inline-block"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" /></svg>
                   LinkedIn Profile
                 </a>
               </div>
@@ -237,8 +237,8 @@ export default function AboutPage() {
             <div className={`p-6 rounded-2xl border flex flex-col items-center text-center backdrop-blur-md hover:scale-[1.03] transition-all duration-300 relative overflow-hidden ${darkMode ? "bg-white/5 border-white/10 shadow-lg" : "bg-gray-50 border-gray-200 shadow-sm"
               }`}>
               <div className="absolute top-0 right-0 w-24 h-24 bg-pink-500/5 rounded-full blur-2xl pointer-events-none"></div>
-              <span className="text-pink-400 font-semibold tracking-wider uppercase text-[10px] mb-4 bg-pink-500/10 px-2.5 py-1 rounded-full border border-pink-500/15">CMO</span>
-              <div 
+              <span className="text-pink-400 font-semibold tracking-wider uppercase text-[10px] mb-4 bg-pink-500/10 px-2.5 py-1 rounded-full border border-pink-500/15">Co-Founder & CMO</span>
+              <div
                 className="w-28 h-28 rounded-full overflow-hidden border-2 border-pink-500/30 mb-4 shadow-[0_0_20px_rgba(236,72,153,0.35)] bg-gradient-to-tr from-pink-500 to-purple-500 cursor-pointer hover:scale-105 transition-transform duration-300"
                 onClick={() => setSelectedImage("/cmo-profile.png")}
               >
@@ -253,13 +253,13 @@ export default function AboutPage() {
                 <a href="mailto:anhadsatsangi05@gmail.com" className="text-xs text-pink-400 font-semibold hover:underline flex items-center gap-1.5">
                   <span>📧</span> anhadsatsangi05@gmail.com
                 </a>
-                <a 
-                  href="https://www.linkedin.com/in/anhadsatsangi?utm_source=share_via&utm_content=profile&utm_medium=member_android" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
+                <a
+                  href="https://www.linkedin.com/in/anhadsatsangi?utm_source=share_via&utm_content=profile&utm_medium=member_android"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-xs text-pink-400 font-semibold hover:underline flex items-center gap-1.5"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="inline-block"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="inline-block"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" /></svg>
                   LinkedIn Profile
                 </a>
               </div>
@@ -274,12 +274,12 @@ export default function AboutPage() {
 
       {/* Lightbox Modal */}
       {selectedImage && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4 cursor-zoom-out"
           onClick={() => setSelectedImage(null)}
         >
           <div className="relative max-w-3xl max-h-[90vh] rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-black">
-            <button 
+            <button
               className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/70 transition-colors border border-white/10 text-lg cursor-pointer"
               onClick={(e) => {
                 e.stopPropagation();
@@ -288,11 +288,11 @@ export default function AboutPage() {
             >
               ✕
             </button>
-            <img 
-              src={selectedImage} 
-              alt="Full Preview" 
+            <img
+              src={selectedImage}
+              alt="Full Preview"
               className="w-full h-auto max-h-[85vh] object-contain cursor-default"
-              onClick={(e) => e.stopPropagation()} 
+              onClick={(e) => e.stopPropagation()}
             />
           </div>
         </div>

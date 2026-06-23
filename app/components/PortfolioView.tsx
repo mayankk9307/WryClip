@@ -38,7 +38,7 @@ interface Stats {
   totalSaves: number;
 }
 
-export default function PortfolioView({ username }: { username: string }) {
+export default function PortfolioView({ username, darkMode = true }: { username: string; darkMode?: boolean }) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
   const [stats, setStats] = useState<Stats>({ scriptsCount: 0, totalLikes: 0, totalSaves: 0 });
@@ -193,13 +193,23 @@ export default function PortfolioView({ username }: { username: string }) {
     const type = post.post_type?.toLowerCase() || "script";
     const cat = post.category?.toLowerCase() || "";
     
-    if (type === "script") return "text-cyan-400 border-cyan-500/20 bg-cyan-500/10";
-    if (type === "collab") return "text-pink-400 border-pink-500/20 bg-pink-500/10";
-    if (type === "story") {
-      if (cat === "poem" || cat === "poetry" || cat === "ghazal") return "text-violet-400 border-violet-500/20 bg-violet-500/10";
-      return "text-purple-400 border-purple-500/20 bg-purple-500/10";
+    if (darkMode) {
+      if (type === "script") return "text-cyan-400 border-cyan-500/20 bg-cyan-500/10";
+      if (type === "collab") return "text-pink-400 border-pink-500/20 bg-pink-500/10";
+      if (type === "story") {
+        if (cat === "poem" || cat === "poetry" || cat === "ghazal") return "text-violet-400 border-violet-500/20 bg-violet-500/10";
+        return "text-purple-400 border-purple-500/20 bg-purple-500/10";
+      }
+      return "text-blue-400 border-blue-500/20 bg-blue-500/10";
+    } else {
+      if (type === "script") return "text-cyan-700 border-cyan-500/30 bg-cyan-500/10";
+      if (type === "collab") return "text-pink-700 border-pink-500/30 bg-pink-500/10";
+      if (type === "story") {
+        if (cat === "poem" || cat === "poetry" || cat === "ghazal") return "text-violet-700 border-violet-500/30 bg-violet-500/10";
+        return "text-purple-700 border-purple-500/30 bg-purple-500/10";
+      }
+      return "text-blue-700 border-blue-500/30 bg-blue-500/10";
     }
-    return "text-blue-400 border-blue-500/20 bg-blue-500/10";
   };
 
   const getPostIdPrefix = (post: Post) => {
@@ -240,23 +250,23 @@ export default function PortfolioView({ username }: { username: string }) {
   // Loading State (Shimmer Effect)
   if (loading) {
     return (
-      <div className="min-h-screen bg-transparent text-white pt-32 pb-20 px-4 md:px-8 max-w-5xl mx-auto flex flex-col gap-10">
+      <div className={`min-h-screen bg-transparent ${darkMode ? "text-white" : "text-gray-900"} pt-32 pb-20 px-4 md:px-8 max-w-5xl mx-auto flex flex-col gap-10`}>
         {/* Profile Card Shimmer */}
-        <div className="w-full h-64 rounded-3xl bg-white/[0.02] border border-white/[0.05] p-8 flex flex-col md:flex-row gap-6 items-center animate-pulse">
-          <div className="w-28 h-28 rounded-full bg-white/10 shrink-0" />
+        <div className={`w-full h-64 rounded-3xl ${darkMode ? "bg-white/[0.02] border-white/[0.05]" : "bg-black/[0.02] border-black/[0.05]"} p-8 flex flex-col md:flex-row gap-6 items-center animate-pulse`}>
+          <div className={`w-28 h-28 rounded-full ${darkMode ? "bg-white/10" : "bg-black/10"} shrink-0`} />
           <div className="flex-1 flex flex-col gap-4 w-full">
-            <div className="h-8 bg-white/10 rounded w-[40%]" />
-            <div className="h-4 bg-white/10 rounded w-[25%]" />
-            <div className="h-12 bg-white/10 rounded w-full mt-2" />
+            <div className={`h-8 ${darkMode ? "bg-white/10" : "bg-black/10"} rounded w-[40%]`} />
+            <div className={`h-4 ${darkMode ? "bg-white/10" : "bg-black/10"} rounded w-[25%]`} />
+            <div className={`h-12 ${darkMode ? "bg-white/10" : "bg-black/10"} rounded w-full mt-2`} />
           </div>
         </div>
 
         {/* Stats Row Shimmer */}
         <div className="grid grid-cols-3 gap-4 md:gap-6">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-24 rounded-2xl bg-white/[0.02] border border-white/[0.05] p-4 flex flex-col justify-center items-center animate-pulse">
-              <div className="h-8 bg-white/10 rounded w-16 mb-2" />
-              <div className="h-3 bg-white/10 rounded w-20" />
+            <div key={i} className={`h-24 rounded-2xl ${darkMode ? "bg-white/[0.02] border-white/[0.05]" : "bg-black/[0.02] border-black/[0.05]"} p-4 flex flex-col justify-center items-center animate-pulse`}>
+              <div className={`h-8 ${darkMode ? "bg-white/10" : "bg-black/10"} rounded w-16 mb-2`} />
+              <div className={`h-3 ${darkMode ? "bg-white/10" : "bg-black/10"} rounded w-20`} />
             </div>
           ))}
         </div>
@@ -264,10 +274,10 @@ export default function PortfolioView({ username }: { username: string }) {
         {/* Script Cards Shimmer */}
         <div className="grid md:grid-cols-2 gap-6">
           {[1, 2].map((i) => (
-            <div key={i} className="h-56 rounded-2xl bg-white/[0.02] border border-white/[0.05] p-6 animate-pulse flex flex-col gap-4">
-              <div className="h-6 bg-white/10 rounded w-[70%]" />
-              <div className="h-16 bg-white/10 rounded w-full" />
-              <div className="h-8 bg-white/10 rounded w-[40%] mt-auto" />
+            <div key={i} className={`h-56 rounded-2xl ${darkMode ? "bg-white/[0.02] border-white/[0.05]" : "bg-black/[0.02] border-black/[0.05]"} p-6 animate-pulse flex flex-col gap-4`}>
+              <div className={`h-6 ${darkMode ? "bg-white/10" : "bg-black/10"} rounded w-[70%]`} />
+              <div className={`h-16 ${darkMode ? "bg-white/10" : "bg-black/10"} rounded w-full`} />
+              <div className={`h-8 ${darkMode ? "bg-white/10" : "bg-black/10"} rounded w-[40%] mt-auto`} />
             </div>
           ))}
         </div>
@@ -278,11 +288,11 @@ export default function PortfolioView({ username }: { username: string }) {
   // Error / Error Fallback
   if (error) {
     return (
-      <div className="min-h-screen bg-transparent text-white pt-40 pb-20 px-4 flex flex-col items-center justify-center max-w-md mx-auto text-center">
-        <div className="p-6 rounded-2xl bg-red-500/10 border border-red-500/20 backdrop-blur-xl mb-6 shadow-[0_0_30px_rgba(239,68,68,0.1)]">
+      <div className={`min-h-screen bg-transparent ${darkMode ? "text-white" : "text-gray-900"} pt-40 pb-20 px-4 flex flex-col items-center justify-center max-w-md mx-auto text-center`}>
+        <div className={`p-6 rounded-2xl ${darkMode ? "bg-red-500/10 border-red-500/20" : "bg-red-50/80 border-red-200"} border backdrop-blur-xl mb-6 shadow-[0_0_30px_rgba(239,68,68,0.1)]`}>
           <span className="text-3xl">⚠️</span>
           <h2 className="text-xl font-bold mt-3 mb-2">Something Went Wrong</h2>
-          <p className="text-sm text-gray-400">{error}</p>
+          <p className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-600"}`}>{error}</p>
         </div>
         <button
           onClick={() => window.location.reload()}
@@ -297,24 +307,28 @@ export default function PortfolioView({ username }: { username: string }) {
   // Profile Not Found Fallback
   if (!profile) {
     return (
-      <div className="min-h-screen bg-transparent text-white pt-40 pb-20 px-4 flex flex-col items-center justify-center max-w-lg mx-auto text-center">
+      <div className={`min-h-screen bg-transparent ${darkMode ? "text-white" : "text-gray-900"} pt-40 pb-20 px-4 flex flex-col items-center justify-center max-w-lg mx-auto text-center`}>
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
-          className="p-8 rounded-3xl bg-white/[0.03] backdrop-blur-xl border border-white/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.5)] w-full relative overflow-hidden"
+          className={`p-8 rounded-3xl ${
+            darkMode 
+              ? "bg-white/[0.03] border-white/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.5)]" 
+              : "bg-black/[0.02] border-black/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.05)]"
+          } backdrop-blur-xl border w-full relative overflow-hidden`}
         >
           <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/10 rounded-full blur-2xl pointer-events-none"></div>
           <div className="absolute bottom-0 left-0 w-24 h-24 bg-cyan-500/10 rounded-full blur-2xl pointer-events-none"></div>
 
-          <div className="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mx-auto text-3xl mb-4">
+          <div className={`w-16 h-16 rounded-full ${darkMode ? "bg-white/5 border-white/10" : "bg-black/5 border-black/10"} flex items-center justify-center mx-auto text-3xl mb-4`}>
             🔍
           </div>
 
           <h1 className="text-2xl md:text-3xl font-bold mb-2 tracking-tight bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
             Writer Profile Not Found
           </h1>
-          <p className="text-sm text-gray-300 mb-8 max-w-sm mx-auto leading-relaxed">
+          <p className={`text-sm ${darkMode ? "text-gray-300" : "text-gray-600"} mb-8 max-w-sm mx-auto leading-relaxed`}>
             We couldn't locate any writer profile registered with the username <span className="text-purple-400 font-bold font-mono">@{username}</span>.
           </p>
 
@@ -325,7 +339,7 @@ export default function PortfolioView({ username }: { username: string }) {
               placeholder="Search writer username (e.g. mayank9307)..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1 bg-black/40 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 transition shadow-inner font-semibold"
+              className={`flex-1 ${darkMode ? "bg-black/40 border-white/10 text-white" : "bg-gray-50 border-black/10 text-black"} border rounded-xl px-4 py-2.5 text-sm placeholder-gray-500 focus:outline-none focus:border-purple-500 transition shadow-inner font-semibold`}
             />
             <button
               type="submit"
@@ -347,7 +361,7 @@ export default function PortfolioView({ username }: { username: string }) {
   }
 
   return (
-    <div className="min-h-screen bg-transparent text-white pt-28 pb-20 px-4 md:px-8 max-w-5xl mx-auto flex flex-col gap-8 relative z-10 portfolio-print-wrapper">
+    <div className={`min-h-screen bg-transparent ${darkMode ? "text-white" : "text-gray-900"} pt-28 pb-20 px-4 md:px-8 max-w-5xl mx-auto flex flex-col gap-8 relative z-10 portfolio-print-wrapper`}>
       
       {/* Back to Homepage Button */}
       <div className="print-hidden -mb-4">
@@ -364,7 +378,11 @@ export default function PortfolioView({ username }: { username: string }) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="w-full rounded-3xl bg-white/[0.03] backdrop-blur-xl border border-white/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.5)] p-6 md:p-8 flex flex-col md:flex-row gap-6 md:gap-8 items-center relative overflow-hidden portfolio-header-card"
+        className={`w-full rounded-3xl ${
+          darkMode 
+            ? "bg-white/[0.03] border-white/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.5)]" 
+            : "bg-black/[0.02] border-black/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.05)]"
+        } backdrop-blur-xl border p-6 md:p-8 flex flex-col md:flex-row gap-6 md:gap-8 items-center relative overflow-hidden portfolio-header-card`}
       >
         <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl pointer-events-none"></div>
         <div className="absolute bottom-0 left-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -375,7 +393,7 @@ export default function PortfolioView({ username }: { username: string }) {
             className={`w-28 h-28 rounded-full overflow-hidden flex items-center justify-center border-2 ${
               isWriterPro
                 ? "border-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.5)]"
-                : "border-white/10"
+                : darkMode ? "border-white/10" : "border-black/10"
             }`}
           >
             {profile.avatar_url ? (
@@ -403,7 +421,7 @@ export default function PortfolioView({ username }: { username: string }) {
         {/* Profile Info Details */}
         <div className="flex-1 text-center md:text-left">
           <div className="flex flex-col md:flex-row md:items-center gap-2 mb-2 justify-center md:justify-start">
-            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-white flex items-center justify-center md:justify-start gap-2">
+            <h1 className={`text-2xl md:text-3xl font-extrabold tracking-tight ${darkMode ? "text-white" : "text-gray-900"} flex items-center justify-center md:justify-start gap-2`}>
               {profile.full_name}
               
               {/* Verified Badge */}
@@ -417,7 +435,7 @@ export default function PortfolioView({ username }: { username: string }) {
               )}
             </h1>
             
-            <span className="text-sm font-semibold font-mono text-cyan-400/90 align-middle">
+            <span className={`text-sm font-semibold font-mono ${darkMode ? "text-cyan-400/90" : "text-cyan-600"} align-middle`}>
               @{profile.username}
             </span>
           </div>
@@ -433,7 +451,9 @@ export default function PortfolioView({ username }: { username: string }) {
                 Writer Pro member
               </span>
             ) : (
-              <span className="px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-xs font-medium text-gray-400">
+              <span className={`px-2.5 py-0.5 rounded-full ${
+                darkMode ? "bg-white/5 border-white/10 text-gray-400" : "bg-black/5 border-black/10 text-gray-600"
+              } text-xs font-medium`}>
                 Standard tier
               </span>
             )}
@@ -441,14 +461,18 @@ export default function PortfolioView({ username }: { username: string }) {
             {/* Download Portfolio Button */}
             <button
               onClick={handlePrint}
-              className="px-2.5 py-0.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold text-gray-300 hover:text-white flex items-center gap-1.5 transition print:hidden cursor-pointer"
+              className={`px-2.5 py-0.5 rounded-full ${
+                darkMode 
+                  ? "bg-white/5 hover:bg-white/10 border-white/10 text-gray-300 hover:text-white" 
+                  : "bg-black/5 hover:bg-black/10 border-black/10 text-gray-700 hover:text-black"
+              } text-xs font-bold flex items-center gap-1.5 transition print:hidden cursor-pointer`}
               title="Download Portfolio as PDF"
             >
               📥 Save PDF
             </button>
           </div>
 
-          <p className="text-sm text-gray-300 max-w-xl leading-relaxed italic">
+          <p className={`text-sm ${darkMode ? "text-gray-300" : "text-gray-600"} max-w-xl leading-relaxed italic`}>
             {profile.bio || "Crafting cinematic journeys and original storytelling. Read my screenplays below."}
           </p>
 
@@ -458,7 +482,9 @@ export default function PortfolioView({ username }: { username: string }) {
               {profile.tags.map((tag, idx) => (
                 <span
                   key={idx}
-                  className="px-2.5 py-0.5 rounded-md bg-white/[0.03] border border-white/[0.07] text-[10px] uppercase font-bold text-gray-300 tracking-wider"
+                  className={`px-2.5 py-0.5 rounded-md ${
+                    darkMode ? "bg-white/[0.03] border-white/[0.07] text-gray-300" : "bg-black/[0.03] border-black/[0.07] text-gray-600"
+                  } text-[10px] uppercase font-bold tracking-wider`}
                 >
                   #{tag}
                 </span>
@@ -482,14 +508,18 @@ export default function PortfolioView({ username }: { username: string }) {
         ].map((stat, i) => (
           <div
             key={i}
-            className="rounded-2xl bg-white/[0.02] backdrop-blur-md border border-white/[0.06] p-4 flex flex-col justify-center items-center text-center shadow-lg relative overflow-hidden group hover:border-white/10 transition-all duration-300 portfolio-stat-card"
+            className={`rounded-2xl ${
+              darkMode ? "bg-white/[0.02] border-white/[0.06]" : "bg-black/[0.02] border-black/[0.06] hover:border-black/10"
+            } backdrop-blur-md p-4 flex flex-col justify-center items-center text-center shadow-lg relative overflow-hidden group hover:border-white/10 transition-all duration-300 portfolio-stat-card`}
             style={{ boxShadow: `inset 0 0 12px ${stat.glow}` }}
           >
             <span className="text-lg md:text-xl mb-1 group-hover:scale-110 transition duration-300">{stat.icon}</span>
-            <span className="text-2xl md:text-3xl font-extrabold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent tracking-tight">
+            <span className={`text-2xl md:text-3xl font-extrabold bg-gradient-to-r ${
+              darkMode ? "from-white to-gray-300" : "from-gray-955 to-gray-700"
+            } bg-clip-text text-transparent tracking-tight`}>
               {stat.value}
             </span>
-            <span className="text-[10px] uppercase font-bold tracking-widest text-gray-400 mt-1">
+            <span className={`text-[10px] uppercase font-bold tracking-widest ${darkMode ? "text-gray-400" : "text-gray-600"} mt-1`}>
               {stat.label}
             </span>
           </div>
@@ -503,146 +533,164 @@ export default function PortfolioView({ username }: { username: string }) {
         transition={{ duration: 0.6, delay: 0.2 }}
         className="flex flex-col gap-6"
       >
-        <div className="flex items-center justify-between border-b border-white/10 pb-4">
-          <h2 className="text-xl font-bold tracking-tight bg-gradient-to-r from-purple-300 to-cyan-300 bg-clip-text text-transparent">
+        <div className={`flex items-center justify-between border-b ${darkMode ? "border-white/10" : "border-black/10"} pb-4`}>
+          <h2 className={`text-xl font-bold tracking-tight bg-gradient-to-r ${
+            darkMode ? "from-purple-300 to-cyan-300" : "from-purple-600 to-cyan-600"
+          } bg-clip-text text-transparent`}>
             Creations Showcase
           </h2>
-          <span className="text-xs bg-white/5 border border-white/10 text-gray-400 px-3 py-1 rounded-full font-semibold">
+          <span className={`text-xs ${
+            darkMode ? "bg-white/5 border-white/10 text-gray-400" : "bg-black/5 border-black/10 text-gray-600"
+          } px-3 py-1 rounded-full font-semibold`}>
             {posts.length} {posts.length === 1 ? "Creation" : "Creations"} Published
           </span>
         </div>
 
         {posts.length === 0 ? (
-          <div className="rounded-3xl border border-white/[0.06] bg-white/[0.01] p-12 text-center text-gray-400 relative overflow-hidden backdrop-blur-md">
+          <div className={`rounded-3xl border ${
+            darkMode ? "border-white/[0.06] bg-white/[0.01] text-gray-400" : "border-black/[0.06] bg-black/[0.01] text-gray-600"
+          } p-12 text-center relative overflow-hidden backdrop-blur-md`}>
             <span className="text-4xl block mb-3">✨</span>
-            <p className="text-base font-bold text-white mb-1">No Public Creations Yet</p>
-            <p className="text-xs text-gray-400 max-w-xs mx-auto leading-relaxed">
+            <p className={`text-base font-bold ${darkMode ? "text-white" : "text-gray-900"} mb-1`}>No Public Creations Yet</p>
+            <p className={`text-xs ${darkMode ? "text-gray-400" : "text-gray-500"} max-w-xs mx-auto leading-relaxed`}>
               @{profile.username} has not published any public stories, scripts, or collaborations yet.
             </p>
           </div>
         ) : (
           <div className="grid md:grid-cols-2 gap-6 portfolio-creations-grid">
-            {posts.map((post) => (
-              <motion.div
-                key={post.id}
-                whileHover={{ scale: 1.01, y: -2 }}
-                className="rounded-2xl bg-white/[0.03] backdrop-blur-lg border border-white/[0.08] p-5 flex flex-col justify-between hover:border-purple-500/40 hover:shadow-[0_0_25px_rgba(168,85,247,0.12)] transition-all duration-300 relative overflow-hidden group portfolio-creation-card"
-              >
-                {/* Micro background gradient */}
-                <div className="absolute -top-24 -right-24 w-48 h-48 bg-purple-500/5 rounded-full blur-2xl group-hover:bg-purple-500/10 transition-colors duration-500"></div>
+            {posts.map((post) => {
+              const metaChipClass = `px-2 py-0.5 rounded ${
+                darkMode ? "bg-white/5 border-white/5 text-gray-300" : "bg-black/5 border-black/5 text-gray-600"
+              } text-[9px] font-bold flex items-center gap-1`;
+              
+              return (
+                <motion.div
+                  key={post.id}
+                  whileHover={{ scale: 1.01, y: -2 }}
+                  className={`rounded-2xl ${
+                    darkMode ? "bg-white/[0.03] border-white/[0.08]" : "bg-black/[0.02] border-black/[0.08]"
+                  } backdrop-blur-lg p-5 flex flex-col justify-between hover:border-purple-500/40 hover:shadow-[0_0_25px_rgba(168,85,247,0.12)] transition-all duration-300 relative overflow-hidden group portfolio-creation-card`}
+                >
+                  {/* Micro background gradient */}
+                  <div className="absolute -top-24 -right-24 w-48 h-48 bg-purple-500/5 rounded-full blur-2xl group-hover:bg-purple-500/10 transition-colors duration-500"></div>
 
-                <div>
-                  {/* Cover Image if present */}
-                  {post.cover_url && (
-                    <div className="w-full h-40 rounded-xl overflow-hidden mb-4 border border-white/10 relative">
-                      <img
-                        src={post.cover_url}
-                        alt={post.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).style.display = "none";
-                        }}
-                      />
-                    </div>
-                  )}
-
-                  {/* ID & Stamp */}
-                  <div className="flex justify-between items-center text-[10px] text-gray-400 font-semibold mb-3 border-b border-white/5 pb-2">
-                    <span className={`px-2 py-0.5 rounded border font-mono tracking-wider ${getPostTypeColor(post)}`}>
-                      {getScriptId(post)}
-                    </span>
-                    <span>{formatDate(post.created_at)}</span>
-                  </div>
-
-                  {/* Title & Logline */}
-                  <h3 className="text-lg font-bold text-white mb-2 leading-tight group-hover:text-purple-300 transition duration-300 flex items-center gap-2">
-                    <span className="text-base">{getPostTypeIcon(post)}</span>
-                    {post.title}
-                  </h3>
-
-                  {/* Content / Paywall Lock */}
-                  {post.is_premium ? (
-                    <div className="flex items-center gap-2.5 rounded-xl bg-amber-500/5 border border-amber-500/20 px-3 py-2.5 mb-4">
-                      <span className="text-lg shrink-0">🔒</span>
-                      <div>
-                        <p className="text-[10px] font-bold text-amber-300 uppercase tracking-wider mb-0.5">Premium Content Locked</p>
-                        <p className="text-[9px] text-gray-400 leading-relaxed">Download the WryClip app to unlock this creation.</p>
+                  <div>
+                    {/* Cover Image if present */}
+                    {post.cover_url && (
+                      <div className={`w-full h-40 rounded-xl overflow-hidden mb-4 border ${darkMode ? "border-white/10" : "border-black/10"} relative`}>
+                        <img
+                          src={post.cover_url}
+                          alt={post.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).style.display = "none";
+                          }}
+                        />
                       </div>
-                    </div>
-                  ) : (
-                    <p className="text-xs text-gray-300 leading-relaxed line-clamp-4 mb-4 pr-1">
-                      {post.content || "No synopsis or detail content provided."}
-                    </p>
-                  )}
-                </div>
+                    )}
 
-                {/* Metadata Badges */}
-                <div className="flex flex-col gap-3 mt-auto">
-                  {/* Script Metadata (Only render if it is a script and has metadata) */}
-                  {(post.script_budget || post.script_episodes || post.script_language || post.script_status) && (
-                    <div className="flex flex-wrap gap-1.5">
-                      {post.script_budget && (
-                        <span className="px-2 py-0.5 rounded bg-white/5 border border-white/5 text-[9px] font-bold text-gray-300 flex items-center gap-1">
-                          💰 Budget: {post.script_budget}
-                        </span>
-                      )}
-                      {post.script_episodes && (
-                        <span className="px-2 py-0.5 rounded bg-white/5 border border-white/5 text-[9px] font-bold text-gray-300 flex items-center gap-1">
-                          🎬 {post.script_episodes}
-                        </span>
-                      )}
-                      {post.script_language && (
-                        <span className="px-2 py-0.5 rounded bg-white/5 border border-white/5 text-[9px] font-bold text-gray-300 flex items-center gap-1">
-                          🗣️ {post.script_language}
-                        </span>
-                      )}
-                      {post.script_status && (
-                        <span className="px-2 py-0.5 rounded bg-white/5 border border-white/5 text-[9px] font-bold text-gray-300 flex items-center gap-1">
-                          ⚡ {post.script_status}
-                        </span>
-                      )}
-                    </div>
-                  )}
-
-                  {/* Monetized Badge (is_premium post) */}
-                  {post.is_premium && (
-                    <div className="flex flex-wrap gap-1.5">
-                      <span className="px-2.5 py-0.5 rounded-full border text-[9px] font-bold flex items-center gap-1 bg-amber-500/10 border-amber-500/30 text-amber-300 shadow-[0_0_8px_rgba(251,191,36,0.15)]">
-                        <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
-                        💎 Monetized
-                        {post.price && post.price > 0 && (
-                          <span className="ml-1 text-amber-200 font-extrabold">· ₹{post.price}</span>
-                        )}
+                    {/* ID & Stamp */}
+                    <div className={`flex justify-between items-center text-[10px] ${darkMode ? "text-gray-400" : "text-gray-600"} font-semibold mb-3 border-b ${darkMode ? "border-white/5" : "border-black/5"} pb-2`}>
+                      <span className={`px-2 py-0.5 rounded border font-mono tracking-wider ${getPostTypeColor(post)}`}>
+                        {getScriptId(post)}
                       </span>
+                      <span>{formatDate(post.created_at)}</span>
                     </div>
-                  )}
 
-                  {/* Category Badge (For stories/collabs/vlogs) */}
-                  {post.post_type !== "script" && post.category && (
-                    <div className="flex flex-wrap gap-1.5">
-                      <span className="px-2 py-0.5 rounded bg-white/5 border border-white/5 text-[9px] font-bold text-purple-300 flex items-center gap-1">
-                        📁 Category: {post.category}
-                      </span>
-                    </div>
-                  )}
+                    {/* Title & Logline */}
+                    <h3 className={`text-lg font-bold ${darkMode ? "text-white group-hover:text-purple-300" : "text-gray-900 group-hover:text-purple-600"} mb-2 leading-tight transition duration-300 flex items-center gap-2`}>
+                      <span className="text-base">{getPostTypeIcon(post)}</span>
+                      {post.title}
+                    </h3>
 
-                  {/* Verified Original Work Stamp & Read Screenplay Button */}
-                  <div className="flex justify-between items-center pt-2.5 border-t border-white/5 mt-1">
-                    <span className="text-[8px] tracking-wider text-cyan-400 font-bold uppercase flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
-                      Verified Original Work
-                    </span>
-
-                    <button
-                      onClick={() => setActiveScript(post)}
-                      className="py-1.5 px-3.5 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-[10px] font-bold shadow-md hover:scale-105 active:scale-95 transition cursor-pointer"
-                    >
-                      Read {getPostTypeLabel(post)}
-                    </button>
+                    {/* Content / Paywall Lock */}
+                    {post.is_premium ? (
+                      <div className={`flex items-center gap-2.5 rounded-xl bg-amber-500/5 border ${darkMode ? "border-amber-500/20" : "border-amber-500/30"} px-3 py-2.5 mb-4`}>
+                        <span className="text-lg shrink-0">🔒</span>
+                        <div>
+                          <p className={`text-[10px] font-bold ${darkMode ? "text-amber-300" : "text-amber-800"} uppercase tracking-wider mb-0.5`}>Premium Content Locked</p>
+                          <p className={`text-[9px] ${darkMode ? "text-gray-400" : "text-gray-600"} leading-relaxed`}>Download the WryClip app to unlock this creation.</p>
+                        </div>
+                      </div>
+                    ) : (
+                      <p className={`text-xs ${darkMode ? "text-gray-300" : "text-gray-600"} leading-relaxed line-clamp-4 mb-4 pr-1`}>
+                        {post.content || "No synopsis or detail content provided."}
+                      </p>
+                    )}
                   </div>
-                </div>
-              </motion.div>
-            ))}
+
+                  {/* Metadata Badges */}
+                  <div className="flex flex-col gap-3 mt-auto">
+                    {/* Script Metadata (Only render if it is a script and has metadata) */}
+                    {(post.script_budget || post.script_episodes || post.script_language || post.script_status) && (
+                      <div className="flex flex-wrap gap-1.5">
+                        {post.script_budget && (
+                          <span className={metaChipClass}>
+                            💰 Budget: {post.script_budget}
+                          </span>
+                        )}
+                        {post.script_episodes && (
+                          <span className={metaChipClass}>
+                            🎬 {post.script_episodes}
+                          </span>
+                        )}
+                        {post.script_language && (
+                          <span className={metaChipClass}>
+                            🗣️ {post.script_language}
+                          </span>
+                        )}
+                        {post.script_status && (
+                          <span className={metaChipClass}>
+                            ⚡ {post.script_status}
+                          </span>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Monetized Badge (is_premium post) */}
+                    {post.is_premium && (
+                      <div className="flex flex-wrap gap-1.5">
+                        <span className={`px-2.5 py-0.5 rounded-full border text-[9px] font-bold flex items-center gap-1 ${
+                          darkMode ? "bg-amber-500/10 border-amber-500/30 text-amber-300" : "bg-amber-500/10 border-amber-500/30 text-amber-800"
+                        } shadow-[0_0_8px_rgba(251,191,36,0.15)]`}>
+                          <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+                          💎 Monetized
+                          {post.price && post.price > 0 && (
+                            <span className={`ml-1 ${darkMode ? "text-amber-200" : "text-amber-700"} font-extrabold`}>· ₹{post.price}</span>
+                          )}
+                        </span>
+                      </div>
+                    )}
+
+                    {/* Category Badge (For stories/collabs/vlogs) */}
+                    {post.post_type !== "script" && post.category && (
+                      <div className="flex flex-wrap gap-1.5">
+                        <span className={`px-2 py-0.5 rounded ${
+                          darkMode ? "bg-white/5 border-white/5 text-purple-300" : "bg-black/5 border-black/5 text-purple-700"
+                        } text-[9px] font-bold flex items-center gap-1`}>
+                          📁 Category: {post.category}
+                        </span>
+                      </div>
+                    )}
+
+                    {/* Verified Original Work Stamp & Read Screenplay Button */}
+                    <div className={`flex justify-between items-center pt-2.5 border-t ${darkMode ? "border-white/5" : "border-black/5"} mt-1`}>
+                      <span className="text-[8px] tracking-wider text-cyan-400 font-bold uppercase flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
+                        Verified Original Work
+                      </span>
+
+                      <button
+                        onClick={() => setActiveScript(post)}
+                        className="py-1.5 px-3.5 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-[10px] font-bold shadow-md hover:scale-105 active:scale-95 transition cursor-pointer"
+                      >
+                        Read {getPostTypeLabel(post)}
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
         )}
       </motion.div>
@@ -652,7 +700,11 @@ export default function PortfolioView({ username }: { username: string }) {
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.3 }}
-        className="w-full rounded-3xl bg-gradient-to-br from-white/[0.04] to-transparent backdrop-blur-xl border border-white/[0.08] p-6 md:p-8 flex flex-col md:flex-row justify-between items-center gap-6 mt-6 shadow-[0_12px_40px_rgba(0,0,0,0.6)] relative overflow-hidden print-hidden portfolio-cta-banner"
+        className={`w-full rounded-3xl ${
+          darkMode 
+            ? "bg-gradient-to-br from-white/[0.04] to-transparent border-white/[0.08] shadow-[0_12px_40px_rgba(0,0,0,0.6)]" 
+            : "bg-gradient-to-br from-black/[0.03] to-transparent border-black/[0.08] shadow-[0_12px_40px_rgba(0,0,0,0.05)]"
+        } backdrop-blur-xl border p-6 md:p-8 flex flex-col md:flex-row justify-between items-center gap-6 mt-6 relative overflow-hidden print-hidden portfolio-cta-banner`}
       >
         {/* Glow */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-purple-500/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -664,7 +716,7 @@ export default function PortfolioView({ username }: { username: string }) {
           <h3 className="text-lg md:text-xl font-bold mt-3 mb-2">
             Follow {profile.full_name} on the WryClip Mobile App
           </h3>
-          <p className="text-xs text-gray-300 max-w-xl leading-relaxed">
+          <p className={`text-xs ${darkMode ? "text-gray-300" : "text-gray-600"} max-w-xl leading-relaxed`}>
             Read complete drafts, unlock premium screenplays, request collaborations, or follow the writer for real-time updates. Scan or download the app today!
           </p>
         </div>
@@ -716,7 +768,7 @@ export default function PortfolioView({ username }: { username: string }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md print-hidden"
+            className="fixed inset-0 z-40 flex items-start justify-center p-4 pt-24 md:pt-28 bg-black/85 backdrop-blur-md print-hidden overflow-y-auto"
             onClick={() => setActiveScript(null)}
           >
             <motion.div
@@ -724,7 +776,9 @@ export default function PortfolioView({ username }: { username: string }) {
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.95, opacity: 0, y: 10 }}
               transition={{ type: "spring", stiffness: 300, damping: 25 }}
-              className="w-full max-w-2xl rounded-3xl bg-white/[0.04] border border-white/[0.1] shadow-2xl p-6 md:p-8 flex flex-col gap-5 relative overflow-hidden text-left"
+              className={`w-full max-w-2xl rounded-3xl ${
+                darkMode ? "bg-white/[0.04] border-white/[0.1]" : "bg-white border-black/[0.1]"
+              } border shadow-2xl p-6 md:p-8 flex flex-col gap-5 relative overflow-hidden text-left`}
               onClick={(e) => e.stopPropagation()}
             >
               {/* Decorative backgrounds */}
@@ -732,21 +786,25 @@ export default function PortfolioView({ username }: { username: string }) {
               <div className="absolute bottom-0 left-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
               {/* Modal Header */}
-              <div className="flex justify-between items-start border-b border-white/10 pb-4 relative z-10">
+              <div className={`flex justify-between items-start border-b ${darkMode ? "border-white/10" : "border-black/10"} pb-4 relative z-10`}>
                 <div>
                   <div className="flex gap-2 items-center text-[10px] font-mono text-purple-400 uppercase tracking-wider mb-1">
                     <span>{getScriptId(activeScript)}</span>
                     <span className="w-1 h-1 rounded-full bg-white/30"></span>
                     <span>{formatDate(activeScript.created_at)}</span>
                   </div>
-                  <h2 className="text-xl md:text-2xl font-extrabold text-white leading-snug flex items-center gap-2">
+                  <h2 className={`text-xl md:text-2xl font-extrabold ${darkMode ? "text-white" : "text-gray-900"} leading-snug flex items-center gap-2`}>
                     <span className="text-lg">{getPostTypeIcon(activeScript)}</span>
                     {activeScript.title}
                   </h2>
                 </div>
                 <button
                   onClick={() => setActiveScript(null)}
-                  className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition text-sm cursor-pointer"
+                  className={`w-8 h-8 rounded-full ${
+                    darkMode 
+                      ? "bg-white/5 border-white/10 hover:bg-white/10 text-white" 
+                      : "bg-black/5 border-black/10 hover:bg-black/10 text-gray-800"
+                  } flex items-center justify-center transition text-sm cursor-pointer`}
                 >
                   ✕
                 </button>
@@ -754,7 +812,7 @@ export default function PortfolioView({ username }: { username: string }) {
 
               {/* Modal Content */}
               <div className="relative z-10">
-                <div className="bg-black/35 rounded-2xl border border-white/5 p-5">
+                <div className={`${darkMode ? "bg-black/35 border-white/5" : "bg-slate-50 border-black/5"} rounded-2xl border p-5`}>
                   <div className="flex justify-between items-center mb-3">
                     <span className="text-[10px] font-bold uppercase tracking-widest text-cyan-400">
                       {getPostTypeLabel(activeScript)} Content
@@ -762,7 +820,11 @@ export default function PortfolioView({ username }: { username: string }) {
                     {!activeScript.is_premium && (
                       <button
                         onClick={() => handleCopyText(activeScript.content || "", activeScript.id)}
-                        className="px-2.5 py-1 rounded bg-white/5 border border-white/5 text-[9px] font-bold text-gray-400 hover:text-white transition flex items-center gap-1 cursor-pointer"
+                        className={`px-2.5 py-1 rounded ${
+                          darkMode 
+                            ? "bg-white/5 border-white/5 text-gray-400 hover:text-white" 
+                            : "bg-black/5 border-black/5 text-gray-600 hover:text-black"
+                        } text-[9px] font-bold transition flex items-center gap-1 cursor-pointer`}
                       >
                         {copiedScriptId === activeScript.id ? "✓ Copied!" : "📋 Copy"}
                       </button>
@@ -785,7 +847,7 @@ export default function PortfolioView({ username }: { username: string }) {
                       </div>
                     </div>
                   ) : (
-                    <div className="whitespace-pre-wrap font-sans text-sm text-gray-300 leading-relaxed max-h-[50vh] overflow-y-auto pr-2 custom-scrollbar">
+                    <div className={`whitespace-pre-wrap font-sans text-sm ${darkMode ? "text-gray-300" : "text-gray-700"} leading-relaxed max-h-[50vh] overflow-y-auto pr-2 custom-scrollbar`}>
                       {activeScript.content || "No script detail content is provided."}
                     </div>
                   )}
@@ -793,7 +855,9 @@ export default function PortfolioView({ username }: { username: string }) {
               </div>
 
               {/* Modal Footer / Download Info */}
-              <div className="flex flex-col sm:flex-row justify-between items-center gap-3 pt-3 border-t border-white/5 text-[10px] text-gray-400 relative z-10">
+              <div className={`flex flex-col sm:flex-row justify-between items-center gap-3 pt-3 border-t ${
+                darkMode ? "border-white/5 text-gray-400" : "border-black/5 text-gray-600"
+              } text-[10px] relative z-10`}>
                 <span className="flex items-center gap-1 text-cyan-400 font-bold uppercase tracking-wider">
                   🛡️ WryClip Original IP
                 </span>
