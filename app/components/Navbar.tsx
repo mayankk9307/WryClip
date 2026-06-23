@@ -51,7 +51,10 @@ export default function Navbar({ darkMode = true, toggleDarkMode }: NavbarProps)
   const handleNavClick = (id: string, path: string) => {
     setMenuOpen(false);
     
-    if (pathname === "/") {
+    const hasWriterParam = typeof window !== "undefined" && window.location.search.includes("writer=");
+    const isHomepageWithoutQuery = pathname === "/" && !hasWriterParam;
+
+    if (isHomepageWithoutQuery) {
       // If we are on the homepage, scroll directly to the section
       const el = document.getElementById(id);
       if (el) {
@@ -60,7 +63,11 @@ export default function Navbar({ darkMode = true, toggleDarkMode }: NavbarProps)
       }
     } else {
       // Otherwise, navigate to homepage with hash
-      router.push(`/${path}`);
+      if (typeof window !== "undefined") {
+        window.location.href = `/${path}`;
+      } else {
+        router.push(`/${path}`);
+      }
     }
   };
 
@@ -110,11 +117,11 @@ export default function Navbar({ darkMode = true, toggleDarkMode }: NavbarProps)
         }}
         className={`fixed z-50 flex justify-between items-center backdrop-blur-xl border-b`}
       >
-        <Link href="/" className="flex items-center gap-2">
+        <a href="/" className="flex items-center gap-2">
           <span className="text-xl font-bold bg-gradient-to-r from-purple-400 to-blue-500 bg-clip-text text-transparent">
             WryClip
           </span>
-        </Link>
+        </a>
 
         {/* Desktop Links */}
         <div className={`hidden md:flex gap-6 items-center ${darkMode ? "text-gray-300" : "text-gray-600"}`}>

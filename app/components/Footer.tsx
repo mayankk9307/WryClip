@@ -54,11 +54,11 @@ export default function Footer({ darkMode = true }: { darkMode?: boolean }) {
         
         {/* Brand Column */}
         <div className="flex flex-col gap-4">
-          <Link href="/">
+          <a href="/">
             <span className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-blue-500 bg-clip-text text-transparent">
               WryClip
             </span>
-          </Link>
+          </a>
           <p className="text-sm leading-relaxed">
             Creator Ecosystem for Actors, Writers, Filmmakers and Content Creators. Discover auditions, collaborations, creative opportunities and industry connections in one platform.
           </p>
@@ -100,7 +100,7 @@ export default function Footer({ darkMode = true }: { darkMode?: boolean }) {
           <h4 className={`text-base font-bold ${darkMode ? "text-white" : "text-gray-900"}`}>Platform</h4>
           <ul className="flex flex-col gap-2.5 text-sm">
             <li>
-              <Link href="/" className="hover:text-purple-400 hover:underline transition">Home</Link>
+              <a href="/" className="hover:text-purple-400 hover:underline transition">Home</a>
             </li>
             <li>
               <Link href="/about" className="hover:text-purple-400 hover:underline transition">About Us</Link>
@@ -109,7 +109,7 @@ export default function Footer({ darkMode = true }: { darkMode?: boolean }) {
               <Link href="/contact" className="hover:text-purple-400 hover:underline transition">Contact Us</Link>
             </li>
             <li>
-              <Link href="/#faq" className="hover:text-purple-400 hover:underline transition">FAQs</Link>
+              <a href="/#faq" className="hover:text-purple-400 hover:underline transition">FAQs</a>
             </li>
             <li>
               <Link href="/download" className="hover:text-purple-400 hover:underline transition font-semibold">Download App 🚀</Link>

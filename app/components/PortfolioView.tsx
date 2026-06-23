@@ -335,12 +335,12 @@ export default function PortfolioView({ username }: { username: string }) {
             </button>
           </form>
 
-          <Link
+          <a
             href="/"
             className="text-xs text-purple-400 hover:text-purple-300 font-bold transition flex items-center justify-center gap-1.5"
           >
             ← Back to Homepage
-          </Link>
+          </a>
         </motion.div>
       </div>
     );
@@ -351,12 +351,12 @@ export default function PortfolioView({ username }: { username: string }) {
       
       {/* Back to Homepage Button */}
       <div className="print-hidden -mb-4">
-        <Link
+        <a
           href="/"
           className="inline-flex items-center gap-1.5 text-xs text-purple-400 hover:text-purple-300 font-bold transition cursor-pointer"
         >
           ← Back to Homepage
-        </Link>
+        </a>
       </div>
 
       {/* 1. Header Card (Glassmorphic) */}
