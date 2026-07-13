@@ -618,7 +618,7 @@ export default function PortfolioView({ username, darkMode = true }: { username:
                 <div className="bg-white/[0.01] border border-white/5 p-2 rounded-xl flex flex-col items-center">
                   <span className="text-base">🎬</span>
                   <span className="text-sm font-extrabold text-white">{writerPosts.length}</span>
-                  <span className="text-[7px] text-gray-500 uppercase font-black leading-tight mt-1">Scripts</span>
+                  <span className="text-[7px] text-gray-500 uppercase font-black leading-tight mt-1">Writings</span>
                 </div>
                 <div className="bg-white/[0.01] border border-white/5 p-2 rounded-xl flex flex-col items-center">
                   <span className="text-base">🎥</span>
@@ -736,17 +736,17 @@ export default function PortfolioView({ username, darkMode = true }: { username:
             <div className="flex flex-col gap-6">
               <div className="flex items-center justify-between border-b border-white/10 pb-4">
                 <h2 className="text-lg font-bold tracking-tight text-purple-400">
-                  🎬 SCREENPLAY SHOWCASE
+                  📝 WRITTEN WORKS & CREATIONS
                 </h2>
                 <span className="text-xs bg-purple-500/10 border border-purple-500/20 text-purple-400 px-3 py-1 rounded-full font-semibold">
-                  {writerPosts.length} Screenplays Published
+                  {writerPosts.length} Publications
                 </span>
               </div>
 
               {writerPosts.length === 0 ? (
                 <div className="rounded-3xl border border-white/[0.06] bg-white/[0.01] text-gray-400 p-8 text-center backdrop-blur-md">
-                  <p className="text-sm font-bold text-white mb-1">No Screenplays Published</p>
-                  <p className="text-xs text-gray-500">@{profile.username} has not published any screenplays yet.</p>
+                  <p className="text-sm font-bold text-white mb-1">No Written Works Published</p>
+                  <p className="text-xs text-gray-500">@{profile.username} has not published any written works yet.</p>
                 </div>
               ) : (
                 <div className="flex flex-col gap-6">
@@ -788,6 +788,11 @@ export default function PortfolioView({ username, darkMode = true }: { username:
 
                       {/* Metadata badges row */}
                       <div className="flex flex-wrap gap-2 mb-4">
+                        {post.category && (
+                          <span className="px-2 py-0.5 rounded bg-purple-500/10 border border-purple-500/20 text-[10px] font-bold text-purple-300">
+                            📝 {post.category}
+                          </span>
+                        )}
                         {post.genre && (
                           <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[10px] text-gray-300">
                             🎭 {post.genre}
@@ -830,7 +835,7 @@ export default function PortfolioView({ username, darkMode = true }: { username:
                           onClick={() => setActiveScript(post)}
                           className="py-1.5 px-3.5 rounded-lg bg-gradient-to-r from-purple-500 to-indigo-650 text-white text-xs font-bold hover:opacity-90 transition duration-300"
                         >
-                          Read Script Details
+                          Read Work Details
                         </button>
                       </div>
                     </div>
@@ -978,7 +983,7 @@ export default function PortfolioView({ username, darkMode = true }: { username:
                 <div className="bg-white/[0.01] border border-white/5 p-2 rounded-xl flex flex-col items-center">
                   <span className="text-base">🎬</span>
                   <span className="text-sm font-extrabold text-white">{writerPosts.length}</span>
-                  <span className="text-[8px] text-gray-500 uppercase font-black">Scripts</span>
+                  <span className="text-[8px] text-gray-500 uppercase font-black">Writings</span>
                 </div>
                 <div className="bg-white/[0.01] border border-white/5 p-2 rounded-xl flex flex-col items-center">
                   <span className="text-base">❤️</span>
@@ -1014,19 +1019,19 @@ export default function PortfolioView({ username, darkMode = true }: { username:
           <div className="lg:col-span-8 flex flex-col gap-6">
             <div className="flex items-center justify-between border-b border-white/10 pb-4">
               <h2 className="text-lg font-bold tracking-tight text-cyan-400">
-                SCREENPLAY SHOWCASE
+                📝 WRITTEN WORKS & CREATIONS
               </h2>
               <span className="text-xs bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 px-3 py-1 rounded-full font-semibold">
-                {writerPosts.length} Screenplays Published
+                {writerPosts.length} Publications
               </span>
             </div>
 
             {writerPosts.length === 0 ? (
               <div className="rounded-3xl border border-white/[0.06] bg-white/[0.01] text-gray-400 p-12 text-center relative overflow-hidden backdrop-blur-md">
                 <span className="text-4xl block mb-3">✨</span>
-                <p className="text-base font-bold text-white mb-1">No Screenplays Published</p>
+                <p className="text-base font-bold text-white mb-1">No Written Works Published</p>
                 <p className="text-xs text-gray-400 max-w-xs mx-auto leading-relaxed">
-                  @{profile.username} has not published any screenplays yet.
+                  @{profile.username} has not published any written works yet.
                 </p>
               </div>
             ) : (
@@ -1069,6 +1074,11 @@ export default function PortfolioView({ username, darkMode = true }: { username:
 
                     {/* Metadata badges row */}
                     <div className="flex flex-wrap gap-2 mb-4">
+                      {post.category && (
+                        <span className="px-2 py-0.5 rounded bg-cyan-500/10 border border-cyan-500/20 text-[10px] font-bold text-cyan-300">
+                          📝 {post.category}
+                        </span>
+                      )}
                       {post.genre && (
                         <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[10px] text-gray-300">
                           🎭 {post.genre}
@@ -1111,7 +1121,7 @@ export default function PortfolioView({ username, darkMode = true }: { username:
                         onClick={() => setActiveScript(post)}
                         className="py-1.5 px-3.5 rounded-lg bg-gradient-to-r from-cyan-400 to-blue-500 text-black text-xs font-bold hover:opacity-90 transition duration-300"
                       >
-                        Read Script Details
+                        Read Work Details
                       </button>
                     </div>
                   </div>
@@ -1446,15 +1456,15 @@ export default function PortfolioView({ username, darkMode = true }: { username:
               </div>
             )}
 
-            {/* Secondary Creations (Written works for Creators) */}
+            {/* Secondary Creations (Written creations for Creators) */}
             {writerPosts.length > 0 && (
               <div className="mt-12 flex flex-col gap-6">
                 <div className="flex items-center justify-between border-b border-white/10 pb-4">
                   <h3 className="text-base font-bold tracking-tight text-pink-500/80 uppercase">
-                    ✍️ Additional Written Works & Scripts
+                    ✍️ Additional Written Creations
                   </h3>
                   <span className="text-xs bg-white/5 border border-white/10 text-gray-400 px-3 py-1 rounded-full font-semibold">
-                    {writerPosts.length} Written Works
+                    {writerPosts.length} Publications
                   </span>
                 </div>
 
@@ -1482,6 +1492,11 @@ export default function PortfolioView({ username, darkMode = true }: { username:
                       </div>
 
                       <div className="flex flex-wrap gap-1.5 mb-2">
+                        {post.category && (
+                          <span className="px-1.5 py-0.5 rounded bg-pink-500/10 border border-pink-500/20 text-[9px] font-bold text-pink-400">
+                            📝 {post.category}
+                          </span>
+                        )}
                         {post.genre && (
                           <span className="px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-[9px] text-gray-300">
                             🎭 {post.genre}
