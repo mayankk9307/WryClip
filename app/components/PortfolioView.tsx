@@ -14,6 +14,8 @@ interface Profile {
   avatar_url: string | null;
   tags: string[] | null;
   subscription_status: string | null;
+  followers_count: number | null;
+  following_count: number | null;
 }
 
 interface Post {
@@ -77,7 +79,7 @@ export default function PortfolioView({ username, darkMode = true }: { username:
         // 1. Fetch Profile (case-insensitive username lookup)
         const { data: profileData, error: profileError } = await client
           .from("profiles")
-          .select("id, username, full_name, bio, role, avatar_url, tags, subscription_status")
+          .select("id, username, full_name, bio, role, avatar_url, tags, subscription_status, followers_count, following_count")
           .ilike("username", username)
           .maybeSingle();
 
@@ -597,6 +599,13 @@ export default function PortfolioView({ username, darkMode = true }: { username:
                 </button>
               </div>
 
+              {/* Followers & Following Stats */}
+              <div className="flex justify-center items-center gap-4 text-xs font-semibold text-gray-400 -mt-2">
+                <span><strong className="text-white">{profile.followers_count || 0}</strong> Followers</span>
+                <span className="w-1 h-1 rounded-full bg-white/20"></span>
+                <span><strong className="text-white">{profile.following_count || 0}</strong> Following</span>
+              </div>
+
               <p className="text-xs text-gray-300 leading-relaxed italic">
                 {profile.bio || "Crafting cinematic journeys, original storytelling, and visual creations. Explore my work below."}
               </p>
@@ -962,6 +971,13 @@ export default function PortfolioView({ username, darkMode = true }: { username:
                 </button>
               </div>
 
+              {/* Followers & Following Stats */}
+              <div className="flex justify-center items-center gap-4 text-xs font-semibold text-gray-400 -mt-2">
+                <span><strong className="text-white">{profile.followers_count || 0}</strong> Followers</span>
+                <span className="w-1 h-1 rounded-full bg-white/20"></span>
+                <span><strong className="text-white">{profile.following_count || 0}</strong> Following</span>
+              </div>
+
               <p className="text-xs text-gray-300 leading-relaxed italic">
                 {profile.bio || "Crafting cinematic journeys and original storytelling. Read my screenplays below."}
               </p>
@@ -1313,6 +1329,13 @@ export default function PortfolioView({ username, darkMode = true }: { username:
                 >
                   📥 Save PDF
                 </button>
+              </div>
+
+              {/* Followers & Following Stats */}
+              <div className="flex justify-center items-center gap-4 text-xs font-semibold text-gray-400 -mt-2">
+                <span><strong className="text-white">{profile.followers_count || 0}</strong> Followers</span>
+                <span className="w-1 h-1 rounded-full bg-white/20"></span>
+                <span><strong className="text-white">{profile.following_count || 0}</strong> Following</span>
               </div>
 
               <p className="text-xs text-gray-300 leading-relaxed italic">
