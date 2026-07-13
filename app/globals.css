@@ -112,10 +112,10 @@ a:hover, span:hover {
 
 /* 🖨️ PDF PRINTING STYLES FOR PORTFOLIOS */
 @media print {
-  /* Set document page margins and layout */
+  /* Set document page margins to 0 to disable default browser headers/footers */
   @page {
     size: A4;
-    margin: 1.5cm;
+    margin: 0;
   }
 
   html, body {
@@ -199,12 +199,16 @@ a:hover, span:hover {
     transform: none !important;
   }
 
-  /* Remove viewport-height forcing & padding on main portfolio wrapper */
+  /* Remove viewport-height forcing, add premium decorative print border & spacing */
   .portfolio-print-wrapper {
     min-height: 0 !important;
     height: auto !important;
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-radius: 24px !important;
+    margin: 1.2cm !important;
+    padding: 1.2cm !important;
+    box-sizing: border-box !important;
+    background: rgba(255, 255, 255, 0.01) !important;
     overflow: visible !important;
   }
 
@@ -460,6 +464,40 @@ a:hover, span:hover {
   .portfolio-creation-card span[class*="text-cyan-400"] {
     color: #22d3ee !important;
   }
+
+  /* Print-only helper elements */
+  .print-only {
+    display: block !important;
+  }
+
+  .print-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    padding-bottom: 8px !important;
+    margin-bottom: 20px !important;
+    font-size: 10px !important;
+    color: rgba(255, 255, 255, 0.5) !important;
+    font-family: monospace !important;
+  }
+
+  .print-footer {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+    padding-top: 8px !important;
+    margin-top: 30px !important;
+    font-size: 10px !important;
+    color: rgba(255, 255, 255, 0.5) !important;
+    font-family: monospace !important;
+  }
 }
 
-
+/* Hide print-only elements on screens */
+@media screen {
+  .print-only {
+    display: none !important;
+  }
+}

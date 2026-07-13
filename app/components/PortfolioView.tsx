@@ -14,7 +14,8 @@ interface Profile {
   avatar_url: string | null;
   tags: string[] | null;
   subscription_status: string | null;
-  email?: string | null;
+  followers_count: number | null;
+  following_count: number | null;
 }
 
 interface Post {
@@ -50,6 +51,18 @@ export default function PortfolioView({ username, darkMode = true }: { username:
   const [activeScript, setActiveScript] = useState<Post | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [copiedScriptId, setCopiedScriptId] = useState<string | null>(null);
+  const [printDateTime, setPrintDateTime] = useState("");
+
+  useEffect(() => {
+    setPrintDateTime(new Date().toLocaleString("en-US", {
+      dateStyle: "medium",
+      timeStyle: "short"
+    }));
+  }, []);
+
+  const portfolioUrl = typeof window !== "undefined"
+    ? window.location.href
+    : `https://wryclip.in/?writer=${username}`;
 
   useEffect(() => {
     if (!username) return;
@@ -66,7 +79,7 @@ export default function PortfolioView({ username, darkMode = true }: { username:
         // 1. Fetch Profile (case-insensitive username lookup)
         const { data: profileData, error: profileError } = await client
           .from("profiles")
-          .select("id, username, full_name, bio, role, avatar_url, tags, subscription_status, email")
+          .select("id, username, full_name, bio, role, avatar_url, tags, subscription_status, followers_count, following_count")
           .ilike("username", username)
           .maybeSingle();
 
@@ -312,6 +325,9 @@ export default function PortfolioView({ username, darkMode = true }: { username:
 
   // Decider Logic for Layout Types
   const roleNorm = profile.role?.toLowerCase() || '';
+  const isPremiumUser = ['writer pro', 'creator pro', 'studio pro', 'core', 'admin'].includes(roleNorm);
+  const isCoreUser = ['core', 'admin'].includes(roleNorm);
+  
   const isWriter = ['writer pro', 'writer', 'poet', 'script writer'].includes(roleNorm);
   const isCreator = ['creator pro', 'creator', 'studio pro', 'filmmaker', 'director', 'producer', 'actor'].includes(roleNorm);
 
@@ -328,14 +344,540 @@ export default function PortfolioView({ username, darkMode = true }: { username:
     isCreatorTemplate = creatorPosts.length > writerPosts.length;
   }
 
+  // 0. PREMIUM LOCK PAYWALL
+  const renderPremiumLockPaywall = () => {
+    return (
+      <div className="min-h-screen pt-28 pb-20 px-4 flex flex-col items-center justify-center max-w-lg mx-auto text-center relative z-10">
+        {/* Background Atmosphere */}
+        {darkMode ? (
+          <>
+            <div className="fixed inset-0 -z-10 bg-gradient-to-b from-[#050811] via-[#0a101f] to-[#000000] pointer-events-none" />
+            <div className="fixed top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-purple-500/10 blur-[120px] pointer-events-none" />
+            <div className="fixed bottom-[-10%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-cyan-500/10 blur-[150px] pointer-events-none" />
+          </>
+        ) : (
+          <>
+            <div className="fixed inset-0 -z-10 bg-gradient-to-b from-[#f8fafc] via-[#f1f5f9] to-[#e2e8f0] pointer-events-none" />
+            <div className="fixed top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-purple-200/40 blur-[120px] pointer-events-none" />
+            <div className="fixed bottom-[-10%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-cyan-200/40 blur-[150px] pointer-events-none" />
+          </>
+        )}
+
+        {/* Back to Homepage Link */}
+        <div className="w-full text-left mb-6">
+          <a
+            href="/"
+            className={`inline-flex items-center gap-1.5 text-xs font-bold transition cursor-pointer ${
+              darkMode ? "text-purple-400 hover:text-purple-300" : "text-purple-600 hover:text-purple-700"
+            }`}
+          >
+            ← Back to Homepage
+          </a>
+        </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 30, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className={`relative w-full rounded-3xl backdrop-blur-2xl p-8 sm:p-10 flex flex-col gap-6 overflow-hidden border ${
+            darkMode 
+              ? "bg-white/[0.02] border-white/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.5)]" 
+              : "bg-white/80 border-slate-200 shadow-[0_10px_40px_rgba(0,0,0,0.08)]"
+          }`}
+        >
+          {/* Top animated shimmer border */}
+          <div className={`absolute top-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-purple-500 to-transparent ${
+            darkMode ? "opacity-70" : "opacity-40"
+          }`} />
+          
+          {/* Corner glow accents */}
+          <div className={`absolute -top-12 -right-12 w-32 h-32 rounded-full blur-3xl pointer-events-none ${
+            darkMode ? "bg-purple-500/10" : "bg-purple-500/5"
+          }`} />
+          <div className={`absolute -bottom-12 -left-12 w-32 h-32 rounded-full blur-3xl pointer-events-none ${
+            darkMode ? "bg-cyan-500/10" : "bg-cyan-500/5"
+          }`} />
+
+          {/* Premium Lock Icon */}
+          <div className="relative mx-auto mt-2">
+            {/* Glowing background ring */}
+            <div className={`absolute inset-0 rounded-full bg-gradient-to-tr from-purple-500 to-cyan-500 blur-2xl scale-150 animate-pulse ${
+              darkMode ? "opacity-25" : "opacity-15"
+            }`} />
+            
+            <div className={`relative w-20 h-20 rounded-2xl border flex items-center justify-center shadow-inner ${
+              darkMode ? "bg-gradient-to-b from-white/[0.08] to-white/[0.01] border-white/[0.12]" : "bg-gradient-to-b from-slate-100 to-slate-50 border-slate-200"
+            }`}>
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="url(#lock-gradient)" 
+                strokeWidth="1.5" 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                className={`w-10 h-10 animate-pulse ${
+                  darkMode ? "drop-shadow-[0_0_12px_rgba(168,85,247,0.6)]" : "drop-shadow-[0_0_8px_rgba(168,85,247,0.3)]"
+                }`}
+              >
+                <defs>
+                  <linearGradient id="lock-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#d946ef" />
+                    <stop offset="50%" stopColor="#a855f7" />
+                    <stop offset="100%" stopColor="#06b6d4" />
+                  </linearGradient>
+                </defs>
+                <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+            </div>
+          </div>
+
+          {/* Header */}
+          <div className="flex flex-col gap-2">
+            <h2 className={`text-2xl sm:text-3xl font-extrabold tracking-tight leading-tight ${
+              darkMode ? "text-white" : "text-slate-900"
+            }`}>
+              Unlock Your Professional Portfolio <span className="inline-block animate-bounce">🚀</span>
+            </h2>
+            <div className="flex items-center justify-center gap-1.5 mt-1">
+              <span className={`text-xs font-semibold font-mono ${
+                darkMode ? "text-purple-400" : "text-purple-600"
+              }`}>@{profile.username}</span>
+              <span className={`px-2 py-0.5 rounded-full text-[8px] font-bold uppercase tracking-widest ${
+                darkMode ? "bg-white/5 border-white/10 text-gray-400" : "bg-slate-100 border-slate-200 text-slate-500"
+              } border`}>
+                Locked
+              </span>
+            </div>
+          </div>
+
+          {/* Body Text */}
+          <p className={`text-sm leading-relaxed max-w-sm mx-auto ${
+            darkMode ? "text-gray-300" : "text-slate-600"
+          }`}>
+            This portfolio is currently locked. Upgrade to{" "}
+            <span className="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-cyan-500">
+              Writer Pro
+            </span>
+            ,{" "}
+            <span className="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-500">
+              Creator Pro
+            </span>
+            , or{" "}
+            <span className="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-cyan-500">
+              Studio Pro
+            </span>{" "}
+            inside the WryClip App to launch your custom portfolio website, showcase your verified badges, and unlock direct client hire tools!
+          </p>
+
+          <div className={`border-t my-2 ${darkMode ? "border-white/5" : "border-slate-200"}`} />
+
+          {/* Action Buttons */}
+          <div className="flex flex-col gap-3">
+            <button
+              onClick={handleDownloadApp}
+              className="w-full py-4 rounded-2xl bg-gradient-to-r from-purple-600 via-purple-500 to-cyan-500 text-white text-xs font-black uppercase tracking-wider text-center transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-[0_4px_25px_rgba(168,85,247,0.4)] cursor-pointer hover:shadow-[0_4px_30px_rgba(168,85,247,0.6)] border-0"
+            >
+              Get WryClip App 📲
+            </button>
+            <a
+              href="/"
+              className={`w-full py-3 rounded-2xl border text-xs font-bold uppercase tracking-wider transition text-center ${
+                darkMode 
+                  ? "bg-white/5 border-white/10 text-white hover:bg-white/10 hover:border-white/20" 
+                  : "bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100 hover:border-slate-300"
+              }`}
+            >
+              Back to Feed 🔍
+            </a>
+          </div>
+        </motion.div>
+      </div>
+    );
+  };
+
+  // 4. CORE / ADMIN LAYOUT (Combined features in separate full sections)
+  const renderCoreLayout = () => {
+    const writerLikes = writerPosts.reduce((sum, p) => sum + (p.likes_count || 0), 0);
+    const creatorLikes = creatorPosts.reduce((sum, p) => sum + (p.likes_count || 0), 0);
+    const totalLikes = writerLikes + creatorLikes;
+
+    const emailAddress = "support.wryclip@gmail.com";
+    const mailtoUrl = `mailto:${emailAddress}?subject=${encodeURIComponent("WryClip Core Member Optioning / Collaboration Inquiry")}&body=${encodeURIComponent(`Hi @${profile.username}, we reviewed your Core portfolio on WryClip and would like to discuss optioning / collaborations...`)}`;
+
+    return (
+      <div className={`min-h-screen pt-28 pb-20 px-4 md:px-8 max-w-5xl mx-auto flex flex-col gap-8 relative z-10 portfolio-print-wrapper`}>
+        {/* Custom Print Header */}
+        <div className="print-only print-header">
+          <span>WryClip Verified Portfolio — @{profile.username}</span>
+          <span>Exported: {printDateTime}</span>
+        </div>
+
+        {/* Background Atmosphere */}
+        <div className="fixed inset-0 -z-10 bg-gradient-to-b from-[#0a0518] via-[#120824] to-[#000000] pointer-events-none" />
+        <div className="fixed top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-purple-500/10 blur-[120px] pointer-events-none" />
+        <div className="fixed bottom-[-10%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-indigo-500/10 blur-[150px] pointer-events-none" />
+
+        {/* Back to Homepage Button */}
+        <div className="print-hidden -mb-4">
+          <a
+            href="/"
+            className="inline-flex items-center gap-1.5 text-xs text-purple-400 hover:text-purple-300 font-bold transition cursor-pointer"
+          >
+            ← Back to Homepage
+          </a>
+        </div>
+
+        {/* Branding Header */}
+        <div className="flex justify-between items-center border-b border-white/10 pb-6 mb-2 print-hidden">
+          <div className="flex items-center gap-3">
+            <img src="/bg-logo.jpeg" alt="WryClip Logo" className="w-10 h-10 rounded-xl object-cover border border-purple-500/30" />
+            <span className="text-sm font-black uppercase tracking-[0.2em] text-purple-400">WRYCLIP CORE PORTFOLIO</span>
+          </div>
+          <a href="/" className="px-4 py-2 rounded-xl bg-purple-500/10 border border-purple-500/20 text-xs font-bold text-purple-400 hover:bg-purple-500/20 transition">
+            BACK TO FEED
+          </a>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* Sidebar Profile Card */}
+          <div className="lg:col-span-4 flex flex-col gap-6">
+            <div className="w-full rounded-3xl bg-white/[0.02] border border-[rgba(168,85,247,0.35)] shadow-[0_8px_32px_rgba(168,85,247,0.05)] backdrop-blur-xl p-6 flex flex-col gap-6 relative overflow-hidden text-center">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/10 rounded-full blur-2xl pointer-events-none"></div>
+
+              <div className="shrink-0 relative">
+                <div className="w-28 h-28 rounded-full overflow-hidden flex items-center justify-center border-2 border-purple-500 shadow-[0_0_15px_rgba(168,85,247,0.5)] mx-auto relative">
+                  {profile.avatar_url ? (
+                    <img
+                      src={profile.avatar_url}
+                      alt={profile.full_name}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = "none";
+                        const fallbackDiv = document.getElementById("core-avatar-fallback");
+                        if (fallbackDiv) fallbackDiv.style.display = "flex";
+                      }}
+                    />
+                  ) : null}
+                  <div
+                    id="core-avatar-fallback"
+                    className="w-full h-full bg-gradient-to-br from-purple-900 to-indigo-950 flex items-center justify-center font-bold text-3xl tracking-wide text-purple-300"
+                    style={{ display: profile.avatar_url ? "none" : "flex" }}
+                  >
+                    {getInitials(profile.full_name)}
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h1 className="text-xl font-extrabold tracking-tight text-white flex items-center justify-center gap-1.5">
+                  {profile.full_name}
+                  <span
+                    title="Verified Core Pro"
+                    className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-purple-500 text-white text-[9px] font-bold shadow-[0_0_10px_rgba(168,85,247,0.6)]"
+                  >
+                    ✓
+                  </span>
+                </h1>
+                <p className="text-xs font-semibold font-mono text-purple-400 mt-1">@{profile.username}</p>
+              </div>
+
+              <div className="flex flex-wrap gap-2 justify-center items-center">
+                <span className="px-2.5 py-0.5 rounded-full bg-purple-500/10 border border-purple-500/25 text-[10px] font-bold text-purple-300">
+                  {profile.role || "Core Member"}
+                </span>
+                <span className="px-2 py-0.5 rounded-full bg-purple-500/10 border border-purple-500/25 text-[9px] font-bold text-purple-300 flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse"></span>
+                  Core Pro
+                </span>
+                <button
+                  onClick={handlePrint}
+                  className="px-2 py-0.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-[9px] font-bold flex items-center gap-1 transition print:hidden cursor-pointer"
+                >
+                  📥 Save PDF
+                </button>
+              </div>
+
+              {/* Followers & Following Stats */}
+              <div className="flex justify-center items-center gap-4 text-xs font-semibold text-gray-400 -mt-2">
+                <span><strong className="text-white">{profile.followers_count || 0}</strong> Followers</span>
+                <span className="w-1 h-1 rounded-full bg-white/20"></span>
+                <span><strong className="text-white">{profile.following_count || 0}</strong> Following</span>
+              </div>
+
+              <p className="text-xs text-gray-300 leading-relaxed italic">
+                {profile.bio || "Crafting cinematic journeys, original storytelling, and visual creations. Explore my work below."}
+              </p>
+
+              {profile.tags && profile.tags.length > 0 && (
+                <div className="flex flex-wrap gap-1.5 justify-center">
+                  {profile.tags.map((tag, idx) => (
+                    <span key={idx} className="px-2 py-0.5 rounded bg-white/[0.03] border border-white/[0.07] text-[9px] uppercase font-bold text-gray-300 tracking-wider">
+                      #{tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              <div className="border-t border-white/5 my-2" />
+
+              {/* Stats Block */}
+              <div className="grid grid-cols-4 gap-1.5">
+                <div className="bg-white/[0.01] border border-white/5 p-2 rounded-xl flex flex-col items-center">
+                  <span className="text-base">🎬</span>
+                  <span className="text-sm font-extrabold text-white">{writerPosts.length}</span>
+                  <span className="text-[7px] text-gray-500 uppercase font-black leading-tight mt-1">Writings</span>
+                </div>
+                <div className="bg-white/[0.01] border border-white/5 p-2 rounded-xl flex flex-col items-center">
+                  <span className="text-base">🎥</span>
+                  <span className="text-sm font-extrabold text-white">{creatorPosts.length}</span>
+                  <span className="text-[7px] text-gray-500 uppercase font-black leading-tight mt-1">Videos</span>
+                </div>
+                <div className="bg-white/[0.01] border border-white/5 p-2 rounded-xl flex flex-col items-center">
+                  <span className="text-base">❤️</span>
+                  <span className="text-sm font-extrabold text-white">{totalLikes}</span>
+                  <span className="text-[7px] text-gray-500 uppercase font-black leading-tight mt-1">Likes</span>
+                </div>
+                <div className="bg-white/[0.01] border border-white/5 p-2 rounded-xl flex flex-col items-center">
+                  <span className="text-base">💾</span>
+                  <span className="text-sm font-extrabold text-white">{stats.totalSaves}</span>
+                  <span className="text-[7px] text-gray-500 uppercase font-black leading-tight mt-1">Saves</span>
+                </div>
+              </div>
+
+              <div className="border-t border-white/5 my-2" />
+
+              <a
+                href={mailtoUrl}
+                className="w-full py-3 rounded-2xl bg-gradient-to-r from-purple-500 to-indigo-650 text-white text-xs font-black uppercase tracking-wider text-center transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-[0_4px_16px_rgba(168,85,247,0.3)]"
+              >
+                EMAIL COLLAB INQUIRY ✉️
+              </a>
+
+              <button
+                onClick={handleDownloadApp}
+                className="w-full py-3 rounded-2xl bg-white/5 border border-white/10 text-white text-xs font-black uppercase tracking-wider transition hover:bg-white/10"
+              >
+                CHAT IN APP 💬
+              </button>
+            </div>
+          </div>
+
+          {/* Right Column showcases both in separate sections */}
+          <div className="lg:col-span-8 flex flex-col gap-12">
+            {/* Section 1: Cinematic Series & Projects (Full Section) */}
+            <div className="flex flex-col gap-6">
+              <div className="flex items-center justify-between border-b border-white/10 pb-4">
+                <h2 className="text-lg font-bold tracking-tight text-purple-400">
+                  🎥 CINEMATIC SERIES & PROJECTS
+                </h2>
+                <span className="text-xs bg-purple-500/10 border border-purple-500/20 text-purple-400 px-3 py-1 rounded-full font-semibold">
+                  {creatorPosts.length} Projects Published
+                </span>
+              </div>
+
+              {creatorPosts.length === 0 ? (
+                <div className="rounded-3xl border border-white/[0.06] bg-white/[0.01] text-gray-400 p-8 text-center backdrop-blur-md">
+                  <p className="text-sm font-bold text-white mb-1">No Video Projects Published</p>
+                  <p className="text-xs text-gray-500">@{profile.username} has not published any video projects yet.</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {creatorPosts.map((post) => (
+                    <div
+                      key={post.id}
+                      className="rounded-2xl border border-white/10 bg-white/[0.02] hover:border-purple-500/30 hover:bg-white/[0.03] transition-all duration-300 p-4 flex flex-col justify-between relative overflow-hidden group cursor-pointer"
+                      onClick={() => setActiveScript(post)}
+                    >
+                      <div>
+                        {/* Project Thumbnail Card */}
+                        <div className="relative w-full h-40 rounded-xl overflow-hidden mb-4 border border-white/5 bg-black">
+                          {post.cover_url ? (
+                            <img src={post.cover_url} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+                          ) : (
+                            <div className="w-full h-full bg-gradient-to-br from-purple-500/20 to-indigo-950/40 flex items-center justify-center text-4xl">🎬</div>
+                          )}
+                          <div className="absolute bottom-2.5 left-2.5 px-2 py-0.5 rounded bg-black/60 text-[9px] font-bold text-white">
+                            👁️ {(post.likes_count || 0) * 4 + 12} Views
+                          </div>
+                        </div>
+
+                        {/* Header Row */}
+                        <div className="flex justify-between items-center text-[9px] text-gray-400 font-semibold mb-2">
+                          <span className="px-1.5 py-0.5 rounded border border-purple-500/20 text-purple-400 bg-purple-500/5 font-mono tracking-wider">
+                            CR-{post.id.slice(0, 8).toUpperCase()}
+                          </span>
+                          <span>{formatDate(post.created_at)}</span>
+                        </div>
+
+                        <h4 className="text-sm font-bold text-white group-hover:text-purple-400 leading-snug mb-1 transition duration-300">
+                          {post.title}
+                        </h4>
+
+                        <p className="text-[11px] text-gray-400 leading-relaxed line-clamp-2 mb-3">
+                          {post.content || "No creation details shared."}
+                        </p>
+                      </div>
+
+                      <div className="flex flex-wrap gap-1.5 mb-2">
+                        {post.category && (
+                          <span className="px-1.5 py-0.5 rounded bg-purple-500/10 border border-purple-500/20 text-[8px] font-bold text-purple-400">
+                            {post.category}
+                          </span>
+                        )}
+                        {post.genre && (
+                          <span className="px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-[8px] font-bold text-gray-300">
+                            🎭 {post.genre}
+                          </span>
+                        )}
+                        <span className="px-1.5 py-0.5 rounded bg-pink-500/10 border border-pink-500/20 text-[8px] font-bold text-pink-400">
+                          ❤️ {post.likes_count || 0} Likes
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Section 2: Screenwriting & Literary Portfolio (Full Section) */}
+            <div className="flex flex-col gap-6">
+              <div className="flex items-center justify-between border-b border-white/10 pb-4">
+                <h2 className="text-lg font-bold tracking-tight text-purple-400">
+                  📝 WRITTEN WORKS & CREATIONS
+                </h2>
+                <span className="text-xs bg-purple-500/10 border border-purple-500/20 text-purple-400 px-3 py-1 rounded-full font-semibold">
+                  {writerPosts.length} Publications
+                </span>
+              </div>
+
+              {writerPosts.length === 0 ? (
+                <div className="rounded-3xl border border-white/[0.06] bg-white/[0.01] text-gray-400 p-8 text-center backdrop-blur-md">
+                  <p className="text-sm font-bold text-white mb-1">No Written Works Published</p>
+                  <p className="text-xs text-gray-500">@{profile.username} has not published any written works yet.</p>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-6">
+                  {writerPosts.map((post) => (
+                    <div
+                      key={post.id}
+                      className="rounded-r-2xl border-l-4 border-l-[#a855f7] border-y border-r border-white/10 bg-white/[0.01] hover:border-purple-500/30 hover:bg-white/[0.02] transition-all duration-300 p-6 flex flex-col justify-between relative overflow-hidden group"
+                    >
+                      {post.cover_url && (
+                        <div className="w-full h-48 rounded-xl overflow-hidden mb-4 border border-white/10 relative">
+                          <img src={post.cover_url} alt={post.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition duration-500" />
+                        </div>
+                      )}
+
+                      <div className="flex justify-between items-center text-[10px] text-gray-400 font-semibold mb-3 border-b border-white/5 pb-2">
+                        <span className="px-2 py-0.5 rounded border border-purple-500/20 text-purple-400 bg-purple-500/5 font-mono tracking-wider">
+                          WR-{post.id.slice(0, 8).toUpperCase()}
+                        </span>
+                        <span>{formatDate(post.created_at)}</span>
+                      </div>
+
+                      <h3 className="text-lg font-bold text-purple-400 mb-2 leading-tight transition duration-300" style={{ fontFamily: 'Courier New, Courier, monospace' }}>
+                        🎬 {post.title}
+                      </h3>
+
+                      {post.is_premium ? (
+                        <div className="flex items-center gap-2.5 rounded-xl bg-amber-500/5 border border-amber-500/20 px-3 py-2.5 mb-4">
+                          <span className="text-lg shrink-0">🔒</span>
+                          <div>
+                            <p className="text-[10px] font-bold text-amber-300 uppercase tracking-wider mb-0.5">Premium Content Locked</p>
+                            <p className="text-[9px] text-gray-400 leading-relaxed">Download the WryClip app to unlock this script.</p>
+                          </div>
+                        </div>
+                      ) : (
+                        <p className="text-xs text-gray-300 leading-relaxed line-clamp-4 mb-4 pr-1" style={{ fontFamily: 'Courier New, Courier, monospace' }}>
+                          {post.content || "No synopsis or detail content provided."}
+                        </p>
+                      )}
+
+                      {/* Metadata badges row */}
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {post.category && (
+                          <span className="px-2 py-0.5 rounded bg-purple-500/10 border border-purple-500/20 text-[10px] font-bold text-purple-300">
+                            📝 {post.category}
+                          </span>
+                        )}
+                        {post.genre && (
+                          <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[10px] text-gray-300">
+                            🎭 {post.genre}
+                          </span>
+                        )}
+                        {post.script_budget && (
+                          <span className="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/25 text-[10px] text-emerald-400">
+                            💰 {post.script_budget}
+                          </span>
+                        )}
+                        {post.script_episodes && (
+                          <span className="px-2 py-0.5 rounded bg-pink-500/10 border border-pink-500/25 text-[10px] text-pink-400">
+                            🎞️ {post.script_episodes}
+                          </span>
+                        )}
+                        {post.script_language && (
+                          <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[10px] text-gray-300">
+                            🗣️ {post.script_language}
+                          </span>
+                        )}
+                        {post.script_status && (
+                          <span className="px-2 py-0.5 rounded bg-violet-500/10 border border-violet-500/25 text-[10px] text-violet-400">
+                            📝 {post.script_status}
+                          </span>
+                        )}
+                        {post.is_premium && post.price && (
+                          <span className="px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/25 text-[10px] text-amber-300">
+                            💎 ₹{post.price}
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="flex justify-between items-center pt-3 border-t border-white/5">
+                        <span className="text-[9px] tracking-wider text-purple-400 font-bold uppercase flex items-center gap-1">
+                          <span className="w-1.5 h-1.5 rounded-full bg-purple-400"></span>
+                          Verified Original Work
+                        </span>
+
+                        <button
+                          onClick={() => setActiveScript(post)}
+                          className="py-1.5 px-3.5 rounded-lg bg-gradient-to-r from-purple-500 to-indigo-650 text-white text-xs font-bold hover:opacity-90 transition duration-300"
+                        >
+                          Read Work Details
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Custom Print Footer */}
+        <div className="print-only print-footer">
+          <span>WryClip Verified Portfolio</span>
+          <span>© WryClip Ecosystem</span>
+        </div>
+      </div>
+    );
+  };
+
   // 1. WRITER PRO LAYOUT
   const renderWriterProLayout = () => {
     const writerLikes = writerPosts.reduce((sum, p) => sum + (p.likes_count || 0), 0);
-    const emailAddress = profile.email || "mayank0522.s@gmail.com";
+    const emailAddress = "support.wryclip@gmail.com";
     const mailtoUrl = `mailto:${emailAddress}?subject=${encodeURIComponent("WryClip Screenplay Optioning Inquiry")}&body=${encodeURIComponent(`Hi @${profile.username}, we reviewed your Writer Pro screenplay portfolio on WryClip and would like to discuss options / licensing for your scripts...`)}`;
 
     return (
       <div className={`min-h-screen pt-28 pb-20 px-4 md:px-8 max-w-5xl mx-auto flex flex-col gap-8 relative z-10 portfolio-print-wrapper`}>
+        {/* Custom Print Header */}
+        <div className="print-only print-header">
+          <span>WryClip Verified Portfolio — @{profile.username}</span>
+          <span>Exported: {printDateTime}</span>
+        </div>
+
         {/* Background Atmosphere */}
         <div className="fixed inset-0 -z-10 bg-gradient-to-b from-[#050811] via-[#0a101f] to-[#000000] pointer-events-none" />
         <div className="fixed top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-cyan-500/10 blur-[120px] pointer-events-none" />
@@ -429,6 +971,13 @@ export default function PortfolioView({ username, darkMode = true }: { username:
                 </button>
               </div>
 
+              {/* Followers & Following Stats */}
+              <div className="flex justify-center items-center gap-4 text-xs font-semibold text-gray-400 -mt-2">
+                <span><strong className="text-white">{profile.followers_count || 0}</strong> Followers</span>
+                <span className="w-1 h-1 rounded-full bg-white/20"></span>
+                <span><strong className="text-white">{profile.following_count || 0}</strong> Following</span>
+              </div>
+
               <p className="text-xs text-gray-300 leading-relaxed italic">
                 {profile.bio || "Crafting cinematic journeys and original storytelling. Read my screenplays below."}
               </p>
@@ -450,7 +999,7 @@ export default function PortfolioView({ username, darkMode = true }: { username:
                 <div className="bg-white/[0.01] border border-white/5 p-2 rounded-xl flex flex-col items-center">
                   <span className="text-base">🎬</span>
                   <span className="text-sm font-extrabold text-white">{writerPosts.length}</span>
-                  <span className="text-[8px] text-gray-500 uppercase font-black">Scripts</span>
+                  <span className="text-[8px] text-gray-500 uppercase font-black">Writings</span>
                 </div>
                 <div className="bg-white/[0.01] border border-white/5 p-2 rounded-xl flex flex-col items-center">
                   <span className="text-base">❤️</span>
@@ -486,19 +1035,19 @@ export default function PortfolioView({ username, darkMode = true }: { username:
           <div className="lg:col-span-8 flex flex-col gap-6">
             <div className="flex items-center justify-between border-b border-white/10 pb-4">
               <h2 className="text-lg font-bold tracking-tight text-cyan-400">
-                SCREENPLAY SHOWCASE
+                📝 WRITTEN WORKS & CREATIONS
               </h2>
               <span className="text-xs bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 px-3 py-1 rounded-full font-semibold">
-                {writerPosts.length} Screenplays Published
+                {writerPosts.length} Publications
               </span>
             </div>
 
             {writerPosts.length === 0 ? (
               <div className="rounded-3xl border border-white/[0.06] bg-white/[0.01] text-gray-400 p-12 text-center relative overflow-hidden backdrop-blur-md">
                 <span className="text-4xl block mb-3">✨</span>
-                <p className="text-base font-bold text-white mb-1">No Screenplays Published</p>
+                <p className="text-base font-bold text-white mb-1">No Written Works Published</p>
                 <p className="text-xs text-gray-400 max-w-xs mx-auto leading-relaxed">
-                  @{profile.username} has not published any screenplays yet.
+                  @{profile.username} has not published any written works yet.
                 </p>
               </div>
             ) : (
@@ -541,6 +1090,11 @@ export default function PortfolioView({ username, darkMode = true }: { username:
 
                     {/* Metadata badges row */}
                     <div className="flex flex-wrap gap-2 mb-4">
+                      {post.category && (
+                        <span className="px-2 py-0.5 rounded bg-cyan-500/10 border border-cyan-500/20 text-[10px] font-bold text-cyan-300">
+                          📝 {post.category}
+                        </span>
+                      )}
                       {post.genre && (
                         <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[10px] text-gray-300">
                           🎭 {post.genre}
@@ -583,7 +1137,7 @@ export default function PortfolioView({ username, darkMode = true }: { username:
                         onClick={() => setActiveScript(post)}
                         className="py-1.5 px-3.5 rounded-lg bg-gradient-to-r from-cyan-400 to-blue-500 text-black text-xs font-bold hover:opacity-90 transition duration-300"
                       >
-                        Read Script Details
+                        Read Work Details
                       </button>
                     </div>
                   </div>
@@ -660,6 +1214,12 @@ export default function PortfolioView({ username, darkMode = true }: { username:
             )}
           </div>
         </div>
+
+        {/* Custom Print Footer */}
+        <div className="print-only print-footer">
+          <span>WryClip Verified Portfolio</span>
+          <span>© WryClip Ecosystem</span>
+        </div>
       </div>
     );
   };
@@ -667,11 +1227,17 @@ export default function PortfolioView({ username, darkMode = true }: { username:
   // 2. CREATOR PRO LAYOUT
   const renderCreatorProLayout = () => {
     const creatorLikes = creatorPosts.reduce((sum, p) => sum + (p.likes_count || 0), 0);
-    const emailAddress = profile.email || "mayank0522.s@gmail.com";
+    const emailAddress = "support.wryclip@gmail.com";
     const mailtoUrl = `mailto:${emailAddress}?subject=${encodeURIComponent("WryClip Brand Collaboration Proposal")}&body=${encodeURIComponent(`Hi @${profile.username}, we found your Creator Pro video portfolio on WryClip and would like to discuss a project...`)}`;
 
     return (
       <div className={`min-h-screen pt-28 pb-20 px-4 md:px-8 max-w-5xl mx-auto flex flex-col gap-8 relative z-10 portfolio-print-wrapper`}>
+        {/* Custom Print Header */}
+        <div className="print-only print-header">
+          <span>WryClip Verified Portfolio — @{profile.username}</span>
+          <span>Exported: {printDateTime}</span>
+        </div>
+
         {/* Background Atmosphere */}
         <div className="fixed inset-0 -z-10 bg-gradient-to-b from-[#050208] via-[#120c1a] to-[#000000] pointer-events-none" />
         <div className="fixed top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-pink-500/10 blur-[120px] pointer-events-none" />
@@ -763,6 +1329,13 @@ export default function PortfolioView({ username, darkMode = true }: { username:
                 >
                   📥 Save PDF
                 </button>
+              </div>
+
+              {/* Followers & Following Stats */}
+              <div className="flex justify-center items-center gap-4 text-xs font-semibold text-gray-400 -mt-2">
+                <span><strong className="text-white">{profile.followers_count || 0}</strong> Followers</span>
+                <span className="w-1 h-1 rounded-full bg-white/20"></span>
+                <span><strong className="text-white">{profile.following_count || 0}</strong> Following</span>
               </div>
 
               <p className="text-xs text-gray-300 leading-relaxed italic">
@@ -906,15 +1479,15 @@ export default function PortfolioView({ username, darkMode = true }: { username:
               </div>
             )}
 
-            {/* Secondary Creations (Written works for Creators) */}
+            {/* Secondary Creations (Written creations for Creators) */}
             {writerPosts.length > 0 && (
               <div className="mt-12 flex flex-col gap-6">
                 <div className="flex items-center justify-between border-b border-white/10 pb-4">
                   <h3 className="text-base font-bold tracking-tight text-pink-500/80 uppercase">
-                    ✍️ Additional Written Works & Scripts
+                    ✍️ Additional Written Creations
                   </h3>
                   <span className="text-xs bg-white/5 border border-white/10 text-gray-400 px-3 py-1 rounded-full font-semibold">
-                    {writerPosts.length} Written Works
+                    {writerPosts.length} Publications
                   </span>
                 </div>
 
@@ -942,6 +1515,11 @@ export default function PortfolioView({ username, darkMode = true }: { username:
                       </div>
 
                       <div className="flex flex-wrap gap-1.5 mb-2">
+                        {post.category && (
+                          <span className="px-1.5 py-0.5 rounded bg-pink-500/10 border border-pink-500/20 text-[9px] font-bold text-pink-400">
+                            📝 {post.category}
+                          </span>
+                        )}
                         {post.genre && (
                           <span className="px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-[9px] text-gray-300">
                             🎭 {post.genre}
@@ -962,6 +1540,12 @@ export default function PortfolioView({ username, darkMode = true }: { username:
               </div>
             )}
           </div>
+        </div>
+
+        {/* Custom Print Footer */}
+        <div className="print-only print-footer">
+          <span>WryClip Verified Portfolio</span>
+          <span>© WryClip Ecosystem</span>
         </div>
       </div>
     );
@@ -1102,10 +1686,17 @@ export default function PortfolioView({ username, darkMode = true }: { username:
     );
   };
 
+  const renderLayout = () => {
+    if (isCoreUser) {
+      return renderCoreLayout();
+    }
+    return isCreatorTemplate ? renderCreatorProLayout() : renderWriterProLayout();
+  };
+
   return (
     <>
-      {isCreatorTemplate ? renderCreatorProLayout() : renderWriterProLayout()}
-      {renderSharedModal()}
+      {!isPremiumUser ? renderPremiumLockPaywall() : renderLayout()}
+      {isPremiumUser && renderSharedModal()}
     </>
   );
 }
