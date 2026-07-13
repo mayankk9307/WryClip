@@ -857,7 +857,7 @@ export default function PortfolioView({ username, darkMode = true }: { username:
 
         {/* Custom Print Footer */}
         <div className="print-only print-footer">
-          <span>Portfolio URL: {portfolioUrl}</span>
+          <span>WryClip Verified Portfolio</span>
           <span>© WryClip Ecosystem</span>
         </div>
       </div>
@@ -1217,7 +1217,7 @@ export default function PortfolioView({ username, darkMode = true }: { username:
 
         {/* Custom Print Footer */}
         <div className="print-only print-footer">
-          <span>Portfolio URL: {portfolioUrl}</span>
+          <span>WryClip Verified Portfolio</span>
           <span>© WryClip Ecosystem</span>
         </div>
       </div>
@@ -1544,7 +1544,7 @@ export default function PortfolioView({ username, darkMode = true }: { username:
 
         {/* Custom Print Footer */}
         <div className="print-only print-footer">
-          <span>Portfolio URL: {portfolioUrl}</span>
+          <span>WryClip Verified Portfolio</span>
           <span>© WryClip Ecosystem</span>
         </div>
       </div>
