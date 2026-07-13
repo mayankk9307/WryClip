@@ -460,6 +460,40 @@ a:hover, span:hover {
   .portfolio-creation-card span[class*="text-cyan-400"] {
     color: #22d3ee !important;
   }
+
+  /* Print-only helper elements */
+  .print-only {
+    display: block !important;
+  }
+
+  .print-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    padding-bottom: 8px !important;
+    margin-bottom: 20px !important;
+    font-size: 10px !important;
+    color: rgba(255, 255, 255, 0.5) !important;
+    font-family: monospace !important;
+  }
+
+  .print-footer {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+    padding-top: 8px !important;
+    margin-top: 30px !important;
+    font-size: 10px !important;
+    color: rgba(255, 255, 255, 0.5) !important;
+    font-family: monospace !important;
+  }
 }
 
-
+/* Hide print-only elements on screens */
+@media screen {
+  .print-only {
+    display: none !important;
+  }
+}
