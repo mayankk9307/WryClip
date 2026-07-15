@@ -34,6 +34,7 @@ interface Post {
   created_at: string;
   genre?: string | null;
   likes_count?: number;
+  views_count?: number;
 }
 
 interface Stats {
@@ -110,13 +111,17 @@ export default function PortfolioView({ username, darkMode = true }: { username:
         if (fetchedPosts.length > 0) {
           const postIds = fetchedPosts.map((p) => p.id);
 
-          const [likesRes, savesRes] = await Promise.all([
+          const [likesRes, savesRes, viewsRes] = await Promise.all([
             client
               .from("likes")
               .select("post_id")
               .in("post_id", postIds),
             client
               .from("saves")
+              .select("post_id")
+              .in("post_id", postIds),
+            client
+              .from("post_views")
               .select("post_id")
               .in("post_id", postIds),
           ]);
@@ -126,12 +131,18 @@ export default function PortfolioView({ username, darkMode = true }: { username:
             likesMap[like.post_id] = (likesMap[like.post_id] || 0) + 1;
           });
 
-          const postsWithLikes = fetchedPosts.map((p) => ({
+          const viewsMap: Record<string, number> = {};
+          viewsRes.data?.forEach((v) => {
+            viewsMap[v.post_id] = (viewsMap[v.post_id] || 0) + 1;
+          });
+
+          const postsWithStats = fetchedPosts.map((p) => ({
             ...p,
             likes_count: likesMap[p.id] || 0,
+            views_count: viewsMap[p.id] || 0,
           }));
 
-          setPosts(postsWithLikes);
+          setPosts(postsWithStats);
 
           setStats({
             scriptsCount: fetchedPosts.length,
@@ -299,7 +310,7 @@ export default function PortfolioView({ username, darkMode = true }: { username:
           <form onSubmit={handleSearchSubmit} className="flex gap-2 mb-6">
             <input
               type="text"
-              placeholder="Search writer username (e.g. mayank9307)..."
+              placeholder="Search writer username (e.g. anhad_satsangi)..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className={`flex-1 ${darkMode ? "bg-black/40 border-white/10 text-white" : "bg-gray-50 border-black/10 text-black"} border rounded-xl px-4 py-2.5 text-sm placeholder-gray-500 focus:outline-none focus:border-purple-500 transition shadow-inner font-semibold`}
@@ -699,7 +710,7 @@ export default function PortfolioView({ username, darkMode = true }: { username:
                             <div className="w-full h-full bg-gradient-to-br from-purple-500/20 to-indigo-950/40 flex items-center justify-center text-4xl">🎬</div>
                           )}
                           <div className="absolute bottom-2.5 left-2.5 px-2 py-0.5 rounded bg-black/60 text-[9px] font-bold text-white">
-                            👁️ {(post.likes_count || 0) * 4 + 12} Views
+                            👁️ {post.views_count || 0} Views
                           </div>
                         </div>
 
@@ -802,6 +813,9 @@ export default function PortfolioView({ username, darkMode = true }: { username:
                             📝 {post.category}
                           </span>
                         )}
+                        <span className="px-2 py-0.5 rounded bg-blue-500/10 border border-blue-500/25 text-[10px] font-bold text-blue-400">
+                          👁️ {post.views_count || 0} Views
+                        </span>
                         {post.genre && (
                           <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[10px] text-gray-300">
                             🎭 {post.genre}
@@ -1095,6 +1109,9 @@ export default function PortfolioView({ username, darkMode = true }: { username:
                           📝 {post.category}
                         </span>
                       )}
+                      <span className="px-2 py-0.5 rounded bg-blue-500/10 border border-blue-500/25 text-[10px] font-bold text-blue-400">
+                        👁️ {post.views_count || 0} Views
+                      </span>
                       {post.genre && (
                         <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[10px] text-gray-300">
                           🎭 {post.genre}
@@ -1173,7 +1190,7 @@ export default function PortfolioView({ username, darkMode = true }: { username:
                             <div className="w-full h-full bg-gradient-to-br from-cyan-500/20 to-purple-950/40 flex items-center justify-center text-3xl">🎬</div>
                           )}
                           <div className="absolute bottom-2 left-2 px-2 py-0.5 rounded bg-black/60 text-[8px] font-bold text-white">
-                            👁️ {(post.likes_count || 0) * 4 + 12} Views
+                            👁️ {post.views_count || 0} Views
                           </div>
                         </div>
 
@@ -1427,7 +1444,7 @@ export default function PortfolioView({ username, darkMode = true }: { username:
                           <div className="w-full h-full bg-gradient-to-br from-pink-500/20 to-purple-950/40 flex items-center justify-center text-4xl">🎬</div>
                         )}
                         <div className="absolute bottom-2.5 left-2.5 px-2 py-0.5 rounded bg-black/60 text-[9px] font-bold text-white">
-                          👁️ {(post.likes_count || 0) * 4 + 12} Views
+                          👁️ {post.views_count || 0} Views
                         </div>
                       </div>
 
@@ -1520,6 +1537,9 @@ export default function PortfolioView({ username, darkMode = true }: { username:
                             📝 {post.category}
                           </span>
                         )}
+                        <span className="px-1.5 py-0.5 rounded bg-blue-500/10 border border-blue-500/25 text-[9px] font-bold text-blue-400">
+                          👁️ {post.views_count || 0} Views
+                        </span>
                         {post.genre && (
                           <span className="px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-[9px] text-gray-300">
                             🎭 {post.genre}

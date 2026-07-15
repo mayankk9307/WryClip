@@ -210,10 +210,10 @@ export default function AboutPage() {
                 className="w-28 h-28 rounded-full overflow-hidden border-2 border-blue-500/30 mb-4 shadow-[0_0_20px_rgba(59,130,246,0.35)] bg-gradient-to-tr from-blue-500 to-indigo-500 cursor-pointer hover:scale-105 transition-transform duration-300"
                 onClick={() => setSelectedImage("/cto-profile.png")}
               >
-                <img src="/cto-profile.png" alt="Mayank - CTO" className="w-full h-full object-cover" loading="lazy" />
+                <img src="/cto-profile.png" alt="Mayank Kumar - CTO" className="w-full h-full object-cover" loading="lazy" />
               </div>
-              <h3 className="text-lg font-bold mb-1">Mayank</h3>
-              <p className={`text-xs font-medium mb-3 ${darkMode ? "text-gray-400" : "text-gray-500"}`}>Chief Technology Officer</p>
+              <h3 className="text-lg font-bold mb-1">Mayank Kumar</h3>
+              <p className={`text-xs font-medium mb-3 ${darkMode ? "text-gray-400" : "text-gray-500"}`}>Co-Founder & Chief Technology Officer</p>
               <p className={`text-xs leading-relaxed mb-6 ${darkMode ? "text-gray-300" : "text-gray-600"}`}>
                 Responsible for technology strategy, product development, engineering resources and platform architecture.
               </p>
@@ -245,7 +245,7 @@ export default function AboutPage() {
                 <img src="/cmo-profile.png" alt="Anhad Satsangi - CMO" className="w-full h-full object-cover" loading="lazy" />
               </div>
               <h3 className="text-lg font-bold mb-1">Anhad Satsangi</h3>
-              <p className={`text-xs font-medium mb-3 ${darkMode ? "text-gray-400" : "text-gray-500"}`}>Chief Marketing Officer</p>
+              <p className={`text-xs font-medium mb-3 ${darkMode ? "text-gray-400" : "text-gray-500"}`}>Co-Founder & Chief Marketing Officer</p>
               <p className={`text-xs leading-relaxed mb-6 ${darkMode ? "text-gray-300" : "text-gray-600"}`}>
                 Responsible for marketing operations, brand development, public relations and user acquisition.
               </p>
