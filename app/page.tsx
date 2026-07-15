@@ -295,7 +295,7 @@ function HomeContent() {
                   <input
                     type="text"
                     name="hero-search"
-                    placeholder="username  (e.g. mayank9307)"
+                    placeholder="username  (e.g. anhad_satsangi)"
                     className="flex-1 bg-transparent text-sm text-white placeholder-gray-600 outline-none font-semibold min-w-0"
                     required
                   />
@@ -318,18 +318,17 @@ function HomeContent() {
               {[
                 { username: "mayank9307", color: "purple" },
                 { username: "kunjshukla", color: "cyan" },
-                { username: "anhad", color: "pink" },
+                { username: "anhad_satsangi", color: "pink" },
               ].map(({ username, color }) => (
                 <button
                   key={username}
                   onClick={() => { window.location.search = `?writer=${username}`; }}
-                  className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer border ${
-                    color === "purple"
+                  className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer border ${color === "purple"
                       ? "bg-purple-500/10 border-purple-500/20 text-purple-300 hover:bg-purple-500/20"
                       : color === "cyan"
-                      ? "bg-cyan-500/10 border-cyan-500/20 text-cyan-300 hover:bg-cyan-500/20"
-                      : "bg-pink-500/10 border-pink-500/20 text-pink-300 hover:bg-pink-500/20"
-                  }`}
+                        ? "bg-cyan-500/10 border-cyan-500/20 text-cyan-300 hover:bg-cyan-500/20"
+                        : "bg-pink-500/10 border-pink-500/20 text-pink-300 hover:bg-pink-500/20"
+                    }`}
                 >
                   @{username}
                 </button>
@@ -384,11 +383,10 @@ function HomeContent() {
               key={index}
               whileHover={{ scale: 1.05, y: -5 }}
               transition={{ type: "spring", stiffness: 300, damping: 15 }}
-              className={`p-6 rounded-2xl border flex flex-col items-center text-center justify-between transition-all duration-300 ${
-                darkMode
+              className={`p-6 rounded-2xl border flex flex-col items-center text-center justify-between transition-all duration-300 ${darkMode
                   ? "bg-gradient-to-b from-white/5 to-transparent border-white/10 hover:border-purple-500/40 hover:shadow-[0_0_20px_rgba(168,85,247,0.15)]"
                   : "bg-gradient-to-b from-black/5 to-transparent border-black/10 hover:border-purple-500/30 hover:shadow-[0_0_20px_rgba(168,85,247,0.05)]"
-              }`}
+                }`}
             >
               <div className="text-3xl mb-4">{item.icon}</div>
               <h3 className="text-base font-bold mb-2 tracking-tight">{item.title}</h3>
@@ -417,8 +415,8 @@ function HomeContent() {
               key={index}
               onClick={() => setActiveScreenTab(index)}
               className={`px-4 py-2 text-xs font-bold rounded-xl border transition ${activeScreenTab === index
-                  ? "bg-purple-500 border-purple-500 text-white shadow-[0_0_15px_rgba(168,85,247,0.4)]"
-                  : (darkMode ? "bg-white/5 border-white/10 text-gray-400 hover:text-white" : "bg-gray-100 border-gray-200 text-gray-600 hover:text-black")
+                ? "bg-purple-500 border-purple-500 text-white shadow-[0_0_15px_rgba(168,85,247,0.4)]"
+                : (darkMode ? "bg-white/5 border-white/10 text-gray-400 hover:text-white" : "bg-gray-100 border-gray-200 text-gray-600 hover:text-black")
                 }`}
             >
               {screen.badge}
