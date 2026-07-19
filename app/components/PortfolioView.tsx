@@ -694,7 +694,7 @@ export default function PortfolioView({ username, darkMode = true }: { username:
                   <p className="text-xs text-gray-500">@{profile.username} has not published any video projects yet.</p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 video-creations-grid">
                   {creatorPosts.map((post) => (
                     <div
                       key={post.id}
@@ -1174,7 +1174,7 @@ export default function PortfolioView({ username, darkMode = true }: { username:
                   </span>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 video-creations-grid">
                   {creatorPosts.map((post) => (
                     <div
                       key={post.id}
@@ -1428,7 +1428,7 @@ export default function PortfolioView({ username, darkMode = true }: { username:
                 </p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 video-creations-grid">
                 {creatorPosts.map((post) => (
                   <div
                     key={post.id}

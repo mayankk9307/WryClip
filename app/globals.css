@@ -212,6 +212,13 @@ a:hover, span:hover {
     overflow: visible !important;
   }
 
+  /* Force video creations grids to render in 2 columns in PDF print */
+  .video-creations-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 24px !important;
+  }
+
   /* Ensure the overall page outer container has no forced height */
   .min-h-screen {
     min-height: 0 !important;

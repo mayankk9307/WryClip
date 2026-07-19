@@ -13,6 +13,7 @@ export default function Navbar({ darkMode = true, toggleDarkMode }: NavbarProps)
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -124,26 +125,77 @@ export default function Navbar({ darkMode = true, toggleDarkMode }: NavbarProps)
         </a>
 
         {/* Desktop Links */}
-        <div className={`hidden md:flex gap-6 items-center ${darkMode ? "text-gray-300" : "text-gray-600"}`}>
-          {navLinks.map((link, i) => (
-            link.type === "scroll" ? (
-              <span
+        <div 
+          className={`hidden md:flex gap-2 items-center ${darkMode ? "text-gray-300" : "text-gray-600"}`}
+          onMouseLeave={() => setHoveredIndex(null)}
+        >
+          {navLinks.map((link, i) => {
+            const isActive = link.type === "page" 
+              ? pathname === link.path 
+              : (pathname === "/" && link.id === "hero");
+
+            return (
+              <div
                 key={i}
-                onClick={() => handleNavClick(link.id!, link.path)}
-                className={`cursor-pointer hover:underline transition ${darkMode ? "hover:text-white" : "hover:text-black"} ${pathname === "/" ? "font-normal" : "opacity-80"}`}
+                onMouseEnter={() => setHoveredIndex(i)}
+                className="relative px-4 py-2 rounded-xl transition duration-300"
               >
-                {link.label}
-              </span>
-            ) : (
-              <Link
-                key={i}
-                href={link.path}
-                className={`transition hover:underline ${darkMode ? "hover:text-white" : "hover:text-black"} ${pathname === link.path ? (darkMode ? "text-purple-400 font-semibold" : "text-purple-600 font-semibold") : ""}`}
-              >
-                {link.label}
-              </Link>
-            )
-          ))}
+                {/* Sliding Background Pill */}
+                {hoveredIndex === i && (
+                  <motion.div
+                    layoutId="navbar-hover"
+                    className={`absolute inset-0 rounded-xl -z-10 ${
+                      darkMode 
+                        ? "bg-purple-500/10 border border-purple-500/20 shadow-[0_0_20px_rgba(168,85,247,0.15)]" 
+                        : "bg-purple-600/5 border border-purple-600/10 shadow-[0_0_15px_rgba(147,51,234,0.05)]"
+                    }`}
+                    transition={{
+                      type: "spring",
+                      stiffness: 380,
+                      damping: 30
+                    }}
+                  />
+                )}
+
+                {/* Active Underline Dot */}
+                {isActive && (
+                  <motion.div
+                    layoutId="active-indicator"
+                    className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-gradient-to-r from-purple-400 to-blue-500 shadow-[0_0_10px_rgba(168,85,247,0.8)]"
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
+
+                {link.type === "scroll" ? (
+                  <span
+                    onClick={() => handleNavClick(link.id!, link.path)}
+                    className={`cursor-pointer transition-colors duration-300 relative z-10 ${
+                      darkMode ? "hover:text-white" : "hover:text-black"
+                    } ${
+                      isActive 
+                        ? (darkMode ? "text-purple-400 font-semibold" : "text-purple-600 font-semibold") 
+                        : "opacity-80 hover:opacity-100"
+                    }`}
+                  >
+                    {link.label}
+                  </span>
+                ) : (
+                  <Link
+                    href={link.path}
+                    className={`transition-colors duration-300 relative z-10 ${
+                      darkMode ? "hover:text-white" : "hover:text-black"
+                    } ${
+                      isActive 
+                        ? (darkMode ? "text-purple-400 font-semibold" : "text-purple-600 font-semibold") 
+                        : "opacity-80 hover:opacity-100"
+                    }`}
+                  >
+                    {link.label}
+                  </Link>
+                )}
+              </div>
+            );
+          })}
 
           {/* Premium Theme Toggle - Desktop */}
           {toggleDarkMode && (
