@@ -120,7 +120,7 @@ export default function ContactPage() {
               <p className={`text-xs mb-3 ${darkMode ? "text-gray-300" : "text-gray-600"}`}>Direct administrator escalations and official business collaborations:</p>
               <div className="flex flex-col gap-2 text-xs">
                 <div>
-                  <span className="font-semibold">👤 Kunj Shukla (Co-Founder & CEO)</span>
+                  <span className="font-semibold">👤 Kunj Shukla (Founder & CEO)</span>
                   <span className="block text-gray-400">📧 <a href="mailto:shriikunj@gmail.com" className="text-purple-400 hover:underline">shriikunj@gmail.com</a></span>
                 </div>
                 <div>
