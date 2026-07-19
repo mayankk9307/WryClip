@@ -126,14 +126,26 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   "name": "Dronacharya Group of Institutions (DGI), Greater Noida",
                   "description": "Bachelor of Technology (B.Tech) in Computer Science and Engineering (CSE), 2025 – 2029 (Expected)"
                 },
+                "award": [
+                  "Secured 3rd Prize at the Inter-College Startup Pitch Competition during Dron Tech Fest 2026 for presenting NrityaVaani, an AI-powered Bharatanatyam analysis system.",
+                  "Successfully presented the Smart Rescue System poster at Dron Tech Fest, highlighting innovative IoT-based solutions for emergency response and road safety."
+                ],
                 "knowsAbout": [
-                  "Software Engineering",
-                  "Computer Science",
                   "Python",
-                  "Machine Learning",
-                  "Project: NrityaVaani – AI-Driven Bharatanatyam Analysis System (An AI-powered multimodal system for detecting and analyzing Bharatanatyam mudras and dance movements in real time using Python, ML, Computer Vision, AI)",
-                  "Project: Smart Rescue System – IoT-Based Accident Detection (An intelligent emergency response system detecting road accidents and sharing live location details, with an ambulance-priority traffic signal mechanism)",
-                  "Project: Daily AI Tools – AI-Powered Productivity Platform (A web-based platform bringing together everyday AI tools for content generation, text processing, and productivity using HTML, CSS, JS, AI APIs)"
+                  "JavaScript",
+                  "Artificial Intelligence & Machine Learning",
+                  "Computer Vision",
+                  "Web Development",
+                  "UI/UX Design",
+                  "IoT & Embedded Systems",
+                  "Problem Solving",
+                  "Team Collaboration",
+                  "Project Management",
+                  "Hackathons & Innovation Events",
+                  "DronCodeathon",
+                  "Project: NrityaVaani – AI-Driven Bharatanatyam Analysis System (An AI-powered multimodal system designed to detect and analyze Bharatanatyam mudras and dance movements in real time using Python, Machine Learning, Computer Vision, Artificial Intelligence. Helps make learning interactive and accessible.)",
+                  "Project: Daily AI Tools – AI-Powered Productivity Platform (A web-based platform that provides access to a collection of AI-powered tools for everyday productivity and creative tasks using HTML, CSS, JavaScript, AI APIs, Web Technologies.)",
+                  "Project: Smart Rescue System – IoT-Based Emergency Response Concept (An IoT-based concept project focused on improving emergency response during road accidents through intelligent accident detection, live location sharing, and an ambulance-priority traffic signal mechanism. Presented as a poster at Dron Tech Fest. Role: Research, Concept Design, and Poster Presentation. Tech Stack: IoT Sensors, GPS Module, Embedded Systems.)"
                 ]
               },
               {
