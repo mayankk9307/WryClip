@@ -120,7 +120,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 "worksFor": {
                   "@type": "Organization",
                   "@id": "https://wryclip.in/#organization"
-                }
+                },
+                "alumniOf": {
+                  "@type": "EducationalOrganization",
+                  "name": "Dronacharya Group of Institutions (DGI), Greater Noida",
+                  "description": "Bachelor of Technology (B.Tech) in Computer Science and Engineering (CSE), 2025 – 2029 (Expected)"
+                },
+                "knowsAbout": [
+                  "Software Engineering",
+                  "Computer Science",
+                  "Python",
+                  "Machine Learning",
+                  "Project: NrityaVaani – AI-Driven Bharatanatyam Analysis System (An AI-powered multimodal system for detecting and analyzing Bharatanatyam mudras and dance movements in real time using Python, ML, Computer Vision, AI)",
+                  "Project: Smart Rescue System – IoT-Based Accident Detection (An intelligent emergency response system detecting road accidents and sharing live location details, with an ambulance-priority traffic signal mechanism)",
+                  "Project: Daily AI Tools – AI-Powered Productivity Platform (A web-based platform bringing together everyday AI tools for content generation, text processing, and productivity using HTML, CSS, JS, AI APIs)"
+                ]
               },
               {
                 "@context": "https://schema.org",
