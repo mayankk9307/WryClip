@@ -1,5 +1,6 @@
 "use client";
 import { motion, AnimatePresence } from "framer-motion";
+import { Rocket } from "lucide-react";
 
 interface ComingSoonModalProps {
   isOpen: boolean;
@@ -32,7 +33,7 @@ export default function ComingSoonModal({ isOpen, onClose }: ComingSoonModalProp
             
             {/* Pulsing Launching Icon */}
             <div className="w-16 h-16 rounded-2xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 mx-auto mb-6 shadow-[0_0_20px_rgba(168,85,247,0.15)] relative">
-              <span className="text-3xl animate-bounce">🚀</span>
+              <Rocket className="w-8 h-8 text-purple-400" />
               <div className="absolute inset-0 w-full h-full rounded-2xl border border-purple-400 animate-ping opacity-25"></div>
             </div>
 

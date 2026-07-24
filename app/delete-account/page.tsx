@@ -3,6 +3,7 @@ import { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { motion } from "framer-motion";
+import { Trash2, Film, CreditCard, AlertTriangle, CheckCircle } from "lucide-react";
 
 import { usePersistedTheme } from "../components/usePersistedTheme";
 
@@ -90,7 +91,7 @@ export default function DeleteAccountPage() {
 
               <div className="space-y-3.5 mt-4">
                 <div className="flex gap-3">
-                  <span className="text-red-500 shrink-0">🗑️</span>
+                  <Trash2 className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
                   <div>
                     <h4 className={`font-semibold text-xs uppercase tracking-wider ${darkMode ? "text-white" : "text-gray-900"}`}>Database Cleanup</h4>
                     <p className="text-xs text-gray-400 mt-0.5">Your profile name, biography, verified phone number, email, and referral codes are permanently purged from our database.</p>
@@ -98,7 +99,7 @@ export default function DeleteAccountPage() {
                 </div>
 
                 <div className="flex gap-3">
-                  <span className="text-red-500 shrink-0">🎬</span>
+                  <Film className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
                   <div>
                     <h4 className={`font-semibold text-xs uppercase tracking-wider ${darkMode ? "text-white" : "text-gray-900"}`}>Media Files Erased</h4>
                     <p className="text-xs text-gray-400 mt-0.5">All your uploaded vertical reels, series clips, audition tape video files, and screenplays are completely deleted from Cloudinary storage.</p>
@@ -106,7 +107,7 @@ export default function DeleteAccountPage() {
                 </div>
 
                 <div className="flex gap-3">
-                  <span className="text-red-500 shrink-0">💳</span>
+                  <CreditCard className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
                   <div>
                     <h4 className={`font-semibold text-xs uppercase tracking-wider ${darkMode ? "text-white" : "text-gray-900"}`}>Wallet & Financial Wipe</h4>
                     <p className="text-xs text-gray-400 mt-0.5">Linked UPI IDs, withdrawal logs, transaction records, and wallet history are deleted.</p>
@@ -114,8 +115,11 @@ export default function DeleteAccountPage() {
                 </div>
               </div>
 
-              <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-4 mt-6 text-xs text-red-400">
-                <strong>⚠️ Warning:</strong> Account deletion is permanent and cannot be undone. Once deleted, your custom referral score, unlocked written library, and badges are lost forever.
+              <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-4 mt-6 text-xs text-red-400 flex items-start gap-2">
+                <AlertTriangle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
+                <div>
+                  <strong>Warning:</strong> Account deletion is permanent and cannot be undone. Once deleted, your custom referral score, unlocked written library, and badges are lost forever.
+                </div>
               </div>
             </div>
           </div>
@@ -133,9 +137,9 @@ export default function DeleteAccountPage() {
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="bg-green-500/10 border border-green-500/20 p-6 rounded-xl text-center text-green-400"
+                className="bg-green-500/10 border border-green-500/20 p-6 rounded-xl text-center text-green-400 flex flex-col items-center"
               >
-                <span className="text-3xl mb-2 block">✅</span>
+                <CheckCircle className="w-8 h-8 text-green-400 mb-2" />
                 <h4 className="font-bold text-sm">Request Submitted Successfully</h4>
                 <p className="text-xs text-gray-400 mt-2 leading-relaxed">
                   Our administrative support team has received your ticket. We will process your cascading database wipe within 48 hours and send a confirmation email.

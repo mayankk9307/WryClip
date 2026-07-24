@@ -7,6 +7,7 @@ import ComingSoonModal from "./components/ComingSoonModal";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import PortfolioView from "./components/PortfolioView";
+import { Heart, MessageSquare, Share2, TrendingUp, Lock, Search, Users, Clapperboard, Smartphone, Globe, Sparkles, Mail, Download } from "lucide-react";
 
 import { usePersistedTheme } from "./components/usePersistedTheme";
 
@@ -29,21 +30,21 @@ function HomeContent() {
         <div className="w-full h-full bg-gradient-to-b from-purple-950/40 via-black to-black p-4 flex flex-col justify-between relative">
           <div className="absolute right-4 bottom-20 flex flex-col gap-4 text-white text-xs items-center">
             <div className="flex flex-col items-center">
-              <span className="text-xl">❤️</span>
+              <Heart className="w-5 h-5 text-red-500 fill-red-500" />
               <span className="text-[9px] text-gray-400">12.4K</span>
             </div>
             <div className="flex flex-col items-center">
-              <span className="text-xl">💬</span>
+              <MessageSquare className="w-5 h-5 text-white" />
               <span className="text-[9px] text-gray-400">840</span>
             </div>
             <div className="flex flex-col items-center">
-              <span className="text-xl">✈️</span>
+              <Share2 className="w-5 h-5 text-white" />
               <span className="text-[9px] text-gray-400">Share</span>
             </div>
           </div>
 
           <div className="flex justify-between items-center text-[10px] font-bold text-gray-400">
-            <span>🔴 Live Stream</span>
+            <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" /> Live Stream</span>
             <span>v1.2</span>
           </div>
 
@@ -51,7 +52,7 @@ function HomeContent() {
             <span className="text-xs font-bold text-purple-400">@acting_talents</span>
             <p className="text-[10px] text-gray-300 leading-tight">Audition snippet for casting calls. Click to view full series profile!</p>
             <div className="flex items-center gap-1 bg-purple-500/10 border border-purple-500/20 p-1.5 rounded-lg w-fit">
-              <span className="text-[9px]">Viral Boost Applied 🚀</span>
+              <span className="text-[9px] flex items-center gap-1">Viral Boost Applied <TrendingUp className="w-3 h-3 text-purple-400" /></span>
             </div>
           </div>
         </div>
@@ -75,7 +76,7 @@ function HomeContent() {
             <div className="bg-white/5 border border-white/10 p-3 rounded-xl flex flex-col gap-1 shadow-md">
               <div className="flex justify-between items-center">
                 <span className="text-[10px] font-bold text-white">Khamosh Lab (Ghazal)</span>
-                <span className="text-[9px] text-purple-300 font-bold">🔒 Lock: ₹29</span>
+                <span className="text-[9px] text-purple-300 font-bold flex items-center gap-1"><Lock className="w-2.5 h-2.5" /> Lock: ₹29</span>
               </div>
               <p className="text-[9px] text-gray-300 italic">"Khaamosh labon par silsile hain, yaadon ke purane meley hain..."</p>
               <div className="w-full h-1 bg-white/10 rounded overflow-hidden mt-1">
@@ -86,7 +87,7 @@ function HomeContent() {
             <div className="bg-white/5 border border-white/10 p-3 rounded-xl flex flex-col gap-1 opacity-70">
               <div className="flex justify-between items-center">
                 <span className="text-[10px] font-bold text-white">The Last Audition (Screenplay)</span>
-                <span className="text-[9px] text-purple-300 font-bold">🔒 Lock: ₹99</span>
+                <span className="text-[9px] text-purple-300 font-bold flex items-center gap-1"><Lock className="w-2.5 h-2.5" /> Lock: ₹99</span>
               </div>
               <p className="text-[9px] text-gray-400 leading-tight font-mono">SCENE 1 - INT. COFFEE SHOP - NIGHT</p>
             </div>
@@ -227,12 +228,12 @@ function HomeContent() {
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 mt-8">
-          <button
-            onClick={() => setIsComingSoonOpen(true)}
+          <Link
+            href="/download"
             className="px-8 py-3 rounded-2xl bg-gradient-to-r from-purple-500 to-blue-500 hover:scale-105 active:scale-95 transition font-semibold shadow-[0_0_20px_rgba(168,85,247,0.4)] text-white text-sm flex items-center justify-center gap-2 cursor-pointer"
           >
-            Join WryClip
-          </button>
+            <Download className="w-4 h-4" /> Download App
+          </Link>
 
           <a
             href="#why-wryclip"
@@ -260,7 +261,7 @@ function HomeContent() {
             <div className="flex items-center justify-between mb-5">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-purple-500/30 to-cyan-500/20 border border-white/10 flex items-center justify-center text-sm sm:text-base shrink-0">
-                  🔍
+                  <Search className="w-4 h-4 text-purple-400" />
                 </div>
                 <div>
                   <p className="text-[10px] sm:text-[11px] font-black uppercase tracking-[0.12em] text-purple-400 leading-tight">Creator Portfolios</p>
@@ -354,27 +355,27 @@ function HomeContent() {
         <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-6">
           {[
             {
-              icon: "🤝",
+              icon: <Users className="w-6 h-6 text-purple-400" />,
               title: "Find Collaborators",
               desc: "Assemble your dream creative team of filmmakers, casting directors, and actors."
             },
             {
-              icon: "🎬",
+              icon: <Clapperboard className="w-6 h-6 text-purple-400" />,
               title: "Discover Auditions",
               desc: "Apply directly to live casting calls and entertainment opportunities."
             },
             {
-              icon: "📱",
+              icon: <Smartphone className="w-6 h-6 text-purple-400" />,
               title: "Connect with Creators",
               desc: "Build connections with content creators, writers, and filmmakers in India's ecosystem."
             },
             {
-              icon: "🌐",
+              icon: <Globe className="w-6 h-6 text-purple-400" />,
               title: "Build Your Network",
               desc: "Establish your profile and presence within the entertainment industry network."
             },
             {
-              icon: "✨",
+              icon: <Sparkles className="w-6 h-6 text-purple-400" />,
               title: "Showcase Your Talent",
               desc: "Upload acting reels, poetry, ghazals, screenplays, and complete stories."
             }
@@ -388,7 +389,9 @@ function HomeContent() {
                   : "bg-gradient-to-b from-black/5 to-transparent border-black/10 hover:border-purple-500/30 hover:shadow-[0_0_20px_rgba(168,85,247,0.05)]"
                 }`}
             >
-              <div className="text-3xl mb-4">{item.icon}</div>
+              <div className="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center mb-4">
+                {item.icon}
+              </div>
               <h3 className="text-base font-bold mb-2 tracking-tight">{item.title}</h3>
               <p className={`text-xs leading-relaxed ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
                 {item.desc}
@@ -541,7 +544,7 @@ function HomeContent() {
               name: "~ Dhruv",
               handle: "@why_should.i_care",
               link: "https://www.instagram.com/why_should.i_care?igsh=MTgyazUxeXhnZWN4ag==",
-              feedback: "Bringing writers, creators, and the audience together in one place, that’s where the real magic happens. If the execution is strong, this could seriously change how we consume stories. Honestly, this feels like something new and meaningful. Definitely excited to see how this turns out. Waiting for the launch! 🚀✨"
+              feedback: "Bringing writers, creators, and the audience together in one place, that’s where the real magic happens. If the execution is strong, this could seriously change how we consume stories. Honestly, this feels like something new and meaningful. Definitely excited to see how this turns out. Waiting for the launch!"
             },
           ].map((t, i) => (
             <motion.div
@@ -615,9 +618,9 @@ function HomeContent() {
           <div className="flex justify-center gap-4 flex-wrap">
             <Link
               href="/contact"
-              className="px-6 py-2.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 font-semibold text-sm hover:bg-purple-500/20 transition"
+              className="px-6 py-2.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 font-semibold text-sm hover:bg-purple-500/20 transition flex items-center gap-2"
             >
-              📧 Open Support Ticket
+              <Mail className="w-4 h-4" /> Open Support Ticket
             </Link>
             <a
               href="mailto:support.wryclip@gmail.com"

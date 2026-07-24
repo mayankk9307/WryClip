@@ -4,6 +4,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import ComingSoonModal from "../components/ComingSoonModal";
 import { motion } from "framer-motion";
+import { Download, Lock, Home, Film, Briefcase, User } from "lucide-react";
 
 import { usePersistedTheme } from "../components/usePersistedTheme";
 
@@ -81,7 +82,7 @@ export default function DownloadPage() {
                 whileTap={{ scale: 0.98 }}
                 className="px-6 py-2.5 rounded-xl border bg-purple-500/10 border-purple-500/20 text-purple-400 font-semibold text-sm flex items-center gap-2 hover:bg-purple-500/20 transition cursor-pointer"
               >
-                📥 Direct APK Download (Android)
+                <Download className="w-4 h-4 text-purple-400" /> Direct APK Download (Android)
               </motion.button>
               <span className={`text-[10px] ${darkMode ? "text-gray-500" : "text-gray-400"}`}>Latest version v1.2.0 • Play Store Certified</span>
             </div>
@@ -119,8 +120,8 @@ export default function DownloadPage() {
                     <div className="absolute -right-4 -bottom-4 w-12 h-12 bg-purple-500/20 rounded-full blur-xl"></div>
                     <div className="text-[10px] text-purple-300 font-bold uppercase tracking-wider">Poetry Library</div>
                     <div className="text-[11px] font-bold text-white">Khamosh Lab (Ghazal)</div>
-                    <div className="text-[9px] text-gray-400 flex justify-between">
-                      <span>🔒 Lock Fee</span>
+                    <div className="text-[9px] text-gray-400 flex justify-between items-center">
+                      <span className="flex items-center gap-1"><Lock className="w-2.5 h-2.5 text-purple-300" /> Lock Fee</span>
                       <span className="text-purple-300 font-bold">₹29</span>
                     </div>
                   </div>
@@ -138,10 +139,10 @@ export default function DownloadPage() {
 
                 {/* Bottom navigation inside phone */}
                 <div className="w-full flex justify-around items-center border-t border-white/15 pt-2.5 text-xs text-gray-400">
-                  <span>🏠</span>
-                  <span className="text-purple-400 font-bold">🎬</span>
-                  <span>💼</span>
-                  <span>👤</span>
+                  <Home className="w-3.5 h-3.5" />
+                  <Film className="w-3.5 h-3.5 text-purple-400 font-bold" />
+                  <Briefcase className="w-3.5 h-3.5" />
+                  <User className="w-3.5 h-3.5" />
                 </div>
 
               </div>

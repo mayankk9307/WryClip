@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { Download } from "lucide-react";
 
 interface NavbarProps {
   darkMode?: boolean;
@@ -236,9 +237,9 @@ export default function Navbar({ darkMode = true, toggleDarkMode }: NavbarProps)
         <div className="hidden md:flex gap-4">
           <Link
             href="/download"
-            className="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-blue-500 hover:scale-105 active:scale-95 transition font-medium text-white shadow-[0_0_15px_rgba(168,85,247,0.3)] text-sm"
+            className="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-blue-500 hover:scale-105 active:scale-95 transition font-medium text-white shadow-[0_0_15px_rgba(168,85,247,0.3)] text-sm flex items-center gap-1.5"
           >
-            Download App
+            <Download className="w-4 h-4" /> Download App
           </Link>
         </div>
 
@@ -336,9 +337,9 @@ export default function Navbar({ darkMode = true, toggleDarkMode }: NavbarProps)
             <Link
               href="/download"
               onClick={() => setMenuOpen(false)}
-              className="w-full py-4 mt-2 rounded-xl bg-gradient-to-r from-purple-500 to-blue-500 hover:scale-[1.02] active:scale-95 transition-all font-bold shadow-[0_0_20px_rgba(168,85,247,0.4)] text-white text-center"
+              className="w-full py-4 mt-2 rounded-xl bg-gradient-to-r from-purple-500 to-blue-500 hover:scale-[1.02] active:scale-95 transition-all font-bold shadow-[0_0_20px_rgba(168,85,247,0.4)] text-white text-center flex items-center justify-center gap-2"
             >
-              Download App
+              <Download className="w-4 h-4" /> Download App
             </Link>
           </motion.div>
         )}

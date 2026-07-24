@@ -4,6 +4,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { motion, AnimatePresence } from "framer-motion";
 
+import { Mail, CreditCard, Scale, User, Send } from "lucide-react";
 import { usePersistedTheme } from "../components/usePersistedTheme";
 
 export default function ContactPage() {
@@ -88,29 +89,29 @@ export default function ContactPage() {
             <h2 className="text-2xl font-bold mb-2">Support Channels</h2>
 
             <div className={`p-5 rounded-xl border flex gap-4 ${darkMode ? "bg-white/5 border-white/10" : "bg-gray-50 border-gray-200"}`}>
-              <span className="text-2xl shrink-0">📧</span>
+              <Mail className="w-6 h-6 shrink-0 text-purple-400 mt-0.5" />
               <div>
                 <h3 className="font-semibold text-sm">General Support & Feedback</h3>
                 <p className={`text-xs mt-1 mb-2 ${darkMode ? "text-gray-400" : "text-gray-600"}`}>For app issues, registration problems, or feedback</p>
-                <a href="mailto:support.wryclip@gmail.com" className="text-sm text-purple-400 hover:text-purple-300 hover:underline transition font-medium">support.wryclip@gmail.com</a>
+                <a href="mailto:support.wryclip@gmail.com" className="text-sm text-purple-400 hover:text-purple-300 hover:underline transition font-medium flex items-center gap-1.5"><Mail className="w-3.5 h-3.5" /> support.wryclip@gmail.com</a>
               </div>
             </div>
 
             <div className={`p-5 rounded-xl border flex gap-4 ${darkMode ? "bg-white/5 border-white/10" : "bg-gray-50 border-gray-200"}`}>
-              <span className="text-2xl shrink-0">💳</span>
+              <CreditCard className="w-6 h-6 shrink-0 text-purple-400 mt-0.5" />
               <div>
                 <h3 className="font-semibold text-sm">Creator Wallet & Payout Support</h3>
                 <p className={`text-xs mt-1 mb-2 ${darkMode ? "text-gray-400" : "text-gray-600"}`}>For UPI payouts, wallet balance, or commissions splits</p>
-                <a href="mailto:billing.wryclip@gmail.com" className="text-sm text-purple-400 hover:text-purple-300 hover:underline transition font-medium">billing.wryclip@gmail.com</a>
+                <a href="mailto:billing.wryclip@gmail.com" className="text-sm text-purple-400 hover:text-purple-300 hover:underline transition font-medium flex items-center gap-1.5"><Mail className="w-3.5 h-3.5" /> billing.wryclip@gmail.com</a>
               </div>
             </div>
 
             <div className={`p-5 rounded-xl border flex gap-4 ${darkMode ? "bg-white/5 border-white/10" : "bg-gray-50 border-gray-200"}`}>
-              <span className="text-2xl shrink-0">⚖️</span>
+              <Scale className="w-6 h-6 shrink-0 text-purple-400 mt-0.5" />
               <div>
                 <h3 className="font-semibold text-sm">DMCA & Copyright Legal</h3>
                 <p className={`text-xs mt-1 mb-2 ${darkMode ? "text-gray-400" : "text-gray-600"}`}>For reporting copyright violations or content removal requests</p>
-                <a href="mailto:legal.wryclip@gmail.com" className="text-sm text-purple-400 hover:text-purple-300 hover:underline transition font-medium">legal.wryclip@gmail.com</a>
+                <a href="mailto:legal.wryclip@gmail.com" className="text-sm text-purple-400 hover:text-purple-300 hover:underline transition font-medium flex items-center gap-1.5"><Mail className="w-3.5 h-3.5" /> legal.wryclip@gmail.com</a>
               </div>
             </div>
 
@@ -118,18 +119,18 @@ export default function ContactPage() {
               }`}>
               <h3 className="font-bold text-sm text-purple-400 mb-1">Escalation & Partnerships</h3>
               <p className={`text-xs mb-3 ${darkMode ? "text-gray-300" : "text-gray-600"}`}>Direct administrator escalations and official business collaborations:</p>
-              <div className="flex flex-col gap-2 text-xs">
+              <div className="flex flex-col gap-2.5 text-xs">
                 <div>
-                  <span className="font-semibold">👤 Kunj Shukla (Founder & CEO)</span>
-                  <span className="block text-gray-400">📧 <a href="mailto:shriikunj@gmail.com" className="text-purple-400 hover:underline">shriikunj@gmail.com</a></span>
+                  <span className="font-semibold flex items-center gap-1.5"><User className="w-3.5 h-3.5 text-purple-400" /> Kunj Shukla (Founder & CEO)</span>
+                  <span className="block text-gray-400 flex items-center gap-1.5 mt-0.5 ml-5"><Mail className="w-3.5 h-3.5 text-purple-400 shrink-0" /> <a href="mailto:shriikunj@gmail.com" className="text-purple-400 hover:underline">shriikunj@gmail.com</a></span>
                 </div>
                 <div>
-                  <span className="font-semibold">👤 Mayank Kumar (Co-Founder & CTO)</span>
-                  <span className="block text-gray-400">📧 <a href="mailto:mayank0522.s@gmail.com" className="text-purple-400 hover:underline">mayank0522.s@gmail.com</a></span>
+                  <span className="font-semibold flex items-center gap-1.5"><User className="w-3.5 h-3.5 text-purple-400" /> Mayank Kumar (Co-Founder & CTO)</span>
+                  <span className="block text-gray-400 flex items-center gap-1.5 mt-0.5 ml-5"><Mail className="w-3.5 h-3.5 text-purple-400 shrink-0" /> <a href="mailto:mayank0522.s@gmail.com" className="text-purple-400 hover:underline">mayank0522.s@gmail.com</a></span>
                 </div>
                 <div>
-                  <span className="font-semibold">👤 Anhad Satsangi (Co-Founder & CMO)</span>
-                  <span className="block text-gray-400">📧 <a href="mailto:anhadsatsangi05@gmail.com" className="text-purple-400 hover:underline">anhadsatsangi05@gmail.com</a></span>
+                  <span className="font-semibold flex items-center gap-1.5"><User className="w-3.5 h-3.5 text-purple-400" /> Anhad Satsangi (Co-Founder & CMO)</span>
+                  <span className="block text-gray-400 flex items-center gap-1.5 mt-0.5 ml-5"><Mail className="w-3.5 h-3.5 text-purple-400 shrink-0" /> <a href="mailto:anhadsatsangi05@gmail.com" className="text-purple-400 hover:underline">anhadsatsangi05@gmail.com</a></span>
                 </div>
               </div>
             </div>
@@ -238,7 +239,11 @@ export default function ContactPage() {
                     >
                       {isSubmitting ? (
                         <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                      ) : "Send Message 🚀"}
+                      ) : (
+                        <span className="flex items-center gap-2">
+                          Send Message <Send className="w-4 h-4" />
+                        </span>
+                      )}
                     </button>
                   </motion.form>
                 )}

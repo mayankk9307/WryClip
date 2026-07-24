@@ -3,6 +3,7 @@ import { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { motion } from "framer-motion";
+import { Rocket, Clapperboard, Lock, Flame, Mail } from "lucide-react";
 
 import { usePersistedTheme } from "../components/usePersistedTheme";
 
@@ -100,7 +101,7 @@ export default function AboutPage() {
 
             <div className={`p-6 rounded-xl border flex gap-4 ${darkMode ? "bg-white/5 border-white/10" : "bg-gray-50 border-gray-200"}`}>
               <div className="w-10 h-10 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-400 shrink-0">
-                🚀
+                <Rocket className="w-5 h-5" />
               </div>
               <div>
                 <h3 className="text-lg font-semibold mb-2">The Reels & Series Feed</h3>
@@ -112,7 +113,7 @@ export default function AboutPage() {
 
             <div className={`p-6 rounded-xl border flex gap-4 ${darkMode ? "bg-white/5 border-white/10" : "bg-gray-50 border-gray-200"}`}>
               <div className="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-400 shrink-0">
-                🎬
+                <Clapperboard className="w-5 h-5" />
               </div>
               <div>
                 <h3 className="text-lg font-semibold mb-2">Studios & Casting Marketplace</h3>
@@ -124,7 +125,7 @@ export default function AboutPage() {
 
             <div className={`p-6 rounded-xl border flex gap-4 ${darkMode ? "bg-white/5 border-white/10" : "bg-gray-50 border-gray-200"}`}>
               <div className="w-10 h-10 rounded-lg bg-pink-500/10 flex items-center justify-center text-pink-400 shrink-0">
-                💎
+                <Lock className="w-5 h-5" />
               </div>
               <div>
                 <h3 className="text-lg font-semibold mb-2">Pay-To-Unlock Written Content</h3>
@@ -136,12 +137,12 @@ export default function AboutPage() {
 
             <div className={`p-6 rounded-xl border flex gap-4 ${darkMode ? "bg-white/5 border-white/10" : "bg-gray-50 border-gray-200"}`}>
               <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400 shrink-0">
-                🔥
+                <Flame className="w-5 h-5" />
               </div>
               <div>
                 <h3 className="text-lg font-semibold mb-2">Gamified Referrals</h3>
                 <p className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
-                  Share WryClip with friends, climb referral tiers, and earn permanent algorithmic boosts (like the "Viral Boost 🚀" or "Featured Creator ⭐" badge) to skyrocket your reach.
+                  Share WryClip with friends, climb referral tiers, and earn permanent algorithmic boosts (like the "Viral Boost" or "Featured Creator" badge) to skyrocket your reach.
                 </p>
               </div>
             </div>
@@ -187,7 +188,7 @@ export default function AboutPage() {
               </p>
               <div className="mt-auto flex flex-col gap-2 items-center">
                 <a href="mailto:shriikunj@gmail.com" className="text-xs text-purple-400 font-semibold hover:underline flex items-center gap-1.5">
-                  <span>📧</span> shriikunj@gmail.com
+                  <Mail className="w-3.5 h-3.5" /> shriikunj@gmail.com
                 </a>
                 <a
                   href="https://www.linkedin.com/in/kunj-shukla-742493342?utm_source=share_via&utm_content=profile&utm_medium=member_android"
@@ -219,7 +220,7 @@ export default function AboutPage() {
               </p>
               <div className="mt-auto flex flex-col gap-2 items-center">
                 <a href="mailto:mayank0522.s@gmail.com" className="text-xs text-blue-400 font-semibold hover:underline flex items-center gap-1.5">
-                  <span>📧</span> mayank0522.s@gmail.com
+                  <Mail className="w-3.5 h-3.5" /> mayank0522.s@gmail.com
                 </a>
                 <a
                   href="https://www.linkedin.com/in/mayank-kumar-850255381?utm_source=share_via&utm_content=profile&utm_medium=member_android"
@@ -251,7 +252,7 @@ export default function AboutPage() {
               </p>
               <div className="mt-auto flex flex-col gap-2 items-center">
                 <a href="mailto:anhadsatsangi05@gmail.com" className="text-xs text-pink-400 font-semibold hover:underline flex items-center gap-1.5">
-                  <span>📧</span> anhadsatsangi05@gmail.com
+                  <Mail className="w-3.5 h-3.5" /> anhadsatsangi05@gmail.com
                 </a>
                 <a
                   href="https://www.linkedin.com/in/anhadsatsangi?utm_source=share_via&utm_content=profile&utm_medium=member_android"

@@ -17,7 +17,7 @@ export default function Home() {
     setPhoneError("");
     const strippedPhone = formData.phone.replace(/\D/g, "");
     if (strippedPhone.length !== 10) {
-      setPhoneError("Please enter a valid 10-digit mobile number! 📱");
+      setPhoneError("Please enter a valid 10-digit mobile number!");
       return;
     }
 
@@ -106,7 +106,7 @@ export default function Home() {
               name: "Dhruv", 
               handle: "@why_should.i_care", 
               link: "https://www.instagram.com/why_should.i_care?igsh=MTgyazUxeXhnZWN4ag==", 
-              feedback: "Bringing writers, creators, and the audience together in one place, that’s where the real magic happens. If the execution is strong, this could seriously change how we consume stories. Honestly, this feels like something new and meaningful. Definitely excited to see how this turns out. Waiting for the launch! 🚀✨" 
+              feedback: "Bringing writers, creators, and the audience together in one place, that’s where the real magic happens. If the execution is strong, this could seriously change how we consume stories. Honestly, this feels like something new and meaningful. Definitely excited to see how this turns out. Waiting for the launch!" 
             },
           ].map((t, i) => (
             <motion.div

@@ -3,7 +3,7 @@ import { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { motion, AnimatePresence } from "framer-motion";
-
+import { AlertTriangle, ShieldAlert } from "lucide-react";
 import { usePersistedTheme } from "../components/usePersistedTheme";
 
 export default function CopyrightPolicyPage() {
@@ -111,7 +111,7 @@ export default function CopyrightPolicyPage() {
             </div>
 
             <div className={`p-6 rounded-xl border border-yellow-500/20 ${darkMode ? "bg-yellow-500/5 text-yellow-200" : "bg-yellow-50 text-yellow-800"}`}>
-              <h3 className="font-bold text-sm mb-2">⚠️ Important Disclaimer</h3>
+              <h3 className="font-bold text-sm mb-2 flex items-center gap-1.5"><AlertTriangle className="w-4 h-4 text-yellow-400 shrink-0" /> Important Disclaimer</h3>
               <p className="text-xs leading-relaxed">
                 Under DMCA and platform rules, submitting false or bad-faith copyright claims can result in legal liability, damage awards, and immediate termination of your WryClip account.
               </p>
@@ -259,7 +259,11 @@ export default function CopyrightPolicyPage() {
                     >
                       {isSubmitting ? (
                         <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                      ) : "Submit Legal Report 🚨"}
+                      ) : (
+                        <span className="flex items-center gap-2">
+                          Submit Legal Report <ShieldAlert className="w-4 h-4" />
+                        </span>
+                      )}
                     </button>
                   </motion.form>
                 )}

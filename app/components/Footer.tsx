@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { Download } from "lucide-react";
 
 export default function Footer({ darkMode = true }: { darkMode?: boolean }) {
   const [email, setEmail] = useState("");
@@ -112,7 +113,7 @@ export default function Footer({ darkMode = true }: { darkMode?: boolean }) {
               <a href="/#faq" className="hover:text-purple-400 hover:underline transition">FAQs</a>
             </li>
             <li>
-              <Link href="/download" className="hover:text-purple-400 hover:underline transition font-semibold">Download App 🚀</Link>
+              <Link href="/download" className="hover:text-purple-400 hover:underline transition font-semibold flex items-center gap-1.5"><Download className="w-3.5 h-3.5 text-purple-400" /> Download App</Link>
             </li>
           </ul>
         </div>
@@ -178,7 +179,7 @@ export default function Footer({ darkMode = true }: { darkMode?: boolean }) {
               animate={{ opacity: 1, y: 0 }}
               className="text-xs text-green-400 font-medium mt-1"
             >
-              Successfully joined! We'll keep you in the loop. 🌟
+              Successfully joined! We'll keep you in the loop.
             </motion.p>
           )}
         </div>
