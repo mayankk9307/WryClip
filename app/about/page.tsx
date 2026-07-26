@@ -179,7 +179,15 @@ export default function AboutPage() {
                 className="w-28 h-28 rounded-full overflow-hidden border-2 border-purple-500/30 mb-4 shadow-[0_0_20px_rgba(168,85,247,0.35)] bg-gradient-to-tr from-purple-500 to-indigo-500 cursor-pointer hover:scale-105 transition-transform duration-300"
                 onClick={() => setSelectedImage("/ceo-profile.png")}
               >
-                <img src="/ceo-profile.png" alt="Kunj Shukla - CEO" className="w-full h-full object-cover" loading="lazy" />
+                <img
+                  src="/ceo-profile.png"
+                  alt="Kunj Shukla - Founder & CEO of WryClip"
+                  title="Kunj Shukla - CEO"
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                  width={112}
+                  height={112}
+                />
               </div>
               <h3 className="text-lg font-bold mb-1">Kunj Shukla</h3>
               <p className={`text-xs font-medium mb-3 ${darkMode ? "text-gray-400" : "text-gray-500"}`}>Founder & Chief Executive Officer</p>
@@ -211,7 +219,15 @@ export default function AboutPage() {
                 className="w-28 h-28 rounded-full overflow-hidden border-2 border-blue-500/30 mb-4 shadow-[0_0_20px_rgba(59,130,246,0.35)] bg-gradient-to-tr from-blue-500 to-indigo-500 cursor-pointer hover:scale-105 transition-transform duration-300"
                 onClick={() => setSelectedImage("/cto-profile.png")}
               >
-                <img src="/cto-profile.png" alt="Mayank Kumar - CTO" className="w-full h-full object-cover" loading="lazy" />
+                <img
+                  src="/cto-profile.png"
+                  alt="Mayank Kumar - Co-Founder & CTO of WryClip"
+                  title="Mayank Kumar - CTO"
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                  width={112}
+                  height={112}
+                />
               </div>
               <h3 className="text-lg font-bold mb-1">Mayank Kumar</h3>
               <p className={`text-xs font-medium mb-3 ${darkMode ? "text-gray-400" : "text-gray-500"}`}>Co-Founder & Chief Technology Officer</p>
@@ -243,7 +259,15 @@ export default function AboutPage() {
                 className="w-28 h-28 rounded-full overflow-hidden border-2 border-pink-500/30 mb-4 shadow-[0_0_20px_rgba(236,72,153,0.35)] bg-gradient-to-tr from-pink-500 to-purple-500 cursor-pointer hover:scale-105 transition-transform duration-300"
                 onClick={() => setSelectedImage("/cmo-profile.png")}
               >
-                <img src="/cmo-profile.png" alt="Anhad Satsangi - CMO" className="w-full h-full object-cover" loading="lazy" />
+                <img
+                  src="/cmo-profile.png"
+                  alt="Anhad Satsangi - Co-Founder & CMO of WryClip"
+                  title="Anhad Satsangi - CMO"
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                  width={112}
+                  height={112}
+                />
               </div>
               <h3 className="text-lg font-bold mb-1">Anhad Satsangi</h3>
               <p className={`text-xs font-medium mb-3 ${darkMode ? "text-gray-400" : "text-gray-500"}`}>Co-Founder & Chief Marketing Officer</p>

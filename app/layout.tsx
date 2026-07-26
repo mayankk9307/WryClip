@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     siteName: "WryClip",
     images: [
       {
-        url: "/bg-logo.jpeg",
+        url: "https://wryclip.in/bg-logo.jpeg",
         width: 1200,
         height: 630,
         alt: "WryClip Brand Banner Logo"
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "WryClip – Creator Ecosystem for Actors, Writers, Creators & Filmmakers",
     description: "WryClip connects actors, writers, creators, filmmakers and casting professionals. Discover auditions, collaborations and creative opportunities in one ecosystem.",
-    images: ["/bg-logo.jpeg"]
+    images: ["https://wryclip.in/bg-logo.jpeg"]
   }
 };
 

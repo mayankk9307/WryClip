@@ -209,7 +209,16 @@ function HomeContent() {
           transition={{ duration: 1 }}
           className="mb-4 relative w-20 h-20 md:w-24 md:h-24 mx-auto rounded-2xl overflow-hidden border border-purple-500/30 shadow-[0_0_25px_rgba(168,85,247,0.35)] bg-black"
         >
-          <img src="/bg-logo.jpeg" alt="WryClip Logo" className="w-full h-full object-cover" loading="eager" fetchPriority="high" />
+          <img
+            src="/bg-logo.jpeg"
+            alt="WryClip Creator Ecosystem Logo"
+            title="WryClip Brand Logo"
+            className="w-full h-full object-cover"
+            loading="eager"
+            fetchPriority="high"
+            width={96}
+            height={96}
+          />
         </motion.div>
 
         <motion.h1
@@ -440,9 +449,12 @@ function HomeContent() {
                 {phoneScreens[activeScreenTab].image ? (
                   <img
                     src={phoneScreens[activeScreenTab].image}
-                    alt={phoneScreens[activeScreenTab].title}
+                    alt={`WryClip Mobile App Preview - ${phoneScreens[activeScreenTab].title}`}
+                    title={phoneScreens[activeScreenTab].title}
                     className="w-full h-[calc(100%-20px)] object-contain object-top"
                     loading="lazy"
+                    width={224}
+                    height={445}
                   />
                 ) : (
                   phoneScreens[activeScreenTab].ui
