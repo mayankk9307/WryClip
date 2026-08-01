@@ -662,12 +662,9 @@ export default function PortfolioView({ username, darkMode = true }: { username:
               </div>
 
               <div className="flex flex-wrap gap-2 justify-center items-center">
-                <span className="px-2.5 py-0.5 rounded-full bg-purple-500/10 border border-purple-500/25 text-[10px] font-bold text-purple-300">
-                  {profile.role || "Core Member"}
-                </span>
-                <span className="px-2 py-0.5 rounded-full bg-purple-500/10 border border-purple-500/25 text-[9px] font-bold text-purple-300 flex items-center gap-1">
+                <span className="px-2.5 py-0.5 rounded-full bg-purple-500/10 border border-purple-500/25 text-[10px] font-bold text-purple-300 flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse"></span>
-                  Core Pro
+                  {profile.role?.toLowerCase() === "core" ? "Core Pro" : (profile.role || "Core Pro")}
                 </span>
                 <button
                   onClick={handlePrint}
@@ -1054,16 +1051,18 @@ export default function PortfolioView({ username, darkMode = true }: { username:
               </div>
 
               <div className="flex flex-wrap gap-2 justify-center items-center">
-                <span className="px-2.5 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/25 text-[10px] font-bold text-cyan-300">
-                  {profile.role || "Screenwriter"}
-                </span>
+                {profile.role && profile.role.toLowerCase() !== "writer pro" && profile.role.toLowerCase() !== "writer" && (
+                  <span className="px-2.5 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/25 text-[10px] font-bold text-cyan-300">
+                    {profile.role}
+                  </span>
+                )}
                 {isWriterPro ? (
-                  <span className="px-2 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/25 text-[9px] font-bold text-cyan-300 flex items-center gap-1">
+                  <span className="px-2.5 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/25 text-[10px] font-bold text-cyan-300 flex items-center gap-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
                     Writer Pro
                   </span>
                 ) : (
-                  <span className="px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-[9px] font-medium text-gray-400">
+                  <span className="px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-[9px] font-medium text-gray-400">
                     Standard
                   </span>
                 )}
@@ -1440,16 +1439,18 @@ export default function PortfolioView({ username, darkMode = true }: { username:
               </div>
 
               <div className="flex flex-wrap gap-2 justify-center items-center">
-                <span className="px-2.5 py-0.5 rounded-full bg-pink-500/10 border border-pink-500/25 text-[10px] font-bold text-pink-400">
-                  {profile.role || "Creator"}
-                </span>
+                {profile.role && profile.role.toLowerCase() !== "creator pro" && profile.role.toLowerCase() !== "creator" && (
+                  <span className="px-2.5 py-0.5 rounded-full bg-pink-500/10 border border-pink-500/25 text-[10px] font-bold text-pink-400">
+                    {profile.role}
+                  </span>
+                )}
                 {isWriterPro ? (
-                  <span className="px-2 py-0.5 rounded-full bg-pink-500/10 border border-pink-500/25 text-[9px] font-bold text-pink-400 flex items-center gap-1">
+                  <span className="px-2.5 py-0.5 rounded-full bg-pink-500/10 border border-pink-500/25 text-[10px] font-bold text-pink-400 flex items-center gap-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-pink-400 animate-pulse"></span>
                     Creator Pro
                   </span>
                 ) : (
-                  <span className="px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-[9px] font-medium text-gray-400">
+                  <span className="px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-[9px] font-medium text-gray-400">
                     Standard
                   </span>
                 )}
