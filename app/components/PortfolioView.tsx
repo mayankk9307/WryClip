@@ -54,6 +54,7 @@ export default function PortfolioView({ username, darkMode = true }: { username:
   const [searchQuery, setSearchQuery] = useState("");
   const [copiedScriptId, setCopiedScriptId] = useState<string | null>(null);
   const [printDateTime, setPrintDateTime] = useState("");
+  const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
 
   useEffect(() => {
     setPrintDateTime(new Date().toLocaleString("en-US", {
@@ -184,6 +185,50 @@ export default function PortfolioView({ username, darkMode = true }: { username:
       .join("")
       .substring(0, 2)
       .toUpperCase();
+  };
+
+  /**
+   * Automatically transforms low-resolution avatar URLs (e.g. Google OAuth s96-c)
+   * into crystal-clear 1024px HD quality URLs for high-DPI displays.
+   */
+  const getHighResAvatarUrl = (url: string | null | undefined): string => {
+    if (!url || typeof url !== "string" || !url.trim()) return "";
+    let highRes = url.trim();
+
+    // 1. Google OAuth avatar URLs (lh3.googleusercontent.com, etc.) -> upgrade to =s512-c
+    if (highRes.includes("googleusercontent.com")) {
+      if (highRes.includes("=s")) {
+        highRes = highRes.replace(/=s\d+(-[a-z0-9]+)?/g, "=s512-c");
+      } else if (highRes.match(/\/s\d+(-[a-z0-9]+)?\//)) {
+        highRes = highRes.replace(/\/s\d+(-[a-z0-9]+)?\//g, "/s512-c/");
+      } else if (highRes.includes("?")) {
+        highRes = highRes.replace(/sz=\d+/g, "sz=512");
+        if (!highRes.includes("sz=512")) highRes = `${highRes}&sz=512`;
+      } else {
+        highRes = `${highRes}=s512-c`;
+      }
+    }
+    // 2. Gravatar URLs -> upgrade to 512px
+    else if (highRes.includes("gravatar.com")) {
+      highRes = highRes.replace(/s=\d+/g, "s=512").replace(/size=\d+/g, "size=512");
+      if (!highRes.includes("s=512")) {
+        highRes = highRes.includes("?") ? `${highRes}&s=512` : `${highRes}?s=512`;
+      }
+    }
+    // 3. Supabase Storage URLs -> optimize quality & scale parameters
+    else if (highRes.includes("supabase.co") || highRes.includes("supabase.in")) {
+      highRes = highRes.replace(/width=\d+/g, "width=800").replace(/height=\d+/g, "height=800").replace(/quality=\d+/g, "quality=95");
+    }
+    // 4. Facebook Graph API avatars
+    else if (highRes.includes("graph.facebook.com")) {
+      highRes = highRes.replace(/type=\w+/g, "type=large").replace(/width=\d+/g, "width=512").replace(/height=\d+/g, "height=512");
+    }
+    // 5. Unsplash CDN images
+    else if (highRes.includes("images.unsplash.com")) {
+      highRes = highRes.replace(/w=\d+/g, "w=800").replace(/q=\d+/g, "q=95");
+    }
+
+    return highRes;
   };
 
   const formatDate = (dateString: string) => {
@@ -559,16 +604,31 @@ export default function PortfolioView({ username, darkMode = true }: { username:
               <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/10 rounded-full blur-2xl pointer-events-none"></div>
 
               <div className="shrink-0 relative">
-                <div className="w-28 h-28 rounded-full overflow-hidden flex items-center justify-center border-2 border-purple-500 shadow-[0_0_15px_rgba(168,85,247,0.5)] mx-auto relative">
+                <div
+                  className="w-32 h-32 rounded-full overflow-hidden flex items-center justify-center border-2 border-purple-500 shadow-[0_0_20px_rgba(168,85,247,0.5)] mx-auto relative group cursor-pointer hover:border-purple-400 transition-all duration-300 transform-gpu hover:scale-105"
+                  onClick={() => setIsAvatarModalOpen(true)}
+                  title="Click for HD Profile View"
+                >
                   {profile.avatar_url ? (
                     <img
-                      src={profile.avatar_url}
+                      src={getHighResAvatarUrl(profile.avatar_url)}
                       alt={profile.full_name}
-                      className="w-full h-full object-cover"
+                      referrerPolicy="no-referrer"
+                      className="w-full h-full object-cover object-center transform-gpu transition-transform duration-500 group-hover:scale-110"
+                      style={{ imageRendering: "auto" }}
+                      loading="eager"
+                      decoding="async"
                       onError={(e) => {
-                        (e.target as HTMLImageElement).style.display = "none";
-                        const fallbackDiv = document.getElementById("core-avatar-fallback");
-                        if (fallbackDiv) fallbackDiv.style.display = "flex";
+                        const target = e.target as HTMLImageElement;
+                        const rawUrl = profile.avatar_url || "";
+                        if (rawUrl && !target.dataset.retried) {
+                          target.dataset.retried = "true";
+                          target.src = rawUrl;
+                        } else {
+                          target.style.display = "none";
+                          const fallbackDiv = document.getElementById("core-avatar-fallback");
+                          if (fallbackDiv) fallbackDiv.style.display = "flex";
+                        }
                       }}
                     />
                   ) : null}
@@ -578,6 +638,12 @@ export default function PortfolioView({ username, darkMode = true }: { username:
                     style={{ display: profile.avatar_url ? "none" : "flex" }}
                   >
                     {getInitials(profile.full_name)}
+                  </div>
+
+                  {/* HD Hover Badge */}
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center text-white text-[10px] font-bold gap-1 pointer-events-none">
+                    <Eye className="w-5 h-5 text-purple-300" />
+                    <span>HD View</span>
                   </div>
                 </div>
               </div>
@@ -928,16 +994,31 @@ export default function PortfolioView({ username, darkMode = true }: { username:
               <div className="absolute top-0 right-0 w-24 h-24 bg-cyan-500/10 rounded-full blur-2xl pointer-events-none"></div>
               
               <div className="shrink-0 relative">
-                <div className="w-28 h-28 rounded-full overflow-hidden flex items-center justify-center border-2 border-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.5)] mx-auto relative">
+                <div
+                  className="w-32 h-32 rounded-full overflow-hidden flex items-center justify-center border-2 border-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.5)] mx-auto relative group cursor-pointer hover:border-cyan-300 transition-all duration-300 transform-gpu hover:scale-105"
+                  onClick={() => setIsAvatarModalOpen(true)}
+                  title="Click for HD Profile View"
+                >
                   {profile.avatar_url ? (
                     <img
-                      src={profile.avatar_url}
+                      src={getHighResAvatarUrl(profile.avatar_url)}
                       alt={profile.full_name}
-                      className="w-full h-full object-cover"
+                      referrerPolicy="no-referrer"
+                      className="w-full h-full object-cover object-center transform-gpu transition-transform duration-500 group-hover:scale-110"
+                      style={{ imageRendering: "auto" }}
+                      loading="eager"
+                      decoding="async"
                       onError={(e) => {
-                        (e.target as HTMLImageElement).style.display = "none";
-                        const fallbackDiv = document.getElementById("writer-avatar-fallback");
-                        if (fallbackDiv) fallbackDiv.style.display = "flex";
+                        const target = e.target as HTMLImageElement;
+                        const rawUrl = profile.avatar_url || "";
+                        if (rawUrl && !target.dataset.retried) {
+                          target.dataset.retried = "true";
+                          target.src = rawUrl;
+                        } else {
+                          target.style.display = "none";
+                          const fallbackDiv = document.getElementById("writer-avatar-fallback");
+                          if (fallbackDiv) fallbackDiv.style.display = "flex";
+                        }
                       }}
                     />
                   ) : null}
@@ -947,6 +1028,12 @@ export default function PortfolioView({ username, darkMode = true }: { username:
                     style={{ display: profile.avatar_url ? "none" : "flex" }}
                   >
                     {getInitials(profile.full_name)}
+                  </div>
+
+                  {/* HD Hover Badge */}
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center text-white text-[10px] font-bold gap-1 pointer-events-none">
+                    <Eye className="w-5 h-5 text-cyan-300" />
+                    <span>HD View</span>
                   </div>
                 </div>
               </div>
@@ -1293,16 +1380,31 @@ export default function PortfolioView({ username, darkMode = true }: { username:
               <div className="absolute top-0 right-0 w-24 h-24 bg-pink-500/10 rounded-full blur-2xl pointer-events-none"></div>
 
               <div className="shrink-0 relative">
-                <div className="w-28 h-28 rounded-full overflow-hidden flex items-center justify-center border-2 border-pink-500 shadow-[0_0_15px_rgba(255,0,127,0.5)] mx-auto relative">
+                <div
+                  className="w-32 h-32 rounded-full overflow-hidden flex items-center justify-center border-2 border-pink-500 shadow-[0_0_20px_rgba(255,0,127,0.5)] mx-auto relative group cursor-pointer hover:border-pink-400 transition-all duration-300 transform-gpu hover:scale-105"
+                  onClick={() => setIsAvatarModalOpen(true)}
+                  title="Click for HD Profile View"
+                >
                   {profile.avatar_url ? (
                     <img
-                      src={profile.avatar_url}
+                      src={getHighResAvatarUrl(profile.avatar_url)}
                       alt={profile.full_name}
-                      className="w-full h-full object-cover"
+                      referrerPolicy="no-referrer"
+                      className="w-full h-full object-cover object-center transform-gpu transition-transform duration-500 group-hover:scale-110"
+                      style={{ imageRendering: "auto" }}
+                      loading="eager"
+                      decoding="async"
                       onError={(e) => {
-                        (e.target as HTMLImageElement).style.display = "none";
-                        const fallbackDiv = document.getElementById("creator-avatar-fallback");
-                        if (fallbackDiv) fallbackDiv.style.display = "flex";
+                        const target = e.target as HTMLImageElement;
+                        const rawUrl = profile.avatar_url || "";
+                        if (rawUrl && !target.dataset.retried) {
+                          target.dataset.retried = "true";
+                          target.src = rawUrl;
+                        } else {
+                          target.style.display = "none";
+                          const fallbackDiv = document.getElementById("creator-avatar-fallback");
+                          if (fallbackDiv) fallbackDiv.style.display = "flex";
+                        }
                       }}
                     />
                   ) : null}
@@ -1312,6 +1414,12 @@ export default function PortfolioView({ username, darkMode = true }: { username:
                     style={{ display: profile.avatar_url ? "none" : "flex" }}
                   >
                     {getInitials(profile.full_name)}
+                  </div>
+
+                  {/* HD Hover Badge */}
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center text-white text-[10px] font-bold gap-1 pointer-events-none">
+                    <Eye className="w-5 h-5 text-pink-300" />
+                    <span>HD View</span>
                   </div>
                 </div>
               </div>
@@ -1713,6 +1821,87 @@ export default function PortfolioView({ username, darkMode = true }: { username:
     );
   };
 
+  // HD Profile Picture Lightbox Modal
+  const renderAvatarModal = () => {
+    if (!isAvatarModalOpen || !profile) return null;
+    const avatarHdUrl = getHighResAvatarUrl(profile.avatar_url);
+
+    return (
+      <AnimatePresence>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md print-hidden cursor-pointer"
+          onClick={() => setIsAvatarModalOpen(false)}
+        >
+          <motion.div
+            initial={{ scale: 0.85, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.85, opacity: 0 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+            className="relative max-w-lg w-full bg-white/[0.04] border border-white/20 rounded-3xl p-6 sm:p-8 flex flex-col items-center gap-5 text-center shadow-2xl overflow-hidden cursor-default"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="absolute top-4 right-4 z-10">
+              <button
+                onClick={() => setIsAvatarModalOpen(false)}
+                className="w-9 h-9 rounded-full bg-white/10 border border-white/20 text-white hover:bg-white/20 flex items-center justify-center transition cursor-pointer text-sm font-bold"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-purple-400">
+              <Sparkles className="w-4 h-4 text-purple-400 animate-pulse" /> Clear HD Profile Picture
+            </div>
+
+            <div className="w-64 h-64 sm:w-80 sm:h-80 rounded-2xl overflow-hidden border-2 border-purple-500/50 shadow-[0_0_35px_rgba(168,85,247,0.4)] bg-black relative flex items-center justify-center">
+              {avatarHdUrl ? (
+                <img
+                  src={avatarHdUrl}
+                  alt={profile.full_name}
+                  referrerPolicy="no-referrer"
+                  className="w-full h-full object-cover object-center"
+                  style={{ imageRendering: "auto" }}
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    const rawUrl = profile.avatar_url || "";
+                    if (rawUrl && !target.dataset.retried) {
+                      target.dataset.retried = "true";
+                      target.src = rawUrl;
+                    } else {
+                      target.style.display = "none";
+                      const modalFallback = document.getElementById("modal-avatar-fallback");
+                      if (modalFallback) modalFallback.style.display = "flex";
+                    }
+                  }}
+                />
+              ) : null}
+              <div
+                id="modal-avatar-fallback"
+                className="w-full h-full bg-gradient-to-br from-purple-900 to-indigo-950 flex items-center justify-center font-bold text-5xl text-purple-300"
+                style={{ display: avatarHdUrl ? "none" : "flex" }}
+              >
+                {getInitials(profile.full_name)}
+              </div>
+            </div>
+
+            <div className="flex flex-col items-center gap-1">
+              <h3 className="text-xl font-extrabold text-white flex items-center gap-1.5">
+                {profile.full_name}
+                <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-purple-500 text-white text-[9px] font-bold">
+                  ✓
+                </span>
+              </h3>
+              <p className="text-xs font-mono text-purple-400 font-semibold">@{profile.username}</p>
+            </div>
+          </motion.div>
+        </motion.div>
+      </AnimatePresence>
+    );
+  };
+
   const renderLayout = () => {
     if (isCoreUser) {
       return renderCoreLayout();
@@ -1724,6 +1913,7 @@ export default function PortfolioView({ username, darkMode = true }: { username:
     <>
       {!isPremiumUser ? renderPremiumLockPaywall() : renderLayout()}
       {isPremiumUser && renderSharedModal()}
+      {renderAvatarModal()}
     </>
   );
 }
