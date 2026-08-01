@@ -164,14 +164,14 @@ a:hover, span:hover {
     display: none !important;
   }
 
-  /* Portfolio wrapper with internal padding for A4 printable area */
+  /* Portfolio wrapper with generous internal padding for A4 printable area (keeps text safely inside paper edges) */
   .portfolio-print-wrapper {
     min-height: 0 !important;
     height: auto !important;
     width: 100% !important;
     max-width: 100% !important;
     margin: 0 !important;
-    padding: 12mm 10mm !important;
+    padding: 16mm 14mm 16mm 14mm !important;
     border: none !important;
     box-sizing: border-box !important;
     background: transparent !important;
@@ -191,25 +191,51 @@ a:hover, span:hover {
     margin: 0 !important;
   }
 
-  /* Force 2-column layout in PDF print (270px Sidebar Profile + 1fr Main Content) */
+  /* Full-width top rectangular header layout for PDF Print (Top Profile Header Card + Bottom Creations) */
   .grid.grid-cols-1.lg\:grid-cols-12 {
-    display: grid !important;
-    grid-template-columns: 270px 1fr !important;
+    display: flex !important;
+    flex-direction: column !important;
     gap: 20px !important;
     width: 100% !important;
   }
 
   .lg\:col-span-4 {
-    grid-column: span 1 / span 1 !important;
     width: 100% !important;
+    max-width: 100% !important;
   }
 
   .lg\:col-span-8 {
-    grid-column: span 1 / span 1 !important;
     width: 100% !important;
+    max-width: 100% !important;
   }
 
-  /* Page Break Safety Rules - Prevent cards, headings, and profile sidebar from getting clipped */
+  /* Make Profile Sidebar Card a Horizontal Executive Rectangular Header Banner */
+  .lg\:col-span-4 > div {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    text-align: left !important;
+    padding: 16px 20px !important;
+    gap: 16px !important;
+    border-radius: 16px !important;
+    background-color: #111326 !important;
+    background: #111326 !important;
+  }
+
+  /* Compact Avatar in Print Header */
+  .lg\:col-span-4 > div > .shrink-0 {
+    margin: 0 !important;
+  }
+
+  .lg\:col-span-4 > div > .shrink-0 > div {
+    width: 88px !important;
+    height: 88px !important;
+    margin: 0 !important;
+  }
+
+  /* Page Break Safety Rules - Prevent cards and headings from getting clipped across PDF pages */
   .portfolio-creation-card,
   .video-creations-grid > div,
   .lg\:col-span-4 > div,
@@ -219,11 +245,12 @@ a:hover, span:hover {
     break-inside: avoid !important;
   }
 
-  /* Grid Layouts for PDF creations */
+  /* Creational Grid Layout for PDF (Full-width 2-column grid) */
   .video-creations-grid {
     display: grid !important;
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     gap: 16px !important;
+    width: 100% !important;
   }
 
   /* Solid Executive Card Background Enforcement in PDF Print */
@@ -257,7 +284,7 @@ a:hover, span:hover {
     line-height: 1.6 !important;
   }
 
-  /* Print-only Header & Footer */
+  /* Print-only Header & Footer - Safely indented inside printable page bounds */
   .print-only {
     display: block !important;
   }
@@ -266,24 +293,32 @@ a:hover, span:hover {
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-    padding-bottom: 8px !important;
-    margin-bottom: 20px !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+    padding-bottom: 10px !important;
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+    margin-bottom: 24px !important;
+    margin-top: 4px !important;
     font-size: 10px !important;
-    color: rgba(255, 255, 255, 0.6) !important;
+    color: rgba(255, 255, 255, 0.7) !important;
     font-family: monospace !important;
+    letter-spacing: 0.05em !important;
   }
 
   .print-footer {
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
-    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
-    padding-top: 8px !important;
-    margin-top: 30px !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
+    padding-top: 10px !important;
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+    margin-top: 36px !important;
+    margin-bottom: 4px !important;
     font-size: 10px !important;
-    color: rgba(255, 255, 255, 0.6) !important;
+    color: rgba(255, 255, 255, 0.7) !important;
     font-family: monospace !important;
+    letter-spacing: 0.05em !important;
   }
 }
 
