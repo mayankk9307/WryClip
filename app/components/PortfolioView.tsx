@@ -27,6 +27,8 @@ interface Post {
   post_type: string;
   category: string;
   is_premium: boolean | null;
+  is_locked?: boolean | null;
+  locked?: boolean | null;
   price: number | null;
   script_budget: string | null;
   script_episodes: string | null;
@@ -858,7 +860,7 @@ export default function PortfolioView({ username, darkMode = true }: { username:
                         <Clapperboard className="w-4 h-4 inline mr-1.5 shrink-0" /> {post.title}
                       </h3>
 
-                      {post.is_premium ? (
+                      {post.is_premium || post.is_locked || post.locked || (post.price && Number(post.price) > 0) ? (
                         <div className="flex items-center gap-2.5 rounded-xl bg-amber-500/5 border border-amber-500/20 px-3 py-2.5 mb-4">
                           <Lock className="w-4 h-4 text-amber-300 shrink-0" />
                           <div>
@@ -1177,7 +1179,7 @@ export default function PortfolioView({ username, darkMode = true }: { username:
                       <Clapperboard className="w-4 h-4 inline mr-1.5 shrink-0" /> {post.title}
                     </h3>
 
-                    {post.is_premium ? (
+                    {post.is_premium || post.is_locked || post.locked || (post.price && Number(post.price) > 0) ? (
                       <div className="flex items-center gap-2.5 rounded-xl bg-amber-500/5 border border-amber-500/20 px-3 py-2.5 mb-4">
                         <Lock className="w-4 h-4 text-amber-300 shrink-0" />
                         <div>
@@ -1758,12 +1760,33 @@ export default function PortfolioView({ username, darkMode = true }: { username:
                 </div>
               )}
 
-              <div className={`${darkMode ? "bg-black/35 border-white/5" : "bg-slate-50 border-black/5"} rounded-2xl border p-5`}>
-                <div className="flex justify-between items-center mb-3">
-                  <span className={`text-[10px] font-bold uppercase tracking-widest ${isCreatorPost ? "text-pink-400" : "text-cyan-400"}`}>
-                    {isCreatorPost ? "Creator" : "Writer"} Project Parameters
+              {activeScript.is_premium || activeScript.is_locked || activeScript.locked || (activeScript.price && Number(activeScript.price) > 0) ? (
+                <div className="relative rounded-2xl border border-amber-500/30 bg-amber-500/10 p-6 text-center overflow-hidden">
+                  <div className="w-12 h-12 rounded-full bg-amber-500/20 border border-amber-500/40 flex items-center justify-center mx-auto mb-3 text-amber-300">
+                    <Lock className="w-6 h-6" />
+                  </div>
+                  <span className="inline-block px-3 py-1 rounded-full bg-amber-500/20 border border-amber-500/30 text-[9px] font-bold text-amber-300 uppercase tracking-widest mb-3">
+                    🔒 INTELLECTUAL PROPERTY LOCK
                   </span>
-                  {!activeScript.is_premium && (
+                  <h4 className="text-base font-extrabold text-white mb-2">
+                    LOCKED SCRIPT & STORY — Premium IP Protection
+                  </h4>
+                  <p className="text-xs text-gray-300 leading-relaxed mb-5 max-w-md mx-auto">
+                    To protect the intellectual property, copyright, and distribution rights of @{profile?.username}, full pages and complete script text are locked and can only be read inside the WryClip mobile application.
+                  </p>
+                  <button
+                    onClick={handleDownloadApp}
+                    className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-black text-xs font-black uppercase tracking-wider shadow-lg shadow-amber-500/20 hover:scale-[1.02] active:scale-95 transition-all inline-flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <Download className="w-4 h-4" /> UNLOCK & READ IN WRYCLIP APP
+                  </button>
+                </div>
+              ) : (
+                <div className={`${darkMode ? "bg-black/35 border-white/5" : "bg-slate-50 border-black/5"} rounded-2xl border p-5`}>
+                  <div className="flex justify-between items-center mb-3">
+                    <span className={`text-[10px] font-bold uppercase tracking-widest ${isCreatorPost ? "text-pink-400" : "text-cyan-400"}`}>
+                      {isCreatorPost ? "Creator" : "Writer"} Project Parameters
+                    </span>
                     <button
                       onClick={() => handleCopyText(activeScript.content || "", activeScript.id)}
                       className={`px-2.5 py-1 rounded ${
@@ -1774,16 +1797,16 @@ export default function PortfolioView({ username, darkMode = true }: { username:
                     >
                       {copiedScriptId === activeScript.id ? "✓ Copied!" : "📋 Copy"}
                     </button>
-                  )}
-                </div>
+                  </div>
 
-                <div 
-                  className={`whitespace-pre-wrap font-sans text-sm ${darkMode ? "text-gray-300" : "text-gray-700"} leading-relaxed max-h-[30vh] overflow-y-auto pr-2 custom-scrollbar`}
-                  style={!isCreatorPost ? { fontFamily: 'Courier New, Courier, monospace' } : {}}
-                >
-                  {activeScript.content || "No synopsis or parameters provided."}
+                  <div 
+                    className={`whitespace-pre-wrap font-sans text-sm ${darkMode ? "text-gray-300" : "text-gray-700"} leading-relaxed max-h-[30vh] overflow-y-auto pr-2 custom-scrollbar`}
+                    style={!isCreatorPost ? { fontFamily: 'Courier New, Courier, monospace' } : {}}
+                  >
+                    {activeScript.content || "No synopsis or parameters provided."}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Lock Card representation */}
               {isCreatorPost ? (
