@@ -652,7 +652,7 @@ export default function PortfolioView({ username, darkMode = true }: { username:
                 <h1 className="text-xl font-extrabold tracking-tight text-white flex items-center justify-center gap-1.5">
                   {profile.full_name}
                   <span
-                    title="Verified Core Pro"
+                    title="Verified Core"
                     className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-purple-500 text-white text-[9px] font-bold shadow-[0_0_10px_rgba(168,85,247,0.6)]"
                   >
                     ✓
@@ -664,7 +664,7 @@ export default function PortfolioView({ username, darkMode = true }: { username:
               <div className="flex flex-wrap gap-2 justify-center items-center">
                 <span className="px-2.5 py-0.5 rounded-full bg-purple-500/10 border border-purple-500/25 text-[10px] font-bold text-purple-300 flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse"></span>
-                  {profile.role?.toLowerCase() === "core" ? "Core Pro" : (profile.role || "Core Pro")}
+                  {profile.role || "Core"}
                 </span>
                 <button
                   onClick={handlePrint}
