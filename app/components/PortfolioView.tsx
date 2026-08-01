@@ -725,14 +725,14 @@ export default function PortfolioView({ username, darkMode = true }: { username:
 
               <a
                 href={mailtoUrl}
-                className="w-full py-3 rounded-2xl bg-gradient-to-r from-purple-500 to-indigo-650 text-white text-xs font-black uppercase tracking-wider text-center transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-[0_4px_16px_rgba(168,85,247,0.3)] flex items-center justify-center gap-2"
+                className="w-full py-3 rounded-2xl bg-gradient-to-r from-purple-500 to-indigo-650 text-white text-xs font-black uppercase tracking-wider text-center transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-[0_4px_16px_rgba(168,85,247,0.3)] flex items-center justify-center gap-2 print-hidden"
               >
                 EMAIL COLLAB INQUIRY <Mail className="w-4 h-4" />
               </a>
 
               <button
                 onClick={handleDownloadApp}
-                className="w-full py-3 rounded-2xl bg-white/5 border border-white/10 text-white text-xs font-black uppercase tracking-wider transition hover:bg-white/10 flex items-center justify-center gap-2"
+                className="w-full py-3 rounded-2xl bg-white/5 border border-white/10 text-white text-xs font-black uppercase tracking-wider transition hover:bg-white/10 flex items-center justify-center gap-2 print-hidden"
               >
                 CHAT IN APP <MessageSquare className="w-4 h-4" />
               </button>
@@ -1120,14 +1120,14 @@ export default function PortfolioView({ username, darkMode = true }: { username:
 
               <a
                 href={mailtoUrl}
-                className="w-full py-3 rounded-2xl bg-gradient-to-r from-cyan-400 to-blue-500 text-black text-xs font-black uppercase tracking-wider text-center transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-[0_4px_16px_rgba(6,182,212,0.3)] flex items-center justify-center gap-2"
+                className="w-full py-3 rounded-2xl bg-gradient-to-r from-cyan-400 to-blue-500 text-black text-xs font-black uppercase tracking-wider text-center transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-[0_4px_16px_rgba(6,182,212,0.3)] flex items-center justify-center gap-2 print-hidden"
               >
                 EMAIL SCRIPT INQUIRY <Mail className="w-4 h-4" />
               </a>
 
               <button
                 onClick={handleDownloadApp}
-                className="w-full py-3 rounded-2xl bg-white/5 border border-white/10 text-white text-xs font-black uppercase tracking-wider transition hover:bg-white/10 flex items-center justify-center gap-2"
+                className="w-full py-3 rounded-2xl bg-white/5 border border-white/10 text-white text-xs font-black uppercase tracking-wider transition hover:bg-white/10 flex items-center justify-center gap-2 print-hidden"
               >
                 CHAT IN APP <MessageSquare className="w-4 h-4" />
               </button>
@@ -1508,14 +1508,14 @@ export default function PortfolioView({ username, darkMode = true }: { username:
 
               <a
                 href={mailtoUrl}
-                className="w-full py-3 rounded-2xl bg-gradient-to-r from-pink-500 to-purple-600 text-white text-xs font-black uppercase tracking-wider text-center transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-[0_4px_16px_rgba(255,0,127,0.3)] flex items-center justify-center gap-2"
+                className="w-full py-3 rounded-2xl bg-gradient-to-r from-pink-500 to-purple-600 text-white text-xs font-black uppercase tracking-wider text-center transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-[0_4px_16px_rgba(255,0,127,0.3)] flex items-center justify-center gap-2 print-hidden"
               >
                 BRAND COLLAB INQUIRY <Mail className="w-4 h-4" />
               </a>
 
               <button
                 onClick={handleDownloadApp}
-                className="w-full py-3 rounded-2xl bg-white/5 border border-white/10 text-white text-xs font-black uppercase tracking-wider transition hover:bg-white/10 flex items-center justify-center gap-2"
+                className="w-full py-3 rounded-2xl bg-white/5 border border-white/10 text-white text-xs font-black uppercase tracking-wider transition hover:bg-white/10 flex items-center justify-center gap-2 print-hidden"
               >
                 CHAT IN WRYCLIP <MessageSquare className="w-4 h-4" />
               </button>

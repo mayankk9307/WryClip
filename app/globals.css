@@ -146,19 +146,21 @@ a:hover, span:hover {
     will-change: auto !important;
   }
 
-  /* Hide interactive, fixed atmosphere, and non-printable elements */
+  /* Hide ONLY non-printable interactive controls (Navbar, Footer, CTA Banners, Action Buttons marked .print-hidden) */
   nav, 
   footer, 
   .print-hidden, 
-  button, 
-  a[href="#download"], 
+  .custom-cursor, 
   .portfolio-cta-banner, 
-  .custom-cursor,
-  [role="button"],
-  div[class*="blur-"],
-  div[class*="fixed top-"],
-  div[class*="fixed bottom-"],
-  div[class*="fixed inset-0"] {
+  a[href="#download"] {
+    display: none !important;
+  }
+
+  /* Hide background decorative glow blobs in print without hiding container card divs */
+  .pointer-events-none[class*="blur-2xl"],
+  .pointer-events-none[class*="blur-3xl"],
+  .pointer-events-none[class*="blur-[120px]"],
+  .pointer-events-none[class*="blur-[150px]"] {
     display: none !important;
   }
 
