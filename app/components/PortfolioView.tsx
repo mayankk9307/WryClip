@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { supabase } from "../lib/supabase";
-import { Mail, MessageSquare, Heart, Eye, Film, Clapperboard, Sparkles, AlertTriangle, FileText, Lock, ShieldCheck, Bookmark, Download, PenTool, Languages } from "lucide-react";
+import { Mail, MessageSquare, Heart, Eye, Film, Clapperboard, Sparkles, AlertTriangle, FileText, Lock, ShieldCheck, Bookmark, Download, PenTool, Languages, Users, Briefcase, MapPin, Calendar } from "lucide-react";
 
 interface Profile {
   id: string;
@@ -17,6 +17,7 @@ interface Profile {
   subscription_status: string | null;
   followers_count: number | null;
   following_count: number | null;
+  email?: string | null;
 }
 
 interface Post {
@@ -40,6 +41,40 @@ interface Post {
   views_count?: number;
 }
 
+export interface StudioRole {
+  id: string;
+  project_id: string;
+  role_name: string;
+  gender: string | null;
+  age_range: string | null;
+  personality: string | null;
+  acting_style: string | null;
+  dialogue_tone: string | null;
+  requirements: string | null;
+  screen_time: string | null;
+  language: string | null;
+  experience_level: string | null;
+  created_at: string;
+}
+
+export interface StudioProject {
+  id: string;
+  creator_id: string;
+  title: string;
+  description: string;
+  genre: string;
+  poster_url: string | null;
+  cloudinary_public_id: string | null;
+  is_paid: boolean;
+  shoot_location: string | null;
+  deadline: string | null;
+  references_inspirations: string[] | null;
+  tags: string[] | null;
+  created_at: string;
+  roles?: StudioRole[];
+  application_count?: number;
+}
+
 interface Stats {
   scriptsCount: number;
   totalLikes: number;
@@ -49,6 +84,8 @@ interface Stats {
 export default function PortfolioView({ username, darkMode = true }: { username: string; darkMode?: boolean }) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
+  const [studioProjects, setStudioProjects] = useState<StudioProject[]>([]);
+  const [activeStudioProject, setActiveStudioProject] = useState<StudioProject | null>(null);
   const [stats, setStats] = useState<Stats>({ scriptsCount: 0, totalLikes: 0, totalSaves: 0 });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -84,7 +121,7 @@ export default function PortfolioView({ username, darkMode = true }: { username:
         // 1. Fetch Profile (case-insensitive username lookup)
         const { data: profileData, error: profileError } = await client
           .from("profiles")
-          .select("id, username, full_name, bio, role, avatar_url, tags, subscription_status, followers_count, following_count")
+          .select("id, username, full_name, bio, role, avatar_url, tags, subscription_status, followers_count, following_count, email")
           .ilike("username", username)
           .maybeSingle();
 
@@ -161,6 +198,28 @@ export default function PortfolioView({ username, darkMode = true }: { username:
             totalSaves: 0,
           });
         }
+
+        // 4. Fetch WryClip Studio Casting Projects posted by this user
+        try {
+          const { data: studioProjData, error: studioProjErr } = await client
+            .from("projects")
+            .select("*, roles:project_roles(*), auditions(id)")
+            .eq("creator_id", profileData.id)
+            .order("created_at", { ascending: false });
+
+          if (!studioProjErr && studioProjData) {
+            const formattedProjects = studioProjData.map((p: any) => ({
+              ...p,
+              application_count: p.auditions ? p.auditions.length : 0,
+            })) as StudioProject[];
+            setStudioProjects(formattedProjects);
+          } else {
+            setStudioProjects([]);
+          }
+        } catch (projErr) {
+          console.warn("Unable to fetch studio projects:", projErr);
+          setStudioProjects([]);
+        }
       } catch (err: any) {
         console.error("Error fetching portfolio:", err);
         setError("Unable to retrieve writer information. Please check your network or try again.");
@@ -187,6 +246,15 @@ export default function PortfolioView({ username, darkMode = true }: { username:
       .join("")
       .substring(0, 2)
       .toUpperCase();
+  };
+
+  const isPostLocked = (post: Post): boolean => {
+    return Boolean(
+      post.is_premium ||
+      post.is_locked ||
+      post.locked ||
+      (post.price && Number(post.price) > 0)
+    );
   };
 
   /**
@@ -385,7 +453,7 @@ export default function PortfolioView({ username, darkMode = true }: { username:
   // Decider Logic for Layout Types
   const roleNorm = profile.role?.toLowerCase() || '';
   const isPremiumUser = ['writer pro', 'creator pro', 'studio pro', 'core', 'admin'].includes(roleNorm);
-  const isCoreUser = ['core', 'admin'].includes(roleNorm);
+  const isCoreUser = ['core', 'admin', 'studio pro'].includes(roleNorm);
   
   const isWriter = ['writer pro', 'writer', 'poet', 'script writer'].includes(roleNorm);
   const isCreator = ['creator pro', 'creator', 'studio pro', 'filmmaker', 'director', 'producer', 'actor'].includes(roleNorm);
@@ -556,13 +624,383 @@ export default function PortfolioView({ username, darkMode = true }: { username:
     );
   };
 
+  const isProjectExpired = (deadline: string | null | undefined): boolean => {
+    if (!deadline) return false;
+    try {
+      const deadlineDate = new Date(deadline);
+      if (isNaN(deadlineDate.getTime())) return false;
+      deadlineDate.setHours(23, 59, 59, 999);
+      return new Date() > deadlineDate;
+    } catch (e) {
+      return false;
+    }
+  };
+
+  const renderStudioProjectsSection = (themeColor: 'purple' | 'cyan' | 'pink' = 'purple') => {
+    if (studioProjects.length === 0) return null;
+
+    const themeStyles = {
+      purple: {
+        text: "text-purple-400",
+        borderHover: "hover:border-purple-500/40",
+        bgBadge: "bg-purple-500/10",
+        borderBadge: "border-purple-500/20",
+        btnBg: "bg-gradient-to-r from-purple-500 to-indigo-600 text-white",
+        codeBorder: "border-purple-500/20 text-purple-400 bg-purple-500/5",
+      },
+      cyan: {
+        text: "text-cyan-400",
+        borderHover: "hover:border-cyan-500/40",
+        bgBadge: "bg-cyan-500/10",
+        borderBadge: "border-cyan-500/20",
+        btnBg: "bg-gradient-to-r from-cyan-400 to-blue-500 text-black",
+        codeBorder: "border-cyan-500/20 text-cyan-400 bg-cyan-500/5",
+      },
+      pink: {
+        text: "text-pink-500",
+        borderHover: "hover:border-pink-500/40",
+        bgBadge: "bg-pink-500/10",
+        borderBadge: "border-pink-500/20",
+        btnBg: "bg-gradient-to-r from-pink-500 to-purple-600 text-white",
+        codeBorder: "border-pink-500/20 text-pink-400 bg-pink-500/5",
+      },
+    };
+
+    const theme = themeStyles[themeColor];
+
+    return (
+      <div className="flex flex-col gap-6 mt-6">
+        <div className="flex items-center justify-between border-b border-white/10 pb-4">
+          <h2 className={`text-lg font-bold tracking-tight ${theme.text} uppercase flex items-center gap-2`}>
+            <Clapperboard className="w-5 h-5 shrink-0" /> WRYCLIP STUDIO PROJECTS & CASTING CALLS
+          </h2>
+          <span className={`text-xs ${theme.bgBadge} border ${theme.borderBadge} ${theme.text} px-3 py-1 rounded-full font-semibold`}>
+            {studioProjects.length} Studio Projects
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {studioProjects.map((project) => {
+            const expired = isProjectExpired(project.deadline);
+
+            return (
+              <div
+                key={project.id}
+                className={`rounded-2xl border border-white/10 bg-white/[0.02] ${theme.borderHover} hover:bg-white/[0.03] transition-all duration-300 p-5 flex flex-col justify-between relative overflow-hidden group cursor-pointer`}
+                onClick={() => setActiveStudioProject(project)}
+              >
+                <div>
+                  {/* Poster or Gradient Header */}
+                  <div className="relative w-full h-44 rounded-xl overflow-hidden mb-4 border border-white/10 bg-black">
+                    {project.poster_url ? (
+                      <img
+                        src={project.poster_url}
+                        alt={project.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-purple-950/60 via-indigo-950/40 to-black p-4 flex flex-col justify-between border border-white/5 relative">
+                        <div className="flex justify-between items-center">
+                          <span className="px-2.5 py-0.5 rounded bg-white/10 text-[9px] font-extrabold text-white uppercase tracking-wider backdrop-blur-md border border-white/10">
+                            WryClip Studio
+                          </span>
+                          <Clapperboard className="w-6 h-6 text-purple-400/80" />
+                        </div>
+                        <div className="text-left">
+                          <h4 className="text-base font-extrabold text-white line-clamp-1">{project.title}</h4>
+                          <p className="text-[10px] text-gray-400">{project.genre || "Casting Call Project"}</p>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Badges on Poster */}
+                    <div className="absolute top-2.5 left-2.5 flex flex-wrap gap-1.5 z-10">
+                      <span className={`px-2 py-0.5 rounded ${project.is_paid ? 'bg-emerald-500/90 text-white' : 'bg-gray-800/90 text-gray-300'} text-[9px] font-extrabold backdrop-blur-md border border-white/10 flex items-center gap-1 shadow-md`}>
+                        {project.is_paid ? "💰 Paid Casting" : "Unpaid / Deferred"}
+                      </span>
+                    </div>
+
+                    <div className="absolute bottom-2.5 right-2.5 px-2 py-0.5 rounded bg-black/80 backdrop-blur-md text-[9px] font-bold text-cyan-300 border border-white/10 flex items-center gap-1">
+                      <Users className="w-3 h-3 text-cyan-400" /> {project.application_count || 0} Auditions
+                    </div>
+                  </div>
+
+                  {/* Header Row */}
+                  <div className="flex justify-between items-center text-[10px] text-gray-400 font-semibold mb-2">
+                    <span className={`px-2 py-0.5 rounded border ${theme.codeBorder} font-mono tracking-wider`}>
+                      STU-{project.id.slice(0, 8).toUpperCase()}
+                    </span>
+                    <span className={`px-2 py-0.5 rounded text-[9px] font-bold ${expired ? 'bg-red-500/10 text-red-400 border border-red-500/20' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'}`}>
+                      {expired ? "🔴 Casting Closed" : "🟢 Casting Open"}
+                    </span>
+                  </div>
+
+                  <h3 className="text-base font-extrabold text-white group-hover:text-purple-300 leading-snug mb-2 transition duration-300">
+                    {project.title}
+                  </h3>
+
+                  <p className="text-xs text-gray-400 leading-relaxed line-clamp-2 mb-4">
+                    {project.description || "No project description provided."}
+                  </p>
+
+                  {/* Roles Breakdown Tags */}
+                  {project.roles && project.roles.length > 0 && (
+                    <div className="flex flex-col gap-1.5 mb-4 bg-white/[0.02] border border-white/5 p-2.5 rounded-xl">
+                      <span className="text-[9px] font-bold uppercase tracking-wider text-gray-400 flex items-center gap-1">
+                        <Briefcase className="w-3 h-3 text-purple-400" /> Open Roles ({project.roles.length}):
+                      </span>
+                      <div className="flex flex-wrap gap-1">
+                        {project.roles.slice(0, 3).map((role) => (
+                          <span key={role.id} className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[9px] font-bold text-gray-300 flex items-center gap-1">
+                            🎭 {role.role_name} {role.gender ? `(${role.gender})` : ''}
+                          </span>
+                        ))}
+                        {project.roles.length > 3 && (
+                          <span className="px-1.5 py-0.5 rounded bg-white/5 text-[9px] font-bold text-purple-400">
+                            +{project.roles.length - 3} more
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex flex-wrap gap-2 text-[10px] text-gray-400 mb-4">
+                  {project.shoot_location && (
+                    <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gray-300 flex items-center gap-1">
+                      📍 {project.shoot_location}
+                    </span>
+                  )}
+                  {project.deadline && (
+                    <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gray-300 flex items-center gap-1">
+                      ⏳ Deadline: {formatDate(project.deadline)}
+                    </span>
+                  )}
+                </div>
+
+                <div className="flex justify-between items-center pt-3 border-t border-white/5 mt-auto">
+                  <span className={`text-[9px] tracking-wider ${theme.text} font-bold uppercase flex items-center gap-1`}>
+                    <Sparkles className="w-3 h-3" /> WryClip Verified Studio
+                  </span>
+
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setActiveStudioProject(project);
+                    }}
+                    className={`py-1.5 px-3.5 rounded-xl ${theme.btnBg} text-xs font-extrabold hover:opacity-90 transition duration-300 shadow-md cursor-pointer`}
+                  >
+                    View Roles & Details →
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
+
+  // Dedicated WryClip Studio Project Details Modal
+  const renderStudioProjectModal = () => {
+    if (!activeStudioProject) return null;
+
+    const expired = isProjectExpired(activeStudioProject.deadline);
+
+    return (
+      <AnimatePresence>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-50 flex items-start justify-center p-4 pt-20 md:pt-24 bg-black/85 backdrop-blur-md print-hidden overflow-y-auto"
+          onClick={() => setActiveStudioProject(null)}
+        >
+          <motion.div
+            initial={{ scale: 0.95, opacity: 0, y: 10 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.95, opacity: 0, y: 10 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+            className={`w-full max-w-2xl rounded-3xl ${
+              darkMode ? "bg-[#0d111d] border-white/[0.12]" : "bg-white border-black/[0.1]"
+            } border shadow-2xl p-6 md:p-8 flex flex-col gap-6 relative overflow-hidden text-left cursor-default`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Background Glow */}
+            <div className="absolute top-0 right-0 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div className="absolute bottom-0 left-0 w-40 h-40 bg-purple-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+            {/* Modal Header */}
+            <div className="flex justify-between items-start border-b border-white/10 pb-4 relative z-10">
+              <div>
+                <div className="flex gap-2 items-center text-[10px] font-mono text-blue-400 uppercase tracking-wider mb-1">
+                  <span>STU-{activeStudioProject.id.slice(0, 8).toUpperCase()}</span>
+                  <span className="w-1 h-1 rounded-full bg-white/30"></span>
+                  <span>Posted: {formatDate(activeStudioProject.created_at)}</span>
+                </div>
+                <h2 className="text-xl md:text-2xl font-extrabold text-white leading-snug flex items-center gap-2">
+                  <Clapperboard className="w-6 h-6 text-blue-400 shrink-0" />
+                  {activeStudioProject.title}
+                </h2>
+              </div>
+              <button
+                onClick={() => setActiveStudioProject(null)}
+                className="w-8 h-8 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 text-white flex items-center justify-center transition text-sm cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="relative z-10 flex flex-col gap-5 max-h-[65vh] overflow-y-auto pr-2 custom-scrollbar">
+              {/* Poster if present */}
+              {activeStudioProject.poster_url && (
+                <div className="w-full h-56 rounded-2xl overflow-hidden border border-white/10 relative shadow-lg">
+                  <img src={activeStudioProject.poster_url} alt={activeStudioProject.title} className="w-full h-full object-cover" />
+                </div>
+              )}
+
+              {/* Quick Stats Grid */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                <div className="bg-white/[0.03] border border-white/5 p-2.5 rounded-xl flex flex-col">
+                  <span className="text-[9px] font-bold text-gray-400 uppercase">Compensation</span>
+                  <span className={`text-xs font-extrabold ${activeStudioProject.is_paid ? 'text-emerald-400' : 'text-gray-300'} mt-0.5`}>
+                    {activeStudioProject.is_paid ? "💰 Paid Project" : "Unpaid"}
+                  </span>
+                </div>
+                <div className="bg-white/[0.03] border border-white/5 p-2.5 rounded-xl flex flex-col">
+                  <span className="text-[9px] font-bold text-gray-400 uppercase">Shoot Location</span>
+                  <span className="text-xs font-extrabold text-white mt-0.5 truncate">
+                    📍 {activeStudioProject.shoot_location || "Not specified"}
+                  </span>
+                </div>
+                <div className="bg-white/[0.03] border border-white/5 p-2.5 rounded-xl flex flex-col">
+                  <span className="text-[9px] font-bold text-gray-400 uppercase">Deadline</span>
+                  <span className={`text-xs font-extrabold ${expired ? 'text-red-400' : 'text-cyan-400'} mt-0.5`}>
+                    {activeStudioProject.deadline ? formatDate(activeStudioProject.deadline) : "Open"}
+                  </span>
+                </div>
+                <div className="bg-white/[0.03] border border-white/5 p-2.5 rounded-xl flex flex-col">
+                  <span className="text-[9px] font-bold text-gray-400 uppercase">Applications</span>
+                  <span className="text-xs font-extrabold text-purple-400 mt-0.5">
+                    📥 {activeStudioProject.application_count || 0} Auditions
+                  </span>
+                </div>
+              </div>
+
+              {/* Description */}
+              <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-4">
+                <h4 className="text-xs font-bold text-blue-400 uppercase tracking-wider mb-2">Project Overview / Synopsis</h4>
+                <p className="text-xs text-gray-300 leading-relaxed whitespace-pre-wrap">
+                  {activeStudioProject.description || "No project overview available."}
+                </p>
+              </div>
+
+              {/* Roles Breakdown */}
+              <div>
+                <h4 className="text-xs font-bold text-purple-400 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                  <Users className="w-4 h-4" /> Open Casting Roles ({activeStudioProject.roles?.length || 0})
+                </h4>
+
+                {activeStudioProject.roles && activeStudioProject.roles.length > 0 ? (
+                  <div className="flex flex-col gap-3">
+                    {activeStudioProject.roles.map((role) => (
+                      <div key={role.id} className="rounded-xl border border-white/10 bg-white/[0.03] p-4 flex flex-col gap-2.5">
+                        <div className="flex justify-between items-center border-b border-white/5 pb-2">
+                          <h5 className="text-sm font-extrabold text-white flex items-center gap-1.5">
+                            🎭 {role.role_name}
+                          </h5>
+                          {role.gender && (
+                            <span className="px-2 py-0.5 rounded bg-blue-500/10 border border-blue-500/20 text-[10px] font-bold text-blue-300">
+                              {role.gender}
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="flex flex-wrap gap-2 text-[10px]">
+                          {role.age_range && (
+                            <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gray-300">
+                              Age: <strong>{role.age_range}</strong>
+                            </span>
+                          )}
+                          {role.dialogue_tone && (
+                            <span className="px-2 py-0.5 rounded bg-purple-500/10 border border-purple-500/20 text-purple-300 font-medium">
+                              Tone: <strong>{role.dialogue_tone}</strong>
+                            </span>
+                          )}
+                          {role.language && (
+                            <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gray-300">
+                              Language: <strong>{role.language}</strong>
+                            </span>
+                          )}
+                          {role.screen_time && (
+                            <span className="px-2 py-0.5 rounded bg-pink-500/10 border border-pink-500/20 text-pink-300">
+                              Screen Time: <strong>{role.screen_time}</strong>
+                            </span>
+                          )}
+                          {role.experience_level && (
+                            <span className="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-emerald-300">
+                              Exp: <strong>{role.experience_level}</strong>
+                            </span>
+                          )}
+                        </div>
+
+                        {role.requirements && (
+                          <p className="text-xs text-gray-300 leading-relaxed italic bg-black/20 p-2.5 rounded-lg border border-white/5 mt-1">
+                            "{role.requirements}"
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-xs text-gray-500 italic">No specific role details listed for this project.</p>
+                )}
+              </div>
+
+              {/* Apply Banner */}
+              <div className="relative rounded-2xl border border-blue-500/30 bg-gradient-to-r from-blue-950/40 via-purple-950/30 to-black p-5 text-center overflow-hidden">
+                <span className="inline-block px-3 py-1 rounded-full bg-blue-500/20 border border-blue-500/30 text-[9px] font-bold text-blue-300 uppercase tracking-widest mb-2">
+                  WRYCLIP NATIVE CASTING HUB
+                </span>
+                <h4 className="text-sm font-extrabold text-white mb-1">Apply & Audition Directly in WryClip App</h4>
+                <p className="text-[11px] text-gray-400 leading-relaxed mb-4 max-w-md mx-auto">
+                  Actors and performers can record native audition takes, submit video profiles, and track casting selection statuses directly inside the WryClip mobile application.
+                </p>
+                <button
+                  onClick={handleDownloadApp}
+                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 text-white text-xs font-black uppercase tracking-wider shadow-lg shadow-blue-500/20 hover:scale-[1.02] active:scale-95 transition-all inline-flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <Download className="w-4 h-4" /> DOWNLOAD WRYCLIP APP TO APPLY
+                </button>
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="flex justify-between items-center pt-3 border-t border-white/10 text-[10px] text-gray-400 relative z-10">
+              <span className="flex items-center gap-1.5 text-blue-400 font-bold uppercase tracking-wider">
+                <ShieldCheck className="w-3.5 h-3.5" /> Verified WryClip Studio Casting
+              </span>
+              <button
+                onClick={() => setActiveStudioProject(null)}
+                className="text-gray-400 hover:text-white font-semibold transition cursor-pointer"
+              >
+                Close
+              </button>
+            </div>
+          </motion.div>
+        </motion.div>
+      </AnimatePresence>
+    );
+  };
+
   // 4. CORE / ADMIN LAYOUT (Combined features in separate full sections)
   const renderCoreLayout = () => {
     const writerLikes = writerPosts.reduce((sum, p) => sum + (p.likes_count || 0), 0);
     const creatorLikes = creatorPosts.reduce((sum, p) => sum + (p.likes_count || 0), 0);
     const totalLikes = writerLikes + creatorLikes;
 
-    const emailAddress = "support.wryclip@gmail.com";
+    const emailAddress = profile.email || "support.wryclip@gmail.com";
     const mailtoUrl = `mailto:${emailAddress}?subject=${encodeURIComponent("WryClip Core Member Optioning / Collaboration Inquiry")}&body=${encodeURIComponent(`Hi @${profile.username}, we reviewed your Core portfolio on WryClip and would like to discuss optioning / collaborations...`)}`;
 
     return (
@@ -668,6 +1106,12 @@ export default function PortfolioView({ username, darkMode = true }: { username:
                   <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse"></span>
                   {profile.role || "Core"}
                 </span>
+                {studioProjects.length > 0 && (
+                  <span className="px-2.5 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/25 text-[10px] font-bold text-blue-300 flex items-center gap-1">
+                    <Clapperboard className="w-3 h-3 text-blue-400" />
+                    {studioProjects.length} Studio Projs
+                  </span>
+                )}
                 <button
                   onClick={handlePrint}
                   className="px-2 py-0.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-[9px] font-bold flex items-center gap-1 transition print:hidden cursor-pointer"
@@ -700,26 +1144,33 @@ export default function PortfolioView({ username, darkMode = true }: { username:
               <div className="border-t border-white/5 my-2" />
 
               {/* Stats Block */}
-              <div className="grid grid-cols-4 gap-1.5">
-                <div className="bg-white/[0.01] border border-white/5 p-2 rounded-xl flex flex-col items-center">
-                  <PenTool className="w-4 h-4 text-purple-400 my-0.5" />
-                  <span className="text-sm font-extrabold text-white">{writerPosts.length}</span>
-                  <span className="text-[7px] text-gray-500 uppercase font-black leading-tight mt-1">Writings</span>
+              <div className={`grid ${studioProjects.length > 0 ? 'grid-cols-5' : 'grid-cols-4'} gap-1 p-1 rounded-2xl bg-white/[0.01] border border-white/5 shadow-inner`}>
+                <div className="bg-white/[0.02] border border-white/5 p-1.5 rounded-xl flex flex-col items-center justify-center text-center">
+                  <PenTool className="w-3.5 h-3.5 text-purple-400 my-0.5" />
+                  <span className="text-xs font-extrabold text-white">{writerPosts.length}</span>
+                  <span className="text-[6.5px] text-gray-400 uppercase font-black tracking-tighter mt-0.5">Writings</span>
                 </div>
-                <div className="bg-white/[0.01] border border-white/5 p-2 rounded-xl flex flex-col items-center">
-                  <Film className="w-4 h-4 text-purple-400 my-0.5" />
-                  <span className="text-sm font-extrabold text-white">{creatorPosts.length}</span>
-                  <span className="text-[7px] text-gray-500 uppercase font-black leading-tight mt-1">Videos</span>
+                <div className="bg-white/[0.02] border border-white/5 p-1.5 rounded-xl flex flex-col items-center justify-center text-center">
+                  <Film className="w-3.5 h-3.5 text-pink-400 my-0.5" />
+                  <span className="text-xs font-extrabold text-white">{creatorPosts.length}</span>
+                  <span className="text-[6.5px] text-gray-400 uppercase font-black tracking-tighter mt-0.5">Videos</span>
                 </div>
-                <div className="bg-white/[0.01] border border-white/5 p-2 rounded-xl flex flex-col items-center">
-                  <Heart className="w-4 h-4 text-pink-400 fill-pink-400 my-0.5" />
-                  <span className="text-sm font-extrabold text-white">{totalLikes}</span>
-                  <span className="text-[7px] text-gray-500 uppercase font-black leading-tight mt-1">Likes</span>
+                {studioProjects.length > 0 && (
+                  <div className="bg-white/[0.02] border border-white/5 p-1.5 rounded-xl flex flex-col items-center justify-center text-center">
+                    <Clapperboard className="w-3.5 h-3.5 text-blue-400 my-0.5" />
+                    <span className="text-xs font-extrabold text-white">{studioProjects.length}</span>
+                    <span className="text-[6.5px] text-gray-400 uppercase font-black tracking-tighter mt-0.5">Studios</span>
+                  </div>
+                )}
+                <div className="bg-white/[0.02] border border-white/5 p-1.5 rounded-xl flex flex-col items-center justify-center text-center">
+                  <Heart className="w-3.5 h-3.5 text-pink-400 fill-pink-400 my-0.5" />
+                  <span className="text-xs font-extrabold text-white">{totalLikes}</span>
+                  <span className="text-[6.5px] text-gray-400 uppercase font-black tracking-tighter mt-0.5">Likes</span>
                 </div>
-                <div className="bg-white/[0.01] border border-white/5 p-2 rounded-xl flex flex-col items-center">
-                  <Bookmark className="w-4 h-4 text-purple-400 my-0.5" />
-                  <span className="text-sm font-extrabold text-white">{stats.totalSaves}</span>
-                  <span className="text-[7px] text-gray-500 uppercase font-black leading-tight mt-1">Saves</span>
+                <div className="bg-white/[0.02] border border-white/5 p-1.5 rounded-xl flex flex-col items-center justify-center text-center">
+                  <Bookmark className="w-3.5 h-3.5 text-purple-400 my-0.5" />
+                  <span className="text-xs font-extrabold text-white">{stats.totalSaves}</span>
+                  <span className="text-[6.5px] text-gray-400 uppercase font-black tracking-tighter mt-0.5">Saves</span>
                 </div>
               </div>
 
@@ -794,9 +1245,16 @@ export default function PortfolioView({ username, darkMode = true }: { username:
                           {post.title}
                         </h4>
 
-                        <p className="text-[11px] text-gray-400 leading-relaxed line-clamp-2 mb-3">
-                          {post.content || "No creation details shared."}
-                        </p>
+                        {isPostLocked(post) ? (
+                          <div className="flex items-center gap-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20 px-2.5 py-1.5 mb-3">
+                            <Lock className="w-3 h-3 text-amber-300 shrink-0" />
+                            <span className="text-[10px] font-bold text-amber-300">Protected Content — Unlock in App</span>
+                          </div>
+                        ) : (
+                          <p className="text-[11px] text-gray-400 leading-relaxed line-clamp-2 mb-3">
+                            {post.content || "No creation details shared."}
+                          </p>
+                        )}
                       </div>
 
                       <div className="flex flex-wrap gap-1.5 mb-2">
@@ -934,6 +1392,9 @@ export default function PortfolioView({ username, darkMode = true }: { username:
                 </div>
               )}
             </div>
+
+            {/* Section 3: WryClip Studio Casting Projects */}
+            {renderStudioProjectsSection('purple')}
           </div>
         </div>
 
@@ -949,7 +1410,9 @@ export default function PortfolioView({ username, darkMode = true }: { username:
   // 1. WRITER PRO LAYOUT
   const renderWriterProLayout = () => {
     const writerLikes = writerPosts.reduce((sum, p) => sum + (p.likes_count || 0), 0);
-    const emailAddress = "support.wryclip@gmail.com";
+    const creatorLikes = creatorPosts.reduce((sum, p) => sum + (p.likes_count || 0), 0);
+    const totalLikes = writerLikes + creatorLikes;
+    const emailAddress = profile.email || "support.wryclip@gmail.com";
     const mailtoUrl = `mailto:${emailAddress}?subject=${encodeURIComponent("WryClip Screenplay Optioning Inquiry")}&body=${encodeURIComponent(`Hi @${profile.username}, we reviewed your Writer Pro screenplay portfolio on WryClip and would like to discuss options / licensing for your scripts...`)}`;
 
     return (
@@ -1068,6 +1531,18 @@ export default function PortfolioView({ username, darkMode = true }: { username:
                     Standard
                   </span>
                 )}
+                {writerPosts.length > 0 && (
+                  <span className="px-2.5 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/25 text-[10px] font-bold text-cyan-300 flex items-center gap-1">
+                    <PenTool className="w-3 h-3 text-cyan-400" />
+                    {writerPosts.length} Written Works
+                  </span>
+                )}
+                {studioProjects.length > 0 && (
+                  <span className="px-2.5 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/25 text-[10px] font-bold text-blue-300 flex items-center gap-1">
+                    <Clapperboard className="w-3 h-3 text-blue-400" />
+                    {studioProjects.length} Studio Projs
+                  </span>
+                )}
                 <button
                   onClick={handlePrint}
                   className="px-2 py-0.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-[9px] font-bold flex items-center gap-1 transition print:hidden cursor-pointer"
@@ -1100,21 +1575,33 @@ export default function PortfolioView({ username, darkMode = true }: { username:
               <div className="border-t border-white/5 my-2" />
 
               {/* Stats Block */}
-              <div className="grid grid-cols-3 gap-2">
-                <div className="bg-white/[0.01] border border-white/5 p-2 rounded-xl flex flex-col items-center">
-                  <PenTool className="w-4 h-4 text-cyan-400 my-0.5" />
-                  <span className="text-sm font-extrabold text-white">{writerPosts.length}</span>
-                  <span className="text-[8px] text-gray-500 uppercase font-black">Writings</span>
+              <div className={`grid ${studioProjects.length > 0 ? 'grid-cols-5' : 'grid-cols-4'} gap-1 p-1 rounded-2xl bg-white/[0.01] border border-white/5 shadow-inner`}>
+                <div className="bg-white/[0.02] border border-white/5 p-1.5 rounded-xl flex flex-col items-center justify-center text-center">
+                  <PenTool className="w-3.5 h-3.5 text-cyan-400 my-0.5" />
+                  <span className="text-xs font-extrabold text-white">{writerPosts.length}</span>
+                  <span className="text-[6.5px] text-gray-400 uppercase font-black tracking-tighter mt-0.5">Writings</span>
                 </div>
-                <div className="bg-white/[0.01] border border-white/5 p-2 rounded-xl flex flex-col items-center">
-                  <Heart className="w-4 h-4 text-pink-400 fill-pink-400 my-0.5" />
-                  <span className="text-sm font-extrabold text-white">{writerLikes}</span>
-                  <span className="text-[8px] text-gray-500 uppercase font-black">Likes</span>
+                <div className="bg-white/[0.02] border border-white/5 p-1.5 rounded-xl flex flex-col items-center justify-center text-center">
+                  <Film className="w-3.5 h-3.5 text-pink-400 my-0.5" />
+                  <span className="text-xs font-extrabold text-white">{creatorPosts.length}</span>
+                  <span className="text-[6.5px] text-gray-400 uppercase font-black tracking-tighter mt-0.5">Videos</span>
                 </div>
-                <div className="bg-white/[0.01] border border-white/5 p-2 rounded-xl flex flex-col items-center">
-                  <Bookmark className="w-4 h-4 text-cyan-400 my-0.5" />
-                  <span className="text-sm font-extrabold text-white">{stats.totalSaves}</span>
-                  <span className="text-[8px] text-gray-500 uppercase font-black">Saves</span>
+                {studioProjects.length > 0 && (
+                  <div className="bg-white/[0.02] border border-white/5 p-1.5 rounded-xl flex flex-col items-center justify-center text-center">
+                    <Clapperboard className="w-3.5 h-3.5 text-blue-400 my-0.5" />
+                    <span className="text-xs font-extrabold text-white">{studioProjects.length}</span>
+                    <span className="text-[6.5px] text-gray-400 uppercase font-black tracking-tighter mt-0.5">Studios</span>
+                  </div>
+                )}
+                <div className="bg-white/[0.02] border border-white/5 p-1.5 rounded-xl flex flex-col items-center justify-center text-center">
+                  <Heart className="w-3.5 h-3.5 text-pink-400 fill-pink-400 my-0.5" />
+                  <span className="text-xs font-extrabold text-white">{totalLikes}</span>
+                  <span className="text-[6.5px] text-gray-400 uppercase font-black tracking-tighter mt-0.5">Likes</span>
+                </div>
+                <div className="bg-white/[0.02] border border-white/5 p-1.5 rounded-xl flex flex-col items-center justify-center text-center">
+                  <Bookmark className="w-3.5 h-3.5 text-cyan-400 my-0.5" />
+                  <span className="text-xs font-extrabold text-white">{stats.totalSaves}</span>
+                  <span className="text-[6.5px] text-gray-400 uppercase font-black tracking-tighter mt-0.5">Saves</span>
                 </div>
               </div>
 
@@ -1297,9 +1784,16 @@ export default function PortfolioView({ username, darkMode = true }: { username:
                           {post.title}
                         </h4>
 
-                        <p className="text-[11px] text-gray-400 leading-relaxed line-clamp-2 mb-3">
-                          {post.content || "No creation details shared."}
-                        </p>
+                        {isPostLocked(post) ? (
+                          <div className="flex items-center gap-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20 px-2.5 py-1.5 mb-3">
+                            <Lock className="w-3 h-3 text-amber-300 shrink-0" />
+                            <span className="text-[10px] font-bold text-amber-300">Protected Content — Unlock in App</span>
+                          </div>
+                        ) : (
+                          <p className="text-[11px] text-gray-400 leading-relaxed line-clamp-2 mb-3">
+                            {post.content || "No creation details shared."}
+                          </p>
+                        )}
                       </div>
 
                       <div className="flex flex-wrap gap-1.5 mb-2">
@@ -1322,6 +1816,9 @@ export default function PortfolioView({ username, darkMode = true }: { username:
                 </div>
               </div>
             )}
+
+            {/* Section 3: WryClip Studio Casting Projects */}
+            {renderStudioProjectsSection('cyan')}
           </div>
         </div>
 
@@ -1337,7 +1834,9 @@ export default function PortfolioView({ username, darkMode = true }: { username:
   // 2. CREATOR PRO LAYOUT
   const renderCreatorProLayout = () => {
     const creatorLikes = creatorPosts.reduce((sum, p) => sum + (p.likes_count || 0), 0);
-    const emailAddress = "support.wryclip@gmail.com";
+    const writerLikes = writerPosts.reduce((sum, p) => sum + (p.likes_count || 0), 0);
+    const totalLikes = writerLikes + creatorLikes;
+    const emailAddress = profile.email || "support.wryclip@gmail.com";
     const mailtoUrl = `mailto:${emailAddress}?subject=${encodeURIComponent("WryClip Brand Collaboration Proposal")}&body=${encodeURIComponent(`Hi @${profile.username}, we found your Creator Pro video portfolio on WryClip and would like to discuss a project...`)}`;
 
     return (
@@ -1456,6 +1955,18 @@ export default function PortfolioView({ username, darkMode = true }: { username:
                     Standard
                   </span>
                 )}
+                {creatorPosts.length > 0 && (
+                  <span className="px-2.5 py-0.5 rounded-full bg-pink-500/10 border border-pink-500/25 text-[10px] font-bold text-pink-400 flex items-center gap-1">
+                    <Film className="w-3 h-3 text-pink-400" />
+                    {creatorPosts.length} Clips & Series
+                  </span>
+                )}
+                {studioProjects.length > 0 && (
+                  <span className="px-2.5 py-0.5 rounded-full bg-pink-500/10 border border-pink-500/25 text-[10px] font-bold text-pink-400 flex items-center gap-1">
+                    <Clapperboard className="w-3 h-3 text-pink-400" />
+                    {studioProjects.length} Studio Projs
+                  </span>
+                )}
                 <button
                   onClick={handlePrint}
                   className="px-2 py-0.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-[9px] font-bold flex items-center gap-1 transition print:hidden cursor-pointer"
@@ -1488,21 +1999,33 @@ export default function PortfolioView({ username, darkMode = true }: { username:
               <div className="border-t border-white/5 my-2" />
 
               {/* Stats Block */}
-              <div className="grid grid-cols-3 gap-2">
-                <div className="bg-white/[0.01] border border-white/5 p-2 rounded-xl flex flex-col items-center">
-                  <Film className="w-4 h-4 text-pink-400 my-0.5" />
-                  <span className="text-sm font-extrabold text-white">{creatorPosts.length}</span>
-                  <span className="text-[8px] text-gray-500 uppercase font-black">Videos</span>
+              <div className={`grid ${studioProjects.length > 0 ? 'grid-cols-5' : 'grid-cols-4'} gap-1 p-1 rounded-2xl bg-white/[0.01] border border-white/5 shadow-inner`}>
+                <div className="bg-white/[0.02] border border-white/5 p-1.5 rounded-xl flex flex-col items-center justify-center text-center">
+                  <PenTool className="w-3.5 h-3.5 text-pink-400 my-0.5" />
+                  <span className="text-xs font-extrabold text-white">{writerPosts.length}</span>
+                  <span className="text-[6.5px] text-gray-400 uppercase font-black tracking-tighter mt-0.5">Writings</span>
                 </div>
-                <div className="bg-white/[0.01] border border-white/5 p-2 rounded-xl flex flex-col items-center">
-                  <Heart className="w-4 h-4 text-pink-400 fill-pink-400 my-0.5" />
-                  <span className="text-sm font-extrabold text-white">{creatorLikes}</span>
-                  <span className="text-[8px] text-gray-500 uppercase font-black">Likes</span>
+                <div className="bg-white/[0.02] border border-white/5 p-1.5 rounded-xl flex flex-col items-center justify-center text-center">
+                  <Film className="w-3.5 h-3.5 text-pink-400 my-0.5" />
+                  <span className="text-xs font-extrabold text-white">{creatorPosts.length}</span>
+                  <span className="text-[6.5px] text-gray-400 uppercase font-black tracking-tighter mt-0.5">Videos</span>
                 </div>
-                <div className="bg-white/[0.01] border border-white/5 p-2 rounded-xl flex flex-col items-center">
-                  <Bookmark className="w-4 h-4 text-pink-400 my-0.5" />
-                  <span className="text-sm font-extrabold text-white">{stats.totalSaves}</span>
-                  <span className="text-[8px] text-gray-500 uppercase font-black">Saves</span>
+                {studioProjects.length > 0 && (
+                  <div className="bg-white/[0.02] border border-white/5 p-1.5 rounded-xl flex flex-col items-center justify-center text-center">
+                    <Clapperboard className="w-3.5 h-3.5 text-blue-400 my-0.5" />
+                    <span className="text-xs font-extrabold text-white">{studioProjects.length}</span>
+                    <span className="text-[6.5px] text-gray-400 uppercase font-black tracking-tighter mt-0.5">Studios</span>
+                  </div>
+                )}
+                <div className="bg-white/[0.02] border border-white/5 p-1.5 rounded-xl flex flex-col items-center justify-center text-center">
+                  <Heart className="w-3.5 h-3.5 text-pink-400 fill-pink-400 my-0.5" />
+                  <span className="text-xs font-extrabold text-white">{totalLikes}</span>
+                  <span className="text-[6.5px] text-gray-400 uppercase font-black tracking-tighter mt-0.5">Likes</span>
+                </div>
+                <div className="bg-white/[0.02] border border-white/5 p-1.5 rounded-xl flex flex-col items-center justify-center text-center">
+                  <Bookmark className="w-3.5 h-3.5 text-pink-400 my-0.5" />
+                  <span className="text-xs font-extrabold text-white">{stats.totalSaves}</span>
+                  <span className="text-[6.5px] text-gray-400 uppercase font-black tracking-tighter mt-0.5">Saves</span>
                 </div>
               </div>
 
@@ -1578,9 +2101,16 @@ export default function PortfolioView({ username, darkMode = true }: { username:
                         {post.title}
                       </h3>
 
-                      <p className="text-xs text-gray-400 leading-relaxed line-clamp-3 mb-4">
-                        {post.content || "No creation details shared."}
-                      </p>
+                      {isPostLocked(post) ? (
+                        <div className="flex items-center gap-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20 px-2.5 py-1.5 mb-4">
+                          <Lock className="w-3 h-3 text-amber-300 shrink-0" />
+                          <span className="text-[10px] font-bold text-amber-300">Protected Content — Unlock in App</span>
+                        </div>
+                      ) : (
+                        <p className="text-xs text-gray-400 leading-relaxed line-clamp-3 mb-4">
+                          {post.content || "No creation details shared."}
+                        </p>
+                      )}
                     </div>
 
                     <div className="flex flex-wrap gap-1.5 mb-4">
@@ -1644,9 +2174,16 @@ export default function PortfolioView({ username, darkMode = true }: { username:
                           <Clapperboard className="w-4 h-4 inline mr-1.5 shrink-0" /> {post.title}
                         </h4>
 
-                        <p className="text-xs text-gray-300 leading-relaxed line-clamp-3 mb-3 pr-1" style={{ fontFamily: 'Courier New, Courier, monospace' }}>
-                          {post.content || "No synopsis or detail content provided."}
-                        </p>
+                        {isPostLocked(post) ? (
+                          <div className="flex items-center gap-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20 px-2.5 py-1.5 mb-3">
+                            <Lock className="w-3 h-3 text-amber-300 shrink-0" />
+                            <span className="text-[10px] font-bold text-amber-300">Protected Content — Unlock in App</span>
+                          </div>
+                        ) : (
+                          <p className="text-xs text-gray-300 leading-relaxed line-clamp-3 mb-3 pr-1" style={{ fontFamily: 'Courier New, Courier, monospace' }}>
+                            {post.content || "No synopsis or detail content provided."}
+                          </p>
+                        )}
                       </div>
 
                       <div className="flex flex-wrap gap-1.5 mb-2">
@@ -1677,6 +2214,9 @@ export default function PortfolioView({ username, darkMode = true }: { username:
                 </div>
               </div>
             )}
+
+            {/* Section 3: WryClip Studio Casting Projects */}
+            {renderStudioProjectsSection('pink')}
           </div>
         </div>
 
@@ -1937,6 +2477,7 @@ export default function PortfolioView({ username, darkMode = true }: { username:
     <>
       {!isPremiumUser ? renderPremiumLockPaywall() : renderLayout()}
       {isPremiumUser && renderSharedModal()}
+      {isPremiumUser && renderStudioProjectModal()}
       {renderAvatarModal()}
     </>
   );
