@@ -331,11 +331,23 @@ export default function PortfolioView({ username, darkMode = true }: { username:
     }
   };
 
-  // Determine if profile is verified under "Writer Pro" or standard tier
-  const isWriterPro =
-    profile?.role?.toLowerCase() === "writer pro" ||
+  // Decider Logic for Role & Verified Pro Status
+  const roleNorm = profile?.role?.toLowerCase() || '';
+  const isSubscriptionActive =
     profile?.subscription_status === "active" ||
     profile?.subscription_status === "expiring_soon";
+
+  const isProUser =
+    ['writer pro', 'creator pro', 'studio pro', 'core', 'admin'].includes(roleNorm) ||
+    isSubscriptionActive;
+
+  const isWriterPro =
+    roleNorm === "writer pro" ||
+    (isSubscriptionActive && (roleNorm === "writer" || roleNorm === "poet" || roleNorm === "script writer" || !roleNorm));
+
+  const isCreatorPro =
+    roleNorm === "creator pro" ||
+    (isSubscriptionActive && (roleNorm === "creator" || roleNorm === "filmmaker" || roleNorm === "director" || roleNorm === "producer" || roleNorm === "actor"));
 
   // Loading State (Shimmer Effect)
   if (loading) {
@@ -451,8 +463,7 @@ export default function PortfolioView({ username, darkMode = true }: { username:
   }
 
   // Decider Logic for Layout Types
-  const roleNorm = profile.role?.toLowerCase() || '';
-  const isPremiumUser = ['writer pro', 'creator pro', 'studio pro', 'core', 'admin'].includes(roleNorm);
+  const isPremiumUser = isProUser;
   const isCoreUser = ['core', 'admin', 'studio pro'].includes(roleNorm);
   
   const isWriter = ['writer pro', 'writer', 'poet', 'script writer'].includes(roleNorm);
@@ -1503,9 +1514,9 @@ export default function PortfolioView({ username, darkMode = true }: { username:
               <div>
                 <h1 className="text-xl font-extrabold tracking-tight text-white flex items-center justify-center gap-1.5">
                   {profile.full_name}
-                  {isWriterPro && (
+                  {isProUser && (
                     <span
-                      title="Verified Writer Pro"
+                      title={isCreatorPro ? "Verified Creator Pro" : "Verified Writer Pro"}
                       className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-cyan-500 text-black text-[9px] font-bold shadow-[0_0_10px_rgba(6,182,212,0.6)]"
                     >
                       ✓
@@ -1516,15 +1527,15 @@ export default function PortfolioView({ username, darkMode = true }: { username:
               </div>
 
               <div className="flex flex-wrap gap-2 justify-center items-center">
-                {profile.role && profile.role.toLowerCase() !== "writer pro" && profile.role.toLowerCase() !== "writer" && (
+                {profile.role && profile.role.toLowerCase() !== "writer pro" && profile.role.toLowerCase() !== "creator pro" && profile.role.toLowerCase() !== "writer" && (
                   <span className="px-2.5 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/25 text-[10px] font-bold text-cyan-300">
                     {profile.role}
                   </span>
                 )}
-                {isWriterPro ? (
+                {isProUser ? (
                   <span className="px-2.5 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/25 text-[10px] font-bold text-cyan-300 flex items-center gap-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
-                    Writer Pro
+                    {isCreatorPro ? "Creator Pro" : roleNorm === "studio pro" ? "Studio Pro" : roleNorm === "core" ? "Core" : "Writer Pro"}
                   </span>
                 ) : (
                   <span className="px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-[9px] font-medium text-gray-400">
@@ -1927,9 +1938,9 @@ export default function PortfolioView({ username, darkMode = true }: { username:
               <div>
                 <h1 className="text-xl font-extrabold tracking-tight text-white flex items-center justify-center gap-1.5">
                   {profile.full_name}
-                  {isWriterPro && (
+                  {isProUser && (
                     <span
-                      title="Verified Creator Pro"
+                      title={isWriterPro ? "Verified Writer Pro" : "Verified Creator Pro"}
                       className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-pink-500 text-black text-[9px] font-bold shadow-[0_0_10px_rgba(255,0,127,0.6)]"
                     >
                       ✓
@@ -1940,15 +1951,15 @@ export default function PortfolioView({ username, darkMode = true }: { username:
               </div>
 
               <div className="flex flex-wrap gap-2 justify-center items-center">
-                {profile.role && profile.role.toLowerCase() !== "creator pro" && profile.role.toLowerCase() !== "creator" && (
+                {profile.role && profile.role.toLowerCase() !== "creator pro" && profile.role.toLowerCase() !== "writer pro" && profile.role.toLowerCase() !== "creator" && (
                   <span className="px-2.5 py-0.5 rounded-full bg-pink-500/10 border border-pink-500/25 text-[10px] font-bold text-pink-400">
                     {profile.role}
                   </span>
                 )}
-                {isWriterPro ? (
+                {isProUser ? (
                   <span className="px-2.5 py-0.5 rounded-full bg-pink-500/10 border border-pink-500/25 text-[10px] font-bold text-pink-400 flex items-center gap-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-pink-400 animate-pulse"></span>
-                    Creator Pro
+                    {isWriterPro ? "Writer Pro" : roleNorm === "studio pro" ? "Studio Pro" : roleNorm === "core" ? "Core" : "Creator Pro"}
                   </span>
                 ) : (
                   <span className="px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-[9px] font-medium text-gray-400">
